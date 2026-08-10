@@ -185,23 +185,20 @@ body.compare-mode #map2 { display:block; }
     box-shadow:var(--sem-shadow-md);
 }
 
-/* ── Encabezado ─────────────────────────────────────────────────────────── */
-.header {
-    position:absolute; top:16px; left:16px; z-index:var(--z-legend);
-    padding:14px 18px 12px; max-width:280px; color:var(--sem-ink);
+/* ── Vigencia del dato ──────────────────────────────────────────────────── */
+/* Único resto del encabezado: un chip de una línea en la esquina libre. */
+.data-stamp {
+    position:absolute; top:12px; left:16px; z-index:var(--z-legend);
+    display:none; padding:4px 9px;
+    font-size:10.5px; font-weight:400; color:var(--sem-text-2);
+    background:var(--sem-surface); border:var(--sem-border-hair);
+    border-radius:var(--sem-radius); box-shadow:var(--sem-shadow-sm);
 }
-.header .tag {
-    font-size:11px; font-weight:600; letter-spacing:0.10em; text-transform:uppercase;
-    color:var(--sem-green); margin-bottom:5px;
-}
-.header h1 { font-size:17px; font-weight:700; letter-spacing:-0.01em; line-height:1.2; margin-bottom:3px; color:var(--sem-navy); }
-.header .campo { font-size:12px; font-weight:400; color:var(--sem-text-2); }
-.data-stamp { font-size:11px; font-weight:400; color:var(--sem-text-3); margin-top:4px; display:none; }
 
 .data-notice {
-    position:absolute; top:150px; left:50%; transform:translateX(-50%); z-index:var(--z-controls);
-    display:none; padding:9px 14px; max-width:520px;
-    font-size:12px; line-height:1.4; text-align:center;
+    position:absolute; top:112px; left:50%; transform:translateX(-50%); z-index:var(--z-controls);
+    display:none; padding:8px 12px; max-width:520px;
+    font-size:11.5px; line-height:1.4; text-align:center;
     color:var(--sem-navy); background:var(--sem-surface);
     border:var(--sem-border-strong); border-radius:var(--sem-radius);
     box-shadow:var(--sem-shadow-sm);
@@ -209,7 +206,7 @@ body.compare-mode #map2 { display:block; }
 
 /* ── COMPONENTE 1 · Barra de navegación ─────────────────────────────────── */
 .tabs {
-    position:absolute; top:16px; left:50%; transform:translateX(-50%); z-index:var(--z-controls);
+    position:absolute; top:12px; left:50%; transform:translateX(-50%); z-index:var(--z-controls);
     display:flex; gap:2px; padding:0 6px;
     background:var(--sem-surface);
     border:var(--sem-border-hair);
@@ -221,10 +218,10 @@ body.compare-mode #map2 { display:block; }
 }
 .tabs::-webkit-scrollbar { display:none; }
 .tab-btn {
-    padding:12px 14px; border:none; background:transparent;
-    font-size:12.5px; font-weight:400; color:var(--sem-text-2);
+    padding:9px 12px; border:none; background:transparent;
+    font-size:11.5px; font-weight:400; color:var(--sem-text-2);
     cursor:pointer; white-space:nowrap;
-    display:flex; align-items:center; gap:7px;
+    display:flex; align-items:center; gap:6px;
     border-bottom:2px solid transparent; margin-bottom:-2px;
     border-radius:0;
     transition:color 0.15s ease, background 0.15s ease;
@@ -242,42 +239,42 @@ body.compare-mode #map2 { display:block; }
    invisible. Va sobre <use> —no sobre .tab-btn— para que valga en todas las
    instancias: botones de cerrar, paneles y overlays, no sólo la barra de pestañas. */
 use[href^="#ic-"] { stroke:currentColor; }
-.tab-btn .ic { display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; flex:0 0 16px; }
-.tab-btn .ic svg { width:16px; height:16px; display:block; }
+.tab-btn .ic { display:inline-flex; align-items:center; justify-content:center; width:15px; height:15px; flex:0 0 15px; }
+.tab-btn .ic svg { width:15px; height:15px; display:block; }
 
 /* ── Barra de métricas ──────────────────────────────────────────────────── */
 .stats-bar {
-    position:absolute; top:16px; right:16px; z-index:var(--z-legend);
-    padding:10px 16px; display:flex; gap:18px;
+    position:absolute; top:12px; right:16px; z-index:var(--z-legend);
+    padding:8px 12px; display:flex; gap:13px;
     transition:opacity 0.2s ease;
 }
 .stats-bar.hidden { display:none; }
-.stats-content { display:flex; gap:18px; align-items:stretch; }
-.stat { text-align:center; min-width:48px; }
-.stat .num { font-size:17px; font-weight:300; color:var(--sem-ink); line-height:1; }
+.stats-content { display:flex; gap:13px; align-items:stretch; }
+.stat { text-align:center; min-width:42px; }
+.stat .num { font-size:15px; font-weight:300; color:var(--sem-ink); line-height:1; }
 .stat .unit {
-    font-size:11px; font-weight:400; color:var(--sem-text-2);
-    text-transform:uppercase; letter-spacing:0.06em; margin-top:4px; white-space:nowrap;
+    font-size:10px; font-weight:400; color:var(--sem-text-2);
+    text-transform:uppercase; letter-spacing:0.05em; margin-top:3px; white-space:nowrap;
 }
 .stat-div { width:1px; background:var(--sem-line); align-self:stretch; flex:0 0 1px; }
 
-.foliar-stats { display:none; flex-direction:column; gap:6px; }
-.foliar-stat-row { display:flex; gap:10px; align-items:stretch; min-width:max-content; }
-.foliar-context { display:flex; align-items:center; gap:8px; min-width:180px; padding-right:10px; }
-.foliar-context-title { font-size:12px; font-weight:600; color:var(--sem-navy); white-space:nowrap; }
+.foliar-stats { display:none; flex-direction:column; gap:5px; }
+.foliar-stat-row { display:flex; gap:8px; align-items:stretch; min-width:max-content; }
+.foliar-context { display:flex; align-items:center; gap:7px; min-width:158px; padding-right:8px; }
+.foliar-context-title { font-size:11.5px; font-weight:600; color:var(--sem-navy); white-space:nowrap; }
 .foliar-context-meta {
-    font-size:11px; color:var(--sem-text-2); margin-top:3px;
+    font-size:10px; color:var(--sem-text-2); margin-top:2px;
     text-transform:uppercase; letter-spacing:0.05em; white-space:nowrap;
 }
 /* Chips de comparación A/B: navy y pizarra (el naranja anterior no es de marca). */
 .foliar-side-chip {
-    font-size:11px; font-weight:600; width:22px; height:22px;
+    font-size:10.5px; font-weight:600; width:20px; height:20px;
     border-radius:var(--sem-radius); display:flex; align-items:center; justify-content:center;
-    background:var(--sem-navy-wash); color:var(--sem-navy); flex:0 0 22px;
+    background:var(--sem-navy-wash); color:var(--sem-navy); flex:0 0 20px;
 }
 .foliar-side-chip.side-b { background:var(--sem-slate-wash); color:var(--sem-slate); }
-.foliar-stat-row .stat { min-width:58px; padding:1px 3px; }
-.foliar-stat-row .stat .num { font-size:15px; }
+.foliar-stat-row .stat { min-width:50px; padding:1px 2px; }
+.foliar-stat-row .stat .num { font-size:13.5px; }
 
 body.foliar-active .stats-bar,
 body.riego-active .stats-bar,
@@ -286,8 +283,8 @@ body.soil-active .stats-bar,
 body.agro-active .stats-bar,
 body.fin-active .stats-bar,
 body.pest-active .stats-bar {
-    top:auto; bottom:24px; right:16px; max-width:calc(100vw - 430px);
-    padding:9px 12px; overflow-x:auto; scrollbar-width:thin;
+    top:auto; bottom:20px; right:16px; max-width:calc(100vw - 430px);
+    padding:7px 10px; overflow-x:auto; scrollbar-width:thin;
 }
 body.foliar-active .mapboxgl-ctrl-bottom-right,
 body.riego-active .mapboxgl-ctrl-bottom-right,
@@ -295,47 +292,47 @@ body.prod-active .mapboxgl-ctrl-bottom-right,
 body.soil-active .mapboxgl-ctrl-bottom-right,
 body.agro-active .mapboxgl-ctrl-bottom-right,
 body.fin-active .mapboxgl-ctrl-bottom-right,
-body.pest-active .mapboxgl-ctrl-bottom-right { bottom:82px; }
+body.pest-active .mapboxgl-ctrl-bottom-right { bottom:70px; }
 body.compare-mode .mapboxgl-ctrl-bottom-right,
-body.prod-active.compare-mode .mapboxgl-ctrl-bottom-right { bottom:138px; }
+body.prod-active.compare-mode .mapboxgl-ctrl-bottom-right { bottom:118px; }
 
 /* ── COMPONENTE 3 · Leyendas ────────────────────────────────────────────── */
 .legend-panel {
-    position:absolute; bottom:24px; left:16px; z-index:var(--z-legend);
-    padding:12px 14px; min-width:200px;
+    position:absolute; bottom:20px; left:16px; z-index:var(--z-legend);
+    padding:10px 12px; min-width:176px;
     background:var(--sem-surface); border:var(--sem-border-hair);
     border-radius:var(--sem-radius); box-shadow:var(--sem-shadow-sm);
 }
 .legend-label {
-    font-size:13px; font-weight:600; color:var(--sem-ink);
-    letter-spacing:0; text-transform:none; margin-bottom:9px;
+    font-size:12px; font-weight:600; color:var(--sem-ink);
+    letter-spacing:0; text-transform:none; margin-bottom:7px;
 }
 .gradient-bar {
-    height:8px; border-radius:4px; margin-bottom:5px;
+    height:7px; border-radius:4px; margin-bottom:4px;
     background:linear-gradient(90deg, var(--dat-p1), var(--dat-p2), var(--dat-p3), var(--dat-p4), var(--dat-p5), var(--dat-p6), var(--dat-p7));
 }
-.gradient-labels { display:flex; justify-content:space-between; font-size:11px; color:var(--sem-text-2); }
-.legend-classes { margin-top:12px; display:grid; grid-template-columns:1fr 1fr; gap:4px 10px; }
-.lc-item { display:flex; align-items:center; gap:7px; }
-.lc-swatch { width:12px; height:12px; border-radius:3px; border:var(--sem-border-hair); flex-shrink:0; }
-.lc-text { font-size:12.5px; color:var(--sem-text-2); }
+.gradient-labels { display:flex; justify-content:space-between; font-size:10px; color:var(--sem-text-2); }
+.legend-classes { margin-top:9px; display:grid; grid-template-columns:1fr 1fr; gap:3px 8px; }
+.lc-item { display:flex; align-items:center; gap:6px; }
+.lc-swatch { width:11px; height:11px; border-radius:3px; border:var(--sem-border-hair); flex-shrink:0; }
+.lc-text { font-size:11.5px; color:var(--sem-text-2); }
 .legend-classes-full { grid-template-columns:1fr 1fr 1fr !important; }
 .legend-season-meta {
-    font-size:11px; color:var(--sem-text-2);
-    margin-top:10px; padding-top:8px; border-top:var(--sem-border-soft);
+    font-size:10px; color:var(--sem-text-2);
+    margin-top:8px; padding-top:6px; border-top:var(--sem-border-soft);
     display:flex; justify-content:space-between; gap:8px;
 }
-.eq-legend-items { margin-top:6px; }
-.eq-item { display:flex; align-items:center; gap:8px; padding:4px 0; border-bottom:var(--sem-border-soft); }
+.eq-legend-items { margin-top:5px; }
+.eq-item { display:flex; align-items:center; gap:7px; padding:3px 0; border-bottom:var(--sem-border-soft); }
 .eq-item:last-child { border-bottom:none; }
-.eq-swatch { width:18px; height:12px; border-radius:3px; border:var(--sem-border-hair); flex-shrink:0; }
-.eq-text { font-size:12.5px; color:var(--sem-text-2); }
-.eq-ha { font-size:11px; font-weight:400; color:var(--sem-text-3); margin-left:auto; }
+.eq-swatch { width:16px; height:11px; border-radius:3px; border:var(--sem-border-hair); flex-shrink:0; }
+.eq-text { font-size:11.5px; color:var(--sem-text-2); }
+.eq-ha { font-size:10px; font-weight:400; color:var(--sem-text-3); margin-left:auto; }
 
 /* ── COMPONENTE 5 · Controles (barra de filtros superior) ───────────────── */
 .foliar-controls {
-    position:absolute; top:84px; left:50%; transform:translateX(-50%); z-index:var(--z-controls);
-    padding:12px 16px; display:flex; gap:14px; align-items:center;
+    position:absolute; top:60px; left:50%; transform:translateX(-50%); z-index:var(--z-controls);
+    padding:9px 12px; display:flex; gap:10px; align-items:center;
     background:var(--sem-surface); border:var(--sem-border-hair);
     border-radius:var(--sem-radius-lg); box-shadow:var(--sem-shadow-md);
     opacity:0; pointer-events:none; transition:opacity 0.25s;
@@ -350,8 +347,8 @@ body.prod-active.compare-mode .mapboxgl-ctrl-bottom-right { bottom:138px; }
     border-radius:var(--sem-radius); flex:0 0 auto;
 }
 .nut-subtab {
-    padding:7px 13px; border:none; background:transparent; cursor:pointer;
-    font-family:inherit; font-size:12.5px; font-weight:500; color:var(--sem-text-2);
+    padding:6px 11px; border:none; background:transparent; cursor:pointer;
+    font-family:inherit; font-size:11.5px; font-weight:500; color:var(--sem-text-2);
     border-radius:calc(var(--sem-radius) - 2px); white-space:nowrap;
     transition:background 0.15s, color 0.15s, box-shadow 0.15s;
 }
@@ -363,22 +360,22 @@ body.prod-active.compare-mode .mapboxgl-ctrl-bottom-right { bottom:138px; }
 .nut-subtab:focus-visible { outline:none; box-shadow:var(--sem-focus-ring); }
 .nut-sep { width:1px; align-self:stretch; background:var(--sem-line); flex:0 0 1px; }
 
-.fc-group { display:flex; flex-direction:column; gap:5px; }
+.fc-group { display:flex; flex-direction:column; gap:4px; }
 .fc-label {
-    font-size:11px; font-weight:500; letter-spacing:0.04em;
+    font-size:10px; font-weight:500; letter-spacing:0.04em;
     text-transform:uppercase; color:var(--sem-text-2);
 }
 .fc-select, .agro-select, .fin-select, .pest-select {
-    height:36px; padding:0 30px 0 12px;
+    height:31px; padding:0 27px 0 10px;
     background:var(--sem-surface); border:var(--sem-border-hair);
     border-radius:var(--sem-radius); color:var(--sem-ink);
-    font-size:12.5px; font-weight:400;
+    font-size:11.5px; font-weight:400;
     outline:none; cursor:pointer; appearance:none;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10' fill='none'%3E%3Cpath d='M2 3.5L5 6.5L8 3.5' stroke='%236D7C86' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
     background-repeat:no-repeat; background-position:right 11px center;
     transition:border-color 0.15s, box-shadow 0.15s;
 }
-.fc-select { min-width:180px; }
+.fc-select { min-width:156px; }
 .fc-select:hover, .agro-select:hover, .fin-select:hover, .pest-select:hover { border:var(--sem-border-strong); }
 .fc-select:focus, .agro-select:focus, .fin-select:focus, .pest-select:focus {
     border:var(--sem-border-accent); box-shadow:var(--sem-focus-ring);
@@ -400,10 +397,10 @@ body.prod-active.compare-mode .mapboxgl-ctrl-bottom-right { bottom:138px; }
 
 /* COMPONENTE 6 · Botón secundario */
 .fc-compare-btn {
-    align-self:flex-end; height:36px; padding:0 14px;
+    align-self:flex-end; height:31px; padding:0 11px;
     background:transparent; border:var(--sem-border-hair); color:var(--sem-ink);
-    font-size:12.5px; font-weight:500; border-radius:var(--sem-radius);
-    cursor:pointer; display:flex; align-items:center; gap:7px; white-space:nowrap;
+    font-size:11.5px; font-weight:500; border-radius:var(--sem-radius);
+    cursor:pointer; display:flex; align-items:center; gap:6px; white-space:nowrap;
     transition:background 0.15s, border-color 0.15s;
 }
 .fc-compare-btn .ic { display:inline-flex; width:15px; height:15px; }
@@ -504,28 +501,30 @@ body.compare-mode .foliar-controls-B { display:flex; gap:14px; align-items:cente
     box-shadow:var(--sem-shadow-md);
 }
 /* Los cuatro arrancan bajo la barra de navegación: a top:16px la tapaban. */
-.riego-controls { top:84px; right:16px; width:340px; max-height:calc(100vh - 178px); overflow:auto; }
-.agro-controls  { top:84px; right:16px; width:390px; max-height:calc(100vh - 178px); overflow:auto; }
-.fin-controls   { top:84px; right:16px; width:360px; max-height:calc(100vh - 178px); overflow:auto; }
-.pest-controls  { top:84px; right:16px; width:360px; max-height:calc(100vh - 178px); overflow:auto; }
+/* Arrancan bajo la barra de pestañas; el alto libre es la ventana menos ese
+   arranque menos el aire que necesita la barra de métricas abajo. */
+.riego-controls { top:60px; right:16px; width:318px; max-height:calc(100vh - 146px); overflow:auto; }
+.agro-controls  { top:60px; right:16px; width:364px; max-height:calc(100vh - 146px); overflow:auto; }
+.fin-controls   { top:60px; right:16px; width:336px; max-height:calc(100vh - 146px); overflow:auto; }
+.pest-controls  { top:60px; right:16px; width:336px; max-height:calc(100vh - 146px); overflow:auto; }
 .riego-controls.visible, .agro-controls.visible, .fin-controls.visible, .pest-controls.visible { display:block; }
 
 .riego-controls-header, .agro-controls-header, .fin-controls-header, .pest-controls-header {
-    padding:14px 18px 11px; background:var(--sem-beige-wash);
+    padding:10px 14px 9px; background:var(--sem-beige-wash);
     border-bottom:var(--sem-border-soft);
 }
 .riego-controls-title, .agro-controls-title, .fin-controls-title, .pest-controls-title {
-    font-size:12px; font-weight:600; letter-spacing:0.04em; text-transform:uppercase;
-    color:var(--sem-navy); display:flex; align-items:center; gap:8px;
+    font-size:11px; font-weight:600; letter-spacing:0.04em; text-transform:uppercase;
+    color:var(--sem-navy); display:flex; align-items:center; gap:7px;
 }
 .riego-controls-title .rc-dot, .agro-controls-title .ac-dot,
 .fin-controls-title .fc-dot, .pest-controls-title .pc-dot {
     width:7px; height:7px; border-radius:50%; background:var(--sem-green); flex:0 0 7px;
 }
 .riego-controls-subtitle, .agro-controls-subtitle, .fin-controls-subtitle, .pest-controls-subtitle {
-    font-size:12px; color:var(--sem-text-2); margin-top:5px; line-height:1.4;
+    font-size:11px; color:var(--sem-text-2); margin-top:4px; line-height:1.35;
 }
-.riego-controls-body, .agro-controls-body, .fin-controls-body, .pest-controls-body { padding:14px 16px 16px; }
+.riego-controls-body, .agro-controls-body, .fin-controls-body, .pest-controls-body { padding:11px 13px 13px; }
 
 /* Sub-pestañas del panel de riego */
 .riego-mode-tabs {
@@ -690,8 +689,8 @@ body:not(.compare-mode) #riegoLabelASlot { display:none !important; }
 
 /* ── Leyendas por pestaña (mismo componente 3) ──────────────────────────── */
 .foliar-legend, .soil-legend, .agro-legend, .fin-legend, .pest-legend {
-    position:absolute; bottom:24px; left:16px; z-index:var(--z-legend); display:none;
-    padding:12px 14px; min-width:230px; max-width:300px;
+    position:absolute; bottom:20px; left:16px; z-index:var(--z-legend); display:none;
+    padding:10px 12px; min-width:206px; max-width:274px;
     background:var(--sem-surface); border:var(--sem-border-hair);
     border-radius:var(--sem-radius); box-shadow:var(--sem-shadow-sm);
 }
@@ -1350,19 +1349,22 @@ body.pest-active #map { width:calc(100% - min(392px, 46%)); }
 body.pest-active .stats-bar { display:none !important; }
 /* En plagas la barra de navegación se alinea al área del mapa, no al viewport. */
 body.pest-active .tabs { left:calc((100% - min(392px, 46%)) / 2); }
+/* Al recentrarse sobre un mapa más angosto, la barra invade la esquina donde
+   vive el chip de vigencia: en esta pestaña el chip baja bajo la barra. */
+body.pest-active #dataStamp { top:56px; }
 
 .pv-side-head {
-    padding:14px 18px 12px; background:var(--sem-beige-wash);
+    padding:10px 14px 9px; background:var(--sem-beige-wash);
     border-bottom:1px solid var(--sem-line);
     position:sticky; top:0; z-index:var(--z-controls);
 }
 .pv-side-title {
-    font-size:12px; font-weight:600; letter-spacing:0.04em; text-transform:uppercase;
-    color:var(--sem-navy); display:flex; align-items:center; gap:8px;
+    font-size:11px; font-weight:600; letter-spacing:0.04em; text-transform:uppercase;
+    color:var(--sem-navy); display:flex; align-items:center; gap:7px;
 }
 .pv-side-title .pc-dot { width:7px; height:7px; border-radius:50%; background:var(--sem-green); flex:0 0 7px; }
-.pv-side-sub { font-size:12px; color:var(--sem-text-2); margin-top:5px; line-height:1.4; }
-.pv-side-body { padding:14px 16px 20px; }
+.pv-side-sub { font-size:11px; color:var(--sem-text-2); margin-top:4px; line-height:1.35; }
+.pv-side-body { padding:11px 13px 16px; }
 
 /* Sección desplegable */
 .pv-acc { border-top:1px solid var(--sem-line); }
@@ -1554,7 +1556,7 @@ body.pest-active .tabs { left:calc((100% - min(392px, 46%)) / 2); }
 
 /* ── Ajuste de ancho medio: la barra inferior no debe recibir también top ── */
 @media (max-width:1280px) and (min-width:721px) {
-    body:not(.foliar-active):not(.soil-active):not(.prod-active):not(.pest-active):not(.riego-active):not(.agro-active):not(.fin-active) .stats-bar:not(.hidden) { top:70px; }
+    body:not(.foliar-active):not(.soil-active):not(.prod-active):not(.pest-active):not(.riego-active):not(.agro-active):not(.fin-active) .stats-bar:not(.hidden) { top:58px; }
 }
 
 </style>
@@ -1566,11 +1568,10 @@ body.pest-active .tabs { left:calc((100% - min(392px, 46%)) / 2); }
     <div id="map2"></div>
 </div>
 
-<div class="header glass">
-    <h1 id="headerTitle">Equipos y Sectores de Riego</h1>
-    <div class="campo">Campo San Gerardo — Nogales</div>
-    <div class="data-stamp" id="dataStamp"></div>
-</div>
+<!-- El encabezado con el nombre de la pestaña se eliminó: repetía lo que ya
+     indica la pestaña activa y ocupaba la esquina superior izquierda. Del
+     bloque sólo sobrevive la vigencia del dato, como chip mínimo. -->
+<div class="data-stamp" id="dataStamp"></div>
 
 <div class="data-notice glass" id="dataNotice"></div>
 
@@ -3178,7 +3179,7 @@ function switchMode(mode){
     // Compare mode is only meaningful in foliar/prod. Reset on any transition.
     if(compareMode && previousMode !== mode) disableCompare();
 
-    document.getElementById('headerTitle').textContent=isGen?'Equipos y Sectores de Riego':isProd?'Mapa de Cosecha':isFol?'Nutrición · Análisis Foliares':isSoil?'Nutrición · Análisis de Suelo':isRiego?'Mapa de Riego':isAgro?'Aplicaciones Agroquímicas':isPest?'Monitoreo Fitosanitario':'Resultado Financiero';
+    // El título por modo lo comunica la pestaña activa; ya no hay encabezado.
     document.getElementById('legendGeneral').style.display=isGen?'block':'none';
     document.getElementById('legendProd').style.display=isProd?'block':'none';
     document.getElementById('foliarControls').classList.toggle('visible',isFol);
