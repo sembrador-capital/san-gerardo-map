@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="canonical" href="https://rpina-dev.github.io/san-gerardo-map/">
 <title>San Gerardo — Mapa Interactivo</title>
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js"></script>
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.css" rel="stylesheet">
@@ -762,6 +761,53 @@ body:not(.riego-active) .riego-legend, body:not(.riego-active) .riego-controls {
 body:not(.agro-active) .agro-controls, body:not(.agro-active) .agro-legend { display:none !important; }
 body:not(.fin-active) .fin-controls, body:not(.fin-active) .fin-legend { display:none !important; }
 body:not(.pest-active) .pest-controls, body:not(.pest-active) .pest-legend { display:none !important; }
+
+/* ── Enfermedades (subvista de Control de Plagas y Enfermedades) ─────────── */
+.pv-subtabs { margin-top:9px; }
+.dz-legend { display:none; }
+body.pest-active.dz-active .dz-legend { display:block; }
+body.pest-active.dz-active .pest-legend { display:none !important; }
+.dz-controls { display:flex; flex-direction:column; gap:9px; margin-bottom:12px; }
+.dz-controls .fc-select { width:100%; min-width:0; }
+.dz-notice {
+    font-size:11px; line-height:1.45; color:var(--sem-text-2);
+    background:var(--sem-beige-wash); border:var(--sem-border-hair);
+    border-left:3px solid var(--sem-slate);
+    border-radius:var(--sem-radius); padding:8px 10px; margin-bottom:12px;
+}
+.dz-notice strong { color:var(--sem-ink); font-weight:600; }
+/* Filas de resultado: unidad, valor y su clase de magnitud */
+.dz-row {
+    display:flex; align-items:center; gap:9px;
+    padding:7px 0; border-bottom:var(--sem-border-soft);
+}
+.dz-row:last-child { border-bottom:none; }
+.dz-sw { width:11px; height:11px; border-radius:3px; border:var(--sem-border-hair); flex:0 0 11px; }
+.dz-unit { font-size:11.5px; color:var(--sem-ink); }
+.dz-val { margin-left:auto; font-size:12px; font-weight:600; color:var(--sem-ink); white-space:nowrap; }
+.dz-val .dz-exp { font-size:10px; font-weight:400; color:var(--sem-text-3); margin-left:4px; }
+.dz-flag {
+    font-size:9.5px; font-weight:600; letter-spacing:0.04em; text-transform:uppercase;
+    color:#fff; background:var(--dat-st-def); border-radius:3px; padding:2px 5px;
+}
+.dz-empty { font-size:11.5px; color:var(--sem-text-2); padding:6px 0; }
+.dz-scale-row { display:flex; align-items:center; gap:7px; margin-top:4px; }
+.dz-scale-row .dz-sw { width:16px; height:10px; flex:0 0 16px; }
+.dz-scale-label { font-size:10.5px; color:var(--sem-text-2); }
+.dz-scale-row.is-thr .dz-scale-label { color:var(--dat-st-def); font-weight:600; }
+/* Ficha del informe */
+.dz-kv { display:flex; gap:8px; padding:4px 0; font-size:11px; border-bottom:var(--sem-border-soft); }
+.dz-kv:last-child { border-bottom:none; }
+.dz-kv dt { color:var(--sem-text-3); flex:0 0 96px; }
+.dz-kv dd { color:var(--sem-ink); margin:0; }
+.dz-trend svg { display:block; width:100%; height:auto; }
+.dz-trend .dzt-line { fill:none; stroke:var(--sem-navy); stroke-width:2; stroke-linejoin:round; stroke-linecap:round; }
+.dz-trend .dzt-dot { fill:var(--sem-navy); }
+.dz-trend .dzt-thr { stroke:var(--dat-st-def); stroke-width:1; stroke-dasharray:3 3; }
+.dz-trend .dzt-thr-label { font-size:11px; fill:var(--dat-st-def); }
+.dz-trend .dzt-grid { stroke:var(--sem-line-soft); stroke-width:1; }
+.dz-trend .dzt-axis { stroke:var(--sem-line); stroke-width:1; }
+.dz-trend .dzt-tick { font-size:11px; fill:var(--sem-text-2); }
 
 /* ── Barras de métricas por pestaña ─────────────────────────────────────── */
 /* riego-stats-wrap se comporta como prod-stats-wrap: oculto hasta que la
@@ -1625,7 +1671,7 @@ body.pest-active #dataStamp { top:56px; }
     <button class="tab-btn" data-mode="nutricion" data-modes="foliares suelo" onclick="switchMode(NUTRI_SUBMODE)"><span class="ic"><svg viewBox="0 0 18 18"><use href="#ic-hoja"/></svg></span>Nutrición</button>
     <button class="tab-btn" data-mode="riego" onclick="switchMode('riego')"><span class="ic"><svg viewBox="0 0 18 18"><use href="#ic-gota"/></svg></span>Riego</button>
     <button class="tab-btn" data-mode="agroquimicos" onclick="switchMode('agroquimicos')"><span class="ic"><svg viewBox="0 0 18 18"><use href="#ic-spray"/></svg></span>Aplicaciones</button>
-    <button class="tab-btn" data-mode="plagas" onclick="switchMode('plagas')"><span class="ic"><svg viewBox="0 0 18 18"><use href="#ic-insecto"/></svg></span>Control de Plagas</button>
+    <button class="tab-btn" data-mode="plagas" onclick="switchMode('plagas')"><span class="ic"><svg viewBox="0 0 18 18"><use href="#ic-insecto"/></svg></span>Control de Plagas y Enfermedades</button>
     <button class="tab-btn" data-mode="financiero" onclick="switchMode('financiero')"><span class="ic"><svg viewBox="0 0 18 18"><use href="#ic-billete"/></svg></span>Financiero</button>
 </div>
 
@@ -1966,8 +2012,14 @@ body.pest-active #dataStamp { top:56px; }
     <div class="pv-side-head">
         <div class="pv-side-title"><span class="pc-dot"></span>Monitoreo fitosanitario</div>
         <div class="pv-side-sub" id="pvSideSub">Prospección MIP de Biofuturo · temporada 2025-26</div>
+        <!-- Subvistas de la pestaña: prospección MIP (plagas) y carga de
+             inóculo por qPCR (enfermedades). Comparten mapa y columna. -->
+        <div class="nut-subtabs pv-subtabs" role="tablist" aria-label="Vista fitosanitaria">
+            <button type="button" class="nut-subtab active" role="tab" aria-selected="true" onclick="setPestSubview('plagas')">Plagas</button>
+            <button type="button" class="nut-subtab" role="tab" aria-selected="false" onclick="setPestSubview('enfermedades')">Enfermedades</button>
+        </div>
     </div>
-    <div class="pv-side-body">
+    <div class="pv-side-body" id="pvBodyPlagas">
         <div id="pvSlotControls"></div>
 
         <div class="pv-acc open" id="pvAccChart">
@@ -1997,6 +2049,47 @@ body.pest-active #dataStamp { top:56px; }
                 <span class="pv-acc-meta">23 × 9</span>
             </button>
             <div class="pv-acc-body" id="pvSlotMatrix"></div>
+        </div>
+    </div>
+
+    <!-- Subvista Enfermedades: carga de inóculo por qPCR -->
+    <div class="pv-side-body" id="pvBodyEnf" style="display:none">
+        <div class="dz-controls">
+            <div class="fc-group">
+                <label class="fc-label">Informe</label>
+                <select class="fc-select dz-select" id="dzReport" onchange="onDzReportChange()"></select>
+            </div>
+            <div class="fc-group">
+                <label class="fc-label">Patógeno</label>
+                <select class="fc-select dz-select" id="dzPathogen" onchange="renderDisease()"></select>
+            </div>
+        </div>
+        <div class="dz-notice" id="dzNotice" style="display:none"></div>
+
+        <div class="pv-acc open" id="dzAccUnits">
+            <button type="button" class="pv-acc-head" onclick="pvToggleAcc('dzAccUnits')">
+                <span class="pv-acc-chev"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4.5l5 4.5-5 4.5"/></svg></span>
+                <span class="pv-acc-title">Resultado del informe</span>
+                <span class="pv-acc-meta" id="dzUnitsMeta"></span>
+            </button>
+            <div class="pv-acc-body" id="dzUnits"></div>
+        </div>
+
+        <div class="pv-acc open" id="dzAccTrend">
+            <button type="button" class="pv-acc-head" onclick="pvToggleAcc('dzAccTrend')">
+                <span class="pv-acc-chev"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4.5l5 4.5-5 4.5"/></svg></span>
+                <span class="pv-acc-title">Evolución del inóculo</span>
+                <span class="pv-acc-meta" id="dzTrendMeta"></span>
+            </button>
+            <div class="pv-acc-body" id="dzTrend"></div>
+        </div>
+
+        <div class="pv-acc" id="dzAccInfo">
+            <button type="button" class="pv-acc-head" onclick="pvToggleAcc('dzAccInfo')">
+                <span class="pv-acc-chev"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4.5l5 4.5-5 4.5"/></svg></span>
+                <span class="pv-acc-title">Ficha del informe</span>
+            </button>
+            <div class="pv-acc-body" id="dzInfo"></div>
         </div>
     </div>
 </div>
@@ -2223,6 +2316,17 @@ body.pest-active #dataStamp { top:56px; }
     <div class="pest-legend-note">Cada punto es un levantamiento georreferenciado en terreno. Haz clic para ver el detalle.</div>
 </div>
 
+<!-- Leyenda de enfermedades: escala logarítmica de inóculo con el umbral 10⁷ -->
+<div class="legend-panel glass dz-legend" id="legendDisease">
+    <div class="pest-legend-title">
+        <span id="dzLegendName">Carga de inóculo</span>
+        <span class="pest-symbol">ufc/g</span>
+    </div>
+    <div class="pest-legend-meta" id="dzLegendMeta"></div>
+    <div id="dzScale"></div>
+    <div class="pest-legend-note" id="dzLegendNote"></div>
+</div>
+
 <div class="foliar-legend glass" id="legendFoliar">
     <div class="fl-nutrient">
         <span id="flNutrientName">Nitrógeno</span>
@@ -2317,6 +2421,16 @@ body.pest-active #dataStamp { top:56px; }
         </div>
         <div class="ht-source" id="ttSoilSource"></div>
     </div>
+    <div id="ttDzBlock" style="display:none">
+        <div class="ht-metric"><span class="ht-value" id="ttDzVal"></span><span class="ht-unit">ufc/g</span></div>
+        <div><span class="ht-status-badge" id="ttDzStatus"></span></div>
+        <div class="ht-details" style="margin-top:10px">
+            <div class="ht-detail"><div class="k">Patógeno</div><div class="v" id="ttDzPat"></div></div>
+            <div class="ht-detail"><div class="k">Unidad muestreada</div><div class="v" id="ttDzUnit"></div></div>
+            <div class="ht-detail"><div class="k">Umbral</div><div class="v" id="ttDzThr"></div></div>
+        </div>
+        <div class="ht-source" id="ttDzSource"></div>
+    </div>
     <div id="ttRiegoBlock" style="display:none">
         <div id="ttRiegoContent">
             <div class="rt-metric">
@@ -2389,6 +2503,11 @@ let SOIL = null;
 let AGRO = {seasons:[],months:[],rows:[]};
 let FIN_DATA = {seasons:{}, exchangeRate:900};
 let PEST = null;
+let DISEASE = null;
+// Subvista de la pestaña Control de Plagas y Enfermedades. Se declara junto al
+// resto del estado —y no en su módulo— porque refreshDataNotice la consulta y
+// quedaría en zona muerta temporal si se inicializara más abajo.
+let PEST_SUBVIEW = 'plagas';
 // ── Puente entre los tokens de :root y el JS ────────────────────────────────
 // Mapbox y Chart.js necesitan un color literal, no una var() de CSS. SEM() lee
 // el token del :root una sola vez, para que el bloque :root siga siendo la
@@ -2403,7 +2522,7 @@ function SEM(token){
 
 let DATA_VERSION = {};
 const DATA_ERRORS = {};
-const DATA_LABELS = {soil:'Análisis de Suelo', foliar:'Foliares', agro:'Aplicaciones Agroquímicos', financial:'Financiero', pest:'Monitoreo de Plagas'};
+const DATA_LABELS = {soil:'Análisis de Suelo', foliar:'Foliares', agro:'Aplicaciones Agroquímicos', financial:'Financiero', pest:'Monitoreo de Plagas', disease:'Base fitopatológica'};
 const MODE_DATASET = {suelo:'soil', foliares:'foliar', agroquimicos:'agro', financiero:'financial', plagas:'pest'};
 
 function loadDataset(key,file,apply){
@@ -2449,6 +2568,11 @@ fetch('./data-version.json?v='+Date.now())
       console.log('PEST loaded:',PEST.points.length,'puntos ·',PEST.visits.length,'visitas');
       if(typeof initPestControls==='function') initPestControls();
     });
+    loadDataset('disease','disease_data.json',data=>{
+      DISEASE=data;
+      console.log('DISEASE loaded:',DISEASE.readings.length,'lecturas ·',DISEASE.reports.length,'informes');
+      if(typeof initDiseaseControls==='function') initDiseaseControls();
+    });
   });
 
 function fmtDataVersion(v){
@@ -2469,7 +2593,9 @@ function refreshDataNotice(){
     const stamp=document.getElementById('dataStamp');
     const notice=document.getElementById('dataNotice');
     if(!stamp||!notice) return;
-    const key=MODE_DATASET[currentMode];
+    // Plagas cubre dos subvistas alimentadas por datasets distintos.
+    const key = (currentMode==='plagas' && PEST_SUBVIEW==='enfermedades')
+        ? 'disease' : MODE_DATASET[currentMode];
     if(key&&DATA_ERRORS[key]){
         notice.textContent='No se pudieron cargar los datos de '+DATA_LABELS[key]+'. Revisa la conexión o el archivo '+DATA_ERRORS[key]+'.';
         notice.style.display='block';
@@ -2483,7 +2609,6 @@ function refreshDataNotice(){
 
 const SOIL_GEOJSON = {"type":"FeatureCollection","features":[{"type":"Feature","properties":{"name":"Norte Oficinas"},"geometry":{"type":"Polygon","coordinates":[[[-71.20707215959106,-35.23299207998887],[-71.2068835795436,-35.23313019914671],[-71.20657512481989,-35.23335100789306],[-71.20576143974166,-35.23392208711687],[-71.2049239122514,-35.23452324611473],[-71.20457992089443,-35.23478000346638],[-71.20398382651074,-35.23519200769442],[-71.20318152009278,-35.23578052252262],[-71.20053726580753,-35.23762265257525],[-71.19496944629759,-35.23153272939337],[-71.19516723311828,-35.23137196600036],[-71.195211001083,-35.23140437281215],[-71.19539131978173,-35.23131450672548],[-71.19542447597993,-35.23134665937071],[-71.19566717843026,-35.23118952385893],[-71.1957248580241,-35.23124998562415],[-71.19605872904208,-35.23099094740238],[-71.19610276024545,-35.231015523749],[-71.1962166930285,-35.23094623392571],[-71.19659794427419,-35.23096373976615],[-71.19663555869377,-35.23099548760249],[-71.19687722880617,-35.23082312998348],[-71.19676416894295,-35.23068909825641],[-71.19675798227216,-35.23054315003097],[-71.19695737589221,-35.23041858114577],[-71.19724746034521,-35.23032898225903],[-71.19767974960311,-35.23018430150933],[-71.19788787727671,-35.2300990882688],[-71.19826689820067,-35.22996489162257],[-71.19866510870168,-35.22969221294255],[-71.1990214770639,-35.22959907897568],[-71.19942901743988,-35.2296918740555],[-71.19966673251187,-35.22976139232351],[-71.19971631441658,-35.22976567885426],[-71.19976949764623,-35.22981325233207],[-71.19980334514744,-35.22987553750917],[-71.19985211815325,-35.22998336348608],[-71.19986160245674,-35.23011954328418],[-71.19992564828195,-35.2304431432344],[-71.19994534397674,-35.23062929055398],[-71.20002234287733,-35.23124124280575],[-71.20008270566171,-35.23203141663996],[-71.20012662470073,-35.23248817061605],[-71.20011592826361,-35.23280450130433],[-71.20011822546951,-35.23290633858441],[-71.20034013371496,-35.23315219762827],[-71.20044507299332,-35.23331645729259],[-71.20054700282711,-35.23339796100272],[-71.20064795157842,-35.23342949984587],[-71.2007845837693,-35.23341555737777],[-71.20089369716626,-35.23338930558479],[-71.20095259562889,-35.23338068815711],[-71.20140944312867,-35.2330963842513],[-71.20153740375143,-35.23315125865842],[-71.20166543748373,-35.23324445039194],[-71.20186782686143,-35.23344956850585],[-71.20204337865637,-35.23357972189302],[-71.20227148082898,-35.23363105386404],[-71.20262795769355,-35.23364545401351],[-71.20318116297504,-35.23344070589526],[-71.20333461877287,-35.23341125289922],[-71.20342393089841,-35.23337051710652],[-71.2035433477173,-35.23332598229411],[-71.20411994812328,-35.23314520348493],[-71.2046291310745,-35.23298246815613],[-71.20511889265774,-35.2328504357008],[-71.20559835441917,-35.23270094021206],[-71.20580735229886,-35.23266668422669],[-71.20600299893279,-35.23267807522896],[-71.20645093494926,-35.23274076284457],[-71.20682196358668,-35.23281514055169],[-71.2069822483093,-35.23289089952506],[-71.20707215959106,-35.23299207998887]]]}},{"type":"Feature","properties":{"name":"Oficinas Sur"},"geometry":{"type":"Polygon","coordinates":[[[-71.21232232508791,-35.23768694655495],[-71.21217417934258,-35.2377776149378],[-71.2121382581281,-35.23782541693947],[-71.21202418414013,-35.23783278832965],[-71.21195798559461,-35.23779702248174],[-71.21186876239895,-35.23777479199484],[-71.21180107974536,-35.23776873990471],[-71.21173270174715,-35.23773851608176],[-71.21166291535376,-35.23778034819482],[-71.21162751761008,-35.23780521681889],[-71.21147852120855,-35.23792794307691],[-71.21149948115574,-35.23798034128971],[-71.21134339314999,-35.23808924419689],[-71.21118875794366,-35.23820009792413],[-71.21103941327858,-35.23830091898569],[-71.2109422732902,-35.23839138434239],[-71.21089133820543,-35.23847747807827],[-71.21071696022815,-35.2386110475964],[-71.21052461818066,-35.23873375554],[-71.21086600259686,-35.23910384329931],[-71.2114533478954,-35.23880574048812],[-71.21164491428442,-35.23870544950449],[-71.21183447280626,-35.23860414964282],[-71.21225089685878,-35.23845654850485],[-71.2123845490006,-35.23840076478471],[-71.2124860356157,-35.23827839284514],[-71.21263368633191,-35.23818711430261],[-71.21275632186808,-35.23814790790738],[-71.21316884948517,-35.23810062634184],[-71.21332097621308,-35.23806209726397],[-71.21345590174256,-35.23801231867125],[-71.21365896228426,-35.23794444038703],[-71.21381957213838,-35.23790522747021],[-71.21385188771377,-35.23792180436505],[-71.21394293011082,-35.23801710018864],[-71.21414632888158,-35.23820531201743],[-71.2142710713415,-35.23833549452745],[-71.21431731741735,-35.2384015680793],[-71.21428565401318,-35.23847151976579],[-71.21420802841975,-35.23855631867435],[-71.21406222480071,-35.23861290315549],[-71.21390873759964,-35.23868022269179],[-71.21368184279122,-35.23875486861122],[-71.21326429933119,-35.23885814148149],[-71.21298192780786,-35.23890253572535],[-71.21262888593253,-35.23899454474213],[-71.21233003015428,-35.23915635960206],[-71.21199138015855,-35.23921003296854],[-71.211658739751,-35.23924773653975],[-71.21137594895052,-35.2392849836891],[-71.21098132815575,-35.23941002476737],[-71.210743503517,-35.23950388521373],[-71.21059885302957,-35.23959152722183],[-71.21049862783264,-35.23959991128681],[-71.21033174623383,-35.2396354612661],[-71.21020830242166,-35.23972092641259],[-71.21001338821947,-35.23974408412379],[-71.20990601671032,-35.23974988600475],[-71.20973898595594,-35.23979057223776],[-71.2095485093283,-35.23981351240112],[-71.20946153726392,-35.2398599057419],[-71.20925683113401,-35.23989472339557],[-71.20916442700813,-35.23974115759883],[-71.2091104480715,-35.23965559463289],[-71.20922879097617,-35.23959946748837],[-71.20936659183707,-35.23956258280533],[-71.20950822918984,-35.23956693349737],[-71.2099680089464,-35.23945427439106],[-71.21037139058608,-35.23931905427258],[-71.21087264409302,-35.23910506907943],[-71.21053084155339,-35.23873824685865],[-71.21045284291093,-35.2387477398582],[-71.21024252078816,-35.23874995469878],[-71.2101169528764,-35.23877151179481],[-71.2100865845096,-35.23872818664238],[-71.20998446683565,-35.23881952475637],[-71.20986316938027,-35.23888887542252],[-71.2097289520227,-35.23896935361201],[-71.20958579626735,-35.23906625899544],[-71.20951694672674,-35.23905893304602],[-71.20945378628957,-35.23898000571106],[-71.20943260779931,-35.2388611670959],[-71.20944279541017,-35.23878515818251],[-71.20945564303926,-35.23874067755348],[-71.20942831020552,-35.23868148434853],[-71.20941330257966,-35.23860948189967],[-71.20937034542358,-35.2386116550496],[-71.20932384274917,-35.23861371540858],[-71.20928781957464,-35.23867740038153],[-71.20927360459712,-35.23873984310269],[-71.20925924768792,-35.23880452402369],[-71.20922269009839,-35.23885199044786],[-71.20915655910306,-35.23888905286652],[-71.20905828504297,-35.23895116921955],[-71.20900686476617,-35.23895288914892],[-71.2089103991332,-35.23880709090735],[-71.2087508139812,-35.2386253401087],[-71.20865337386327,-35.23854648923302],[-71.20850198082336,-35.23849273208253],[-71.20834118605391,-35.23846296238087],[-71.20820535689683,-35.23844714534289],[-71.20809451528218,-35.23842350199482],[-71.20801252789823,-35.23839920641664],[-71.20790846934894,-35.23832282776764],[-71.2078193053189,-35.238271441475],[-71.20773746575618,-35.23827677462303],[-71.20761405874293,-35.23831316022181],[-71.20750473102626,-35.23839720932266],[-71.20728866922332,-35.2385527810199],[-71.20717919371242,-35.23863155916332],[-71.20706779708989,-35.23864387399129],[-71.20695838590902,-35.23864568804623],[-71.206796205613,-35.23859898921994],[-71.20673154615922,-35.23856440474091],[-71.20666759110267,-35.23850405487737],[-71.20660730849313,-35.23841660767642],[-71.20654836744521,-35.23835370548588],[-71.20649695677162,-35.23831999080616],[-71.20645672454516,-35.2383058979873],[-71.20640841064679,-35.23830011371174],[-71.20634359611184,-35.23832711708351],[-71.2062839051922,-35.23840554136311],[-71.20625089301936,-35.23847412316759],[-71.20620518925405,-35.2385616310583],[-71.20615484533374,-35.23866038046557],[-71.20609602573772,-35.23873732334243],[-71.20602816645085,-35.23879743526972],[-71.20594513694674,-35.23887922304876],[-71.20588164838331,-35.23892333916766],[-71.20579627399417,-35.23897572418761],[-71.20571667605277,-35.23901311751461],[-71.20563447171308,-35.2390232240334],[-71.20548966199266,-35.23898929540423],[-71.20534144971445,-35.23888484287306],[-71.20521850433647,-35.23875071808299],[-71.20510355431082,-35.23864120345183],[-71.20499765574097,-35.23854929154042],[-71.20488976749934,-35.23836948185065],[-71.20484752649301,-35.23830209569671],[-71.20478969485033,-35.23827802774748],[-71.20474201832882,-35.23829921799299],[-71.20469131214776,-35.23835189827065],[-71.204687362032,-35.23841216798117],[-71.20472848000816,-35.23849338690376],[-71.20475135731434,-35.23865910259036],[-71.20475068329027,-35.23881578080366],[-71.20472029077673,-35.2389107983407],[-71.20465792789119,-35.23895079725185],[-71.20458788275639,-35.23897029112912],[-71.20450657498428,-35.23895851302871],[-71.20431770156964,-35.23887215489463],[-71.20412475152982,-35.2387998574021],[-71.20391224013261,-35.23874581625094],[-71.2037388495291,-35.23870323337943],[-71.20367544431461,-35.23870454341701],[-71.20357327590551,-35.23873513734489],[-71.20345095180731,-35.23872343064814],[-71.20334147462454,-35.2387043060199],[-71.20321588041189,-35.23870691033559],[-71.20306399811959,-35.23871732513542],[-71.20292824419478,-35.23874191690116],[-71.20281212229746,-35.23878304519687],[-71.20269973599382,-35.23878098072115],[-71.20261555201023,-35.23877869107522],[-71.20251234614209,-35.23881964480143],[-71.20242478235848,-35.23888059625141],[-71.20239453067478,-35.23895828591433],[-71.20239966146097,-35.23902399878835],[-71.20239600553317,-35.23908909992326],[-71.20237150580255,-35.23914608561008],[-71.20228388976821,-35.23919925388363],[-71.20217773751884,-35.23921946778579],[-71.20168879731177,-35.23903373379153],[-71.20161867973461,-35.23898102717454],[-71.20150471330874,-35.23890152788129],[-71.20137737203541,-35.23883789955666],[-71.2012864317697,-35.23879672285194],[-71.20104952518474,-35.23865240478126],[-71.20091385100558,-35.23858628616415],[-71.2005894785455,-35.23853767079987],[-71.20028140269743,-35.23847178764583],[-71.19992750210896,-35.23837218264623],[-71.19972419402517,-35.2383169691858],[-71.19995590960214,-35.23814661507028],[-71.1999937276489,-35.23817231256005],[-71.20039491216136,-35.2379315156465],[-71.200418525427,-35.23796995227123],[-71.20272525989155,-35.23633327765659],[-71.20481041696998,-35.2348418525939],[-71.20721117822147,-35.23310232128682],[-71.20741661386964,-35.2329574834484],[-71.20773095960074,-35.23302579169722],[-71.20837729500573,-35.23321810568723],[-71.20860110806188,-35.23322668825149],[-71.20885519465779,-35.23325246492874],[-71.20920253280745,-35.23336012856643],[-71.20953889742043,-35.23342585470453],[-71.20973670990905,-35.23347661118761],[-71.2098994429219,-35.23356053494054],[-71.20998726407514,-35.23359832630371],[-71.21013223278928,-35.23367065978821],[-71.21013408720758,-35.23367257441243],[-71.21017565092029,-35.23373148926991],[-71.21034253609699,-35.23358805872],[-71.21035977264917,-35.23352533193658],[-71.21037071826058,-35.23344234658072],[-71.21037589201914,-35.23341846476072],[-71.21037965045583,-35.23341185452038],[-71.21041038319501,-35.23335521698619],[-71.21033718745126,-35.23333557933204],[-71.21008954088234,-35.23324863572096],[-71.21001705713077,-35.23323900923931],[-71.20998217766949,-35.23321429390968],[-71.20993321044665,-35.23316545379875],[-71.20992658043474,-35.23311970384115],[-71.20993666151593,-35.23303327041734],[-71.20998272217705,-35.23296085222082],[-71.21004129153984,-35.23293185080357],[-71.2101297530811,-35.23287926150721],[-71.21023497292592,-35.23284984343832],[-71.21030703318635,-35.23285249734629],[-71.21039309668528,-35.23286152090782],[-71.21043892180094,-35.23291353186366],[-71.21056774428926,-35.23303886223297],[-71.2106031404339,-35.23309991684374],[-71.21064515823456,-35.23318148045572],[-71.2106950473031,-35.23324783285063],[-71.21078445045106,-35.2333475222224],[-71.21095327754584,-35.23350452847706],[-71.21105160302264,-35.23359464417553],[-71.2110991471736,-35.23370658189566],[-71.2111314910749,-35.2338422483279],[-71.21117764148663,-35.23397915254063],[-71.21119950508482,-35.23408062338392],[-71.2112127123352,-35.23414929369616],[-71.21130428890724,-35.23420140556965],[-71.2113484883344,-35.23426764266722],[-71.21150518787259,-35.23435043685541],[-71.21151224935694,-35.2343504528572],[-71.21167460214528,-35.23435078179459],[-71.21184207809355,-35.23431269871105],[-71.2120287476529,-35.23421524739882],[-71.21231050413189,-35.23403478949476],[-71.21285523930416,-35.23374890002618],[-71.21325774100464,-35.23360554638941],[-71.21401932790145,-35.23349435075171],[-71.21408716824314,-35.23353182357488],[-71.21424661672242,-35.23367360836356],[-71.21448491135098,-35.23399715864574],[-71.21500875675152,-35.23464672198838],[-71.21560158394068,-35.23539878319777],[-71.21583964468911,-35.23569378854241],[-71.21590068445559,-35.23585846127278],[-71.21581258248811,-35.23598494615167],[-71.21577121305684,-35.23605343593366],[-71.21562101833698,-35.2362154285717],[-71.21552031913528,-35.2362520743719],[-71.21513346746674,-35.23636951036261],[-71.21479124231399,-35.23650745233888],[-71.21459426304206,-35.23656761575814],[-71.21448976573728,-35.23663619210134],[-71.21439437774256,-35.23672023104212],[-71.21424065239198,-35.23685254407459],[-71.21389978358116,-35.23698461163597],[-71.21369775857642,-35.23702131494701],[-71.2134032906921,-35.23688071720821],[-71.2128032498252,-35.23645395740669],[-71.21256381073928,-35.23624798693569],[-71.21254938453625,-35.23617824182462],[-71.21251023656338,-35.23602052919569],[-71.21248978653092,-35.2359061445555],[-71.21225616703677,-35.23570275218174],[-71.2119585546577,-35.2352603473023],[-71.21189154428451,-35.23510244010379],[-71.211745958374,-35.23500620889362],[-71.21158097858198,-35.23496181938116],[-71.21148336434703,-35.23488408251029],[-71.21146405856649,-35.2347086775874],[-71.21143069819406,-35.23466683045895],[-71.2113284072345,-35.23464930004011],[-71.21121919232374,-35.23464053871149],[-71.21113362002075,-35.23461369648644],[-71.21105042749865,-35.23455406709097],[-71.2110847986862,-35.23434738705848],[-71.21111468175279,-35.23429789866249],[-71.21120143106113,-35.23425444409658],[-71.21128459845639,-35.23418190983785],[-71.21120432416612,-35.23415917840432],[-71.21111245956699,-35.23413417046262],[-71.21102832831886,-35.23407484181301],[-71.21094134383617,-35.23400278782481],[-71.21090402375103,-35.23392951972038],[-71.21085672032291,-35.23382366874103],[-71.21077792970117,-35.23370546965214],[-71.21068583731808,-35.2335913411808],[-71.21061700973063,-35.23352162402083],[-71.21053876191311,-35.23345027395553],[-71.21040792913803,-35.23335315451364],[-71.21037441192424,-35.23341519467461],[-71.21039373490866,-35.23360796142977],[-71.210429510319,-35.23370832506414],[-71.21046822395094,-35.23377964821121],[-71.21057761792699,-35.23393958707243],[-71.21057741394421,-35.23399311073329],[-71.21065396365454,-35.23405112107501],[-71.21075847762383,-35.23408768926605],[-71.21079685582819,-35.23409868620757],[-71.21084333236954,-35.23407337491579],[-71.21088202139607,-35.23405276868998],[-71.21086919888955,-35.23401239922078],[-71.21083928980285,-35.23398439901782],[-71.21086612358401,-35.2339713019807],[-71.21088029368427,-35.23394131173998],[-71.21083052770155,-35.23389857336575],[-71.21079313315406,-35.23387420497103],[-71.21078290315724,-35.23387414357271],[-71.21077078727136,-35.23387059821448],[-71.2107486885061,-35.23386001277544],[-71.21073836278643,-35.23380872775197],[-71.21074971513544,-35.23378546052573],[-71.2107533230286,-35.23374910096057],[-71.2107457130488,-35.23372878462852],[-71.21066212762398,-35.23367952308163],[-71.2106062767038,-35.23353792658305],[-71.21050869133978,-35.23349602255821],[-71.21037385638633,-35.23342008067326],[-71.21034111545109,-35.23359093284722],[-71.21017649877174,-35.23373006235767],[-71.21025873701714,-35.23394112274365],[-71.21038373082918,-35.23418031750798],[-71.21042830095962,-35.23421741333435],[-71.21047426430714,-35.23421360784631],[-71.21064796815115,-35.23433134162171],[-71.21068515441786,-35.23437608343612],[-71.2107047374201,-35.23449890008719],[-71.21084096233237,-35.23467815859019],[-71.21094847285718,-35.23480859263112],[-71.21111829006533,-35.23490440507717],[-71.21137857534696,-35.23519134191447],[-71.21147656619063,-35.23525405973047],[-71.21171042269363,-35.23532734800001],[-71.21184345740231,-35.23555367743677],[-71.21206596656657,-35.23586253624724],[-71.21215181993094,-35.23595582510045],[-71.21227650257056,-35.23621872353395],[-71.21229979250921,-35.23633872076264],[-71.21238219000946,-35.23641993929272],[-71.21236488468787,-35.23656081897607],[-71.21234956758803,-35.23676013635318],[-71.21240917494504,-35.23693555494774],[-71.21246570593088,-35.23712759700982],[-71.21270813106862,-35.23729717527801],[-71.2130369688159,-35.23742536039599],[-71.21315191155303,-35.2374919705529],[-71.21320151025276,-35.23754207714006],[-71.21317395929768,-35.23763737323296],[-71.21310345728719,-35.23768228908749],[-71.21303500486323,-35.23771256954431],[-71.21288556903474,-35.23771823406737],[-71.21276173881482,-35.23770898762216],[-71.21269298312232,-35.23767908647365],[-71.21252309048771,-35.23766601718061],[-71.21232232508791,-35.23768694655495]]]}},{"type":"Feature","properties":{"name":"Las Torres"},"geometry":{"type":"Polygon","coordinates":[[[-71.19621532953258,-35.23316840367045],[-71.19626569782004,-35.23323748263251],[-71.1964484628728,-35.23344396185373],[-71.19662732422616,-35.23365261169534],[-71.19663217948033,-35.23366433730729],[-71.19661789147993,-35.23367667790617],[-71.1965507620992,-35.23371086379728],[-71.19639995148657,-35.23379683792246],[-71.19630813753503,-35.23386102272858],[-71.19636001282214,-35.2339030505706],[-71.19642288037402,-35.23398460458951],[-71.19646887619099,-35.23403841138913],[-71.19658052417967,-35.23416743181519],[-71.19672333124899,-35.23424860744262],[-71.19689273100526,-35.23427867887349],[-71.19700942962933,-35.23421400484443],[-71.1970409011778,-35.23419905213851],[-71.19709850013268,-35.23417633398642],[-71.1971329388737,-35.23421315811412],[-71.19758240101027,-35.23470944653135],[-71.1977738427653,-35.23492574540919],[-71.19847310785666,-35.23560499179534],[-71.19915004322917,-35.23630446735619],[-71.19958409587458,-35.23681160736938],[-71.20036025926966,-35.23764515888386],[-71.19787619772579,-35.23909841486803],[-71.19554784695156,-35.24045566941752],[-71.1942639770719,-35.24121404157444],[-71.19400877728114,-35.24136691055546],[-71.19349098093961,-35.24127287454919],[-71.19288243280809,-35.24107022066378],[-71.19231019369721,-35.24088979881272],[-71.19151775119111,-35.24058745556342],[-71.19099140944172,-35.24036179104776],[-71.19097359062212,-35.24031060100836],[-71.1909571615876,-35.24026749146075],[-71.19100451530097,-35.24019761994764],[-71.1951599113121,-35.23447208157084],[-71.19560493181787,-35.23385384256628],[-71.19584716162511,-35.23351568773263],[-71.19598196339933,-35.23326971960498],[-71.19617607654925,-35.2331563078004],[-71.19621532953258,-35.23316840367045]]]}}]};
 
-const PUBLIC_URL = "https://rpina-dev.github.io/san-gerardo-map/";
 // Token público restringible por dominio desde Mapbox.
 mapboxgl.accessToken = "pk.eyJ1Ijoicm9sYW5kb3BpbmEiLCJhIjoiY21ydTF0OWVlMDMwNjM2cHgwdTd4NGVzZSJ9.zvp3ej-YuJ1lEZ3HKtlSAw";
 
@@ -3161,8 +3286,10 @@ function switchMode(mode){
     });
     const isGen=mode==='general', isProd=mode==='productividad', isFol=mode==='foliares', isSoil=mode==='suelo', isRiego=mode==='riego', isAgro=mode==='agroquimicos', isFin=mode==='financiero', isPest=mode==='plagas';
     if(isFol || isSoil) NUTRI_SUBMODE = mode;
-    // Las subpestañas viven duplicadas en los dos paneles: se sincronizan por índice.
-    document.querySelectorAll('.nut-subtabs').forEach(bar=>{
+    // Las subpestañas viven duplicadas en los dos paneles: se sincronizan por
+    // índice. El selector va acotado a los paneles de Nutrición porque Plagas
+    // reutiliza el mismo componente y no debe quedar sin pestaña activa.
+    document.querySelectorAll('#foliarControls .nut-subtabs, #soilControls .nut-subtabs').forEach(bar=>{
         bar.querySelectorAll('.nut-subtab').forEach((b,i)=>{
             const on = (i===0) ? isFol : isSoil;
             b.classList.toggle('active', on);
@@ -3218,7 +3345,10 @@ initFinControls(); }
         else applyFoliarToMap(map,'A');
     }
     if(isSoil) applySoilToMap(map,'A');
-    if(isPest) applyPestToMap();
+    // Dentro de Plagas hay dos subvistas y cada una pinta el mapa distinto.
+    // setPestSubview reaplica el estado recordado: clase, subpestaña y mapa.
+    if(isPest) setPestSubview(PEST_SUBVIEW);
+    else document.body.classList.remove('dz-active');
     if(isRiego){ updateRiegoStats('A'); updateRiegoStats('B'); }
     if(isAgro){ recomputeAgroCache(); updateAgroLegend(); updateAgroStats(); updateAgroFilterSummary(); }
     if(isFin){ updateFinLegend(); updateFinStats(); updateFinFilterSummary(); }
@@ -3567,9 +3697,21 @@ function setupMapInteractions(mapInstance, side){
         document.getElementById('ttFinBlock').style.display = 'none';
         document.getElementById('ttPestBlock').style.display = 'none';
         document.getElementById('ttProspBlock').style.display = 'none';
+        document.getElementById('ttDzBlock').style.display = 'none';
         tooltip.classList.remove('riego-mode','agro-mode','fin-mode','pest-mode');
 
-        if(currentMode === 'plagas' && pestView === 'prosp'){
+        if(currentMode === 'plagas' && PEST_SUBVIEW === 'enfermedades'){
+            // El mapa muestra inóculo: el tooltip de prospección MIP no aplica.
+            const sel = dzSelection();
+            if(sel.report && sel.report.scheme === 'equipo'){
+                fillDiseaseTooltip(dzUnitForEquipo(p.equipo));
+            } else {
+                // Informe por zona o sin equivalencia: el cuartel no lo representa.
+                document.getElementById('ttDzBlock').style.display='none';
+                scheduleTooltipHide(side);
+                return;
+            }
+        } else if(currentMode === 'plagas' && pestView === 'prosp'){
             document.getElementById('ttProspBlock').style.display = 'block';
             tooltip.classList.add('pest-mode');
             document.getElementById('ttBadge').textContent = EQ_NAMES[p.equipo] || p.equipo;
@@ -3722,12 +3864,29 @@ function setupSoilInteractions(mapInstance, side){
     side = side || 'A';
     let hovId=null;
     mapInstance.on('mousemove','soil-fill',e=>{
-        if(currentMode!=='suelo'||!SOIL||!e.features||!e.features.length) return;
+        // Las mismas zonas las usa Enfermedades cuando el informe es por zona.
+        const dzZonas = currentMode==='plagas' && PEST_SUBVIEW==='enfermedades'
+                        && (dzSelection().report||{}).scheme==='zona';
+        if((currentMode!=='suelo' && !dzZonas)||!e.features||!e.features.length) return;
+        if(currentMode==='suelo' && !SOIL) return;
         mapInstance.getCanvas().style.cursor='pointer';
         if(hovId!==null) mapInstance.setFeatureState({source:'soil-zones',id:hovId},{hover:false});
         hovId=e.features[0].id;
         mapInstance.setFeatureState({source:'soil-zones',id:hovId},{hover:true});
         const zone=e.features[0].properties.name;
+        if(dzZonas){
+            document.getElementById('ttName').textContent=zone;
+            document.getElementById('ttBadge').textContent='Inóculo';
+            fillDiseaseTooltip(dzUnitForZone(zone));
+            const pt0=e.point,rect0=mapInstance.getCanvas().getBoundingClientRect();
+            const gx0=rect0.left+pt0.x,gy0=rect0.top+pt0.y;
+            let l0=gx0+16,t0=gy0-105;
+            if(l0+270>window.innerWidth-20) l0=gx0-286;
+            if(t0<20) t0=20;
+            if(t0+210>window.innerHeight-20) t0=window.innerHeight-230;
+            tooltip.style.left=l0+'px';tooltip.style.top=t0+'px';revealTooltip(side);
+            return;
+        }
         const {param,date,records,values}=getSelectedSoil(side);
         const rec=records[zone];
         const assessment=rec?getSoilAssessment(param,Number(rec.value),values):{status:'sin dato',color:STATUS_COLORS['sin dato']};
@@ -3738,6 +3897,7 @@ function setupSoilInteractions(mapInstance, side){
         document.getElementById('ttFoliarBlock').style.display='none';
         document.getElementById('ttRiegoBlock').style.display='none';
         document.getElementById('ttAgroBlock').style.display='none';
+        document.getElementById('ttDzBlock').style.display='none';
         tooltip.classList.remove('riego-mode','agro-mode','fin-mode');
         document.getElementById('ttSoilBlock').style.display='block';
         document.getElementById('ttSoilVal').textContent=rec?fmtSoilValue(Number(rec.value),param.unit):'—';
@@ -4215,6 +4375,297 @@ function togglePvChartLink(){
     if(chartLinked) chartPest = prospPest;
     drawPvChart();
     updatePvAccMeta();
+}
+
+// ── Enfermedades · carga de inóculo por qPCR ────────────────────────────────
+// El laboratorio cambió el esquema de unidad entre informes: 2024 otoño usa
+// códigos R sin equivalencia declarada, 2024-2025 reportan por zona y desde
+// 2025 primavera por equipo de riego. En vez de forzar una grilla única, cada
+// informe se pinta sobre la geometría que le corresponde, y los códigos R se
+// muestran sin mapa porque no se sabe a qué parte del campo apuntan.
+
+// Escala por décadas: el color comunica magnitud, el rojo comunica alarma. Sólo
+// el tramo sobre 10⁷ es alarma; el resto es orden de magnitud, no gravedad.
+const DZ_BINS = [
+    {max:1e3,  color:'--dat-p1', label:'< 10³'},
+    {max:1e4,  color:'--dat-p2', label:'10³ – 10⁴'},
+    {max:1e5,  color:'--dat-p3', label:'10⁴ – 10⁵'},
+    {max:1e6,  color:'--dat-p4', label:'10⁵ – 10⁶'},
+    {max:1e7,  color:'--dat-p5', label:'10⁶ – 10⁷'},
+    {max:Infinity, color:'--dat-st-def', label:'≥ 10⁷ · alta incidencia', high:true}
+];
+function dzBin(ufc){
+    if(!Number.isFinite(ufc)) return null;
+    return DZ_BINS.find(b=>ufc < b.max) || DZ_BINS[DZ_BINS.length-1];
+}
+function dzColor(ufc){
+    const b = dzBin(ufc);
+    return b ? SEM(b.color) : SEM('--sem-grey');
+}
+// 12200 → "1,22×10⁴": el informe razona en potencias, no en enteros largos.
+function dzFmt(ufc){
+    if(!Number.isFinite(ufc)) return '—';
+    const exp = Math.floor(Math.log10(ufc));
+    const mant = ufc / Math.pow(10, exp);
+    const sup = String(exp).replace(/[0-9]/g, d=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[+d]);
+    const m = mant.toLocaleString('es-CL',{maximumFractionDigits:2});
+    return (mant === 1 ? '10' : m+'×10') + sup;
+}
+
+function dzReport(id){ return DISEASE ? DISEASE.reports.find(r=>r.id===id) : null; }
+function dzPathogen(key){ return DISEASE ? DISEASE.pathogens.find(p=>p.key===key) : null; }
+function dzSelection(){
+    if(!DISEASE) return {};
+    const rid = (document.getElementById('dzReport')||{}).value;
+    const pk  = (document.getElementById('dzPathogen')||{}).value;
+    const report = dzReport(rid);
+    if(!report) return {};
+    const rows = DISEASE.readings.filter(x=>x.report===rid && x.pathogen===pk);
+    return {report, pathogen:dzPathogen(pk), rows};
+}
+// unidad → ufc, para resolver el color de cada polígono sin recorrer todo
+function dzValueMap(rows){
+    const m = {};
+    rows.forEach(x=>{ m[x.unit] = x.ufc; });
+    return m;
+}
+
+function initDiseaseControls(){
+    if(!DISEASE) return;
+    const rs = document.getElementById('dzReport');
+    if(!rs) return;
+    // Más reciente primero: es el informe que se mira por defecto.
+    const ordered = DISEASE.reports.slice().reverse();
+    rs.innerHTML = ordered.map(r=>`<option value="${esc(r.id)}">${esc(r.label)}</option>`).join('');
+    rs.value = ordered[0].id;
+    onDzReportChange();
+}
+function onDzReportChange(){
+    if(!DISEASE) return;
+    const report = dzReport(document.getElementById('dzReport').value);
+    const ps = document.getElementById('dzPathogen');
+    const prev = ps.value;
+    const list = (report ? report.pathogens : []).map(k=>dzPathogen(k)).filter(Boolean);
+    ps.innerHTML = list.map(p=>`<option value="${esc(p.key)}">${esc(p.alias ? p.alias+' · '+p.short : p.name)}</option>`).join('');
+    // Se conserva el patógeno si el informe nuevo también lo midió.
+    ps.value = list.some(p=>p.key===prev) ? prev : (list[0] ? list[0].key : '');
+    ps.disabled = list.length < 2;
+    renderDisease();
+}
+
+function setPestSubview(view){
+    PEST_SUBVIEW = view;
+    document.body.classList.toggle('dz-active', view==='enfermedades');
+    document.querySelectorAll('.pv-subtabs .nut-subtab').forEach((b,i)=>{
+        const on = (i===0) === (view==='plagas');
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-selected', on?'true':'false');
+    });
+    const plagas = document.getElementById('pvBodyPlagas');
+    const enf = document.getElementById('pvBodyEnf');
+    if(plagas) plagas.style.display = view==='plagas' ? '' : 'none';
+    if(enf) enf.style.display = view==='enfermedades' ? '' : 'none';
+    if(view==='enfermedades'){ closePestPopup(); renderDisease(); }
+    else { applyPestToMap(); syncMapLayersForMode(map); }
+    if(typeof refreshDataNotice==='function') refreshDataNotice();
+}
+
+// Pinta el informe seleccionado sobre la geometría que le corresponde.
+function applyDiseaseToMap(){
+    if(!map || !DISEASE) return;
+    const {report, rows} = dzSelection();
+    const sectorLayers = ['sectores-fill','sectores-border','sectores-glow','sectores-label'];
+    const soilLayers   = ['soil-fill','soil-border','soil-glow','soil-label'];
+    // Los puntos de prospección son de la subvista Plagas.
+    setLayerVisibility(map,['pest-points-layer'],false);
+    if(!report){ return; }
+
+    const byUnit = dzValueMap(rows);
+    const usaZonas = report.scheme === 'zona';
+    setLayerVisibility(map, soilLayers, usaZonas);
+    setLayerVisibility(map, sectorLayers, !usaZonas);
+
+    if(usaZonas && map.getLayer('soil-fill')){
+        const expr = ['match',['get','name']];
+        DISEASE.units.zona.forEach(u=>{
+            if(!u.geo) return;
+            expr.push(u.geo, dzColor(byUnit[u.key]));
+        });
+        expr.push(SEM('--sem-grey'));
+        map.setPaintProperty('soil-fill','fill-color',expr);
+        map.setPaintProperty('soil-fill','fill-opacity',['case',['boolean',['feature-state','hover'],false],0.9,0.7]);
+    } else if(!usaZonas && map.getLayer('sectores-fill')){
+        // Un "equipo" del informe puede cubrir dos equipos de riego del campo.
+        const porEquipo = {};
+        if(report.scheme === 'equipo'){
+            DISEASE.units.equipo.forEach(u=>{
+                (u.equipos||[]).forEach(e=>{ porEquipo[e] = byUnit[u.key]; });
+            });
+        }
+        const expr = ['match',['get','equipo']];
+        ['E1','E2','E3','E4','E5'].forEach(e=>{
+            expr.push(e, report.scheme==='equipo' ? dzColor(porEquipo[e]) : SEM('--sem-grey'));
+        });
+        expr.push(SEM('--sem-grey'));
+        map.setPaintProperty('sectores-fill','fill-color',expr);
+        map.setPaintProperty('sectores-fill','fill-opacity',
+            ['case',['boolean',['feature-state','hover'],false],0.85,report.mappable?0.62:0.25]);
+    }
+}
+
+function buildDiseaseLegend(){
+    const {report, pathogen, rows} = dzSelection();
+    const name = document.getElementById('dzLegendName');
+    const meta = document.getElementById('dzLegendMeta');
+    const note = document.getElementById('dzLegendNote');
+    if(!name || !report) return;
+    name.textContent = pathogen ? (pathogen.alias || pathogen.short) : 'Carga de inóculo';
+    meta.textContent = `${report.label} · ${report.scheme==='zona'?'por zona':report.scheme==='equipo'?'por equipo de riego':'sin equivalencia espacial'}`;
+    document.getElementById('dzScale').innerHTML = DZ_BINS.map(b=>
+        `<div class="dz-scale-row${b.high?' is-thr':''}"><span class="dz-sw" style="background:${SEM(b.color)}"></span><span class="dz-scale-label">${b.label}</span></div>`
+    ).join('');
+    const hay = rows.filter(r=>r.high).length;
+    note.textContent = report.mappable
+        ? (hay ? `${hay} unidad(es) sobre el umbral de alta incidencia.`
+               : 'Ninguna unidad supera el umbral de 10⁷ ufc/g en este informe.')
+        : 'Este informe usa códigos R sin equivalencia declarada: no se puede ubicar en el mapa.';
+}
+
+function renderDisease(){
+    if(!DISEASE || currentMode!=='plagas' || PEST_SUBVIEW!=='enfermedades') return;
+    const {report, pathogen, rows} = dzSelection();
+    if(!report) return;
+
+    // Aviso sólo cuando hay algo que advertir sobre la lectura del informe.
+    const notice = document.getElementById('dzNotice');
+    const avisos = [];
+    if(!report.mappable) avisos.push('El laboratorio reportó por <strong>códigos R</strong> sin declarar a qué zona o equipo corresponden, así que este informe no se puede mapear. Los valores se listan abajo.');
+    if(report.note) avisos.push(esc(report.note));
+    notice.innerHTML = avisos.join('<br>');
+    notice.style.display = avisos.length ? 'block' : 'none';
+
+    // Resultado por unidad
+    const units = DISEASE.units[report.scheme] || [];
+    const byUnit = dzValueMap(rows);
+    document.getElementById('dzUnitsMeta').textContent =
+        `${rows.length} muestra${rows.length===1?'':'s'} · ${pathogen?pathogen.short:''}`;
+    document.getElementById('dzUnits').innerHTML = units.length ? units.map(u=>{
+        const v = byUnit[u.key];
+        const b = dzBin(v);
+        return `<div class="dz-row">
+            <span class="dz-sw" style="background:${b?SEM(b.color):SEM('--sem-grey')}"></span>
+            <span class="dz-unit">${esc(u.label)}</span>
+            ${b&&b.high?'<span class="dz-flag">Alta</span>':''}
+            <span class="dz-val">${dzFmt(v)}<span class="dz-exp">ufc/g</span></span>
+        </div>`;
+    }).join('') : '<div class="dz-empty">Sin resultados para este patógeno.</div>';
+
+    drawDiseaseTrend();
+
+    // Ficha del informe
+    document.getElementById('dzInfo').innerHTML = `<dl style="margin:0">
+        ${[['Informe',report.id],
+           ['Muestra',report.sample],
+           ['Muestreo',report.sampling||'no informado'],
+           ['Emisión',report.issued||'—'],
+           ['Servicio',report.service||'—'],
+           ['Localidad',report.locality||'—'],
+           ['Técnica',DISEASE.meta.technique],
+           ['Unidad',report.scheme==='zona'?'Zona':report.scheme==='equipo'?'Equipo de riego':'Código R']
+          ].map(([k,v])=>`<div class="dz-kv"><dt>${esc(k)}</dt><dd>${esc(String(v))}</dd></div>`).join('')}
+    </dl>`;
+
+    applyDiseaseToMap();
+    buildDiseaseLegend();
+}
+
+// Llena el bloque de enfermedades del tooltip. `unitKey` es la unidad del
+// informe (zona o "Equipo 1-2"), no el cuartel: la muestra se tomó por unidad,
+// así que todos los cuarteles de un mismo equipo comparten resultado.
+function fillDiseaseTooltip(unitKey){
+    const {report, pathogen, rows} = dzSelection();
+    if(!report) return false;
+    const ufc = dzValueMap(rows)[unitKey];
+    const bin = dzBin(ufc);
+    const unit = (DISEASE.units[report.scheme]||[]).find(u=>u.key===unitKey);
+    ['ttProdBlock','ttGenBlock','ttFoliarBlock','ttSoilBlock','ttRiegoBlock',
+     'ttAgroBlock','ttFinBlock','ttPestBlock','ttProspBlock'].forEach(id=>{
+        const el = document.getElementById(id); if(el) el.style.display='none';
+    });
+    tooltip.classList.remove('riego-mode','agro-mode','fin-mode','pest-mode');
+    document.getElementById('ttDzBlock').style.display='block';
+    document.getElementById('ttDzVal').textContent = dzFmt(ufc);
+    const st = document.getElementById('ttDzStatus');
+    st.textContent = !Number.isFinite(ufc) ? 'Sin muestra'
+        : (bin.high ? 'Alta incidencia' : 'Bajo el umbral');
+    st.style.background = bin ? SEM(bin.color) : SEM('--sem-grey');
+    document.getElementById('ttDzPat').textContent = pathogen ? (pathogen.alias ? pathogen.alias+' · '+pathogen.short : pathogen.name) : '—';
+    document.getElementById('ttDzUnit').textContent = unit ? unit.label : (unitKey || '—');
+    document.getElementById('ttDzThr').textContent = DISEASE.meta.thresholdLabel;
+    document.getElementById('ttDzSource').textContent = `${report.label} · ${DISEASE.meta.technique} · ${report.service||''}`.trim();
+    return true;
+}
+// El informe por equipo cubre varios cuarteles: se resuelve del código E# del
+// cuartel a la unidad que el laboratorio muestreó.
+function dzUnitForEquipo(equipo){
+    if(!DISEASE) return null;
+    const u = DISEASE.units.equipo.find(x=>(x.equipos||[]).includes(equipo));
+    return u ? u.key : null;
+}
+function dzUnitForZone(zoneGeoName){
+    if(!DISEASE) return null;
+    const u = DISEASE.units.zona.find(x=>x.geo===zoneGeoName);
+    return u ? u.key : null;
+}
+
+// Serie del patógeno a través de los informes, en escala log. Cada punto es el
+// promedio de las unidades de ese informe: los esquemas cambian entre informes,
+// así que una línea por unidad no sería comparable.
+function drawDiseaseTrend(){
+    const host = document.getElementById('dzTrend');
+    const metaEl = document.getElementById('dzTrendMeta');
+    if(!host || !DISEASE) return;
+    const {pathogen} = dzSelection();
+    if(!pathogen){ host.innerHTML=''; return; }
+    const serie = DISEASE.reports.map(r=>{
+        const vals = DISEASE.readings
+            .filter(x=>x.report===r.id && x.pathogen===pathogen.key && Number.isFinite(x.ufc))
+            .map(x=>x.ufc);
+        return {label:r.label.replace(' · Yemas','').replace(' · Hojas',' hojas'),
+                v: vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : null};
+    }).filter(p=>p.v!==null);
+    if(metaEl) metaEl.textContent = serie.length+' informe'+(serie.length===1?'':'s');
+    if(serie.length < 2){
+        host.innerHTML = '<div class="dz-empty">Se necesita más de un informe para trazar la evolución.</div>';
+        return;
+    }
+    const W=320,H=150,mL=40,mR=10,mT=10,mB=30, iw=W-mL-mR, ih=H-mT-mB;
+    const THR = DISEASE.meta.thresholdUfc;
+    const logs = serie.map(p=>Math.log10(p.v));
+    // El dominio siempre llega al umbral para que se vea cuán lejos se está.
+    let lo=Math.min(...logs), hi=Math.max(Math.max(...logs), Math.log10(THR));
+    lo=Math.floor(lo)-0.2; hi=Math.ceil(hi)+0.2;
+    const y=v=>mT+ih-((v-lo)/(hi-lo))*ih;
+    const x=i=>mL+(serie.length===1?iw/2:(i*iw)/(serie.length-1));
+    let g='';
+    for(let e=Math.ceil(lo); e<=Math.floor(hi); e++){
+        g+=`<line class="dzt-grid" x1="${mL}" y1="${y(e).toFixed(1)}" x2="${W-mR}" y2="${y(e).toFixed(1)}"/>`;
+        g+=`<text class="dzt-tick" x="${mL-5}" y="${(y(e)+3.5).toFixed(1)}" text-anchor="end">10${String(e).replace(/[0-9]/g,d=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[+d])}</text>`;
+    }
+    const yt=y(Math.log10(THR));
+    g+=`<line class="dzt-thr" x1="${mL}" y1="${yt.toFixed(1)}" x2="${W-mR}" y2="${yt.toFixed(1)}"/>`;
+    g+=`<text class="dzt-thr-label" x="${mL+3}" y="${(yt-4).toFixed(1)}">umbral 10⁷</text>`;
+    g+=`<path class="dzt-line" d="M${serie.map((p,i)=>x(i).toFixed(1)+' '+y(Math.log10(p.v)).toFixed(1)).join(' L')}"/>`;
+    serie.forEach((p,i)=>{
+        g+=`<circle class="dzt-dot" cx="${x(i).toFixed(1)}" cy="${y(Math.log10(p.v)).toFixed(1)}" r="3.5"><title>${esc(p.label)}: ${dzFmt(p.v)} ufc/g</title></circle>`;
+    });
+    g+=`<line class="dzt-axis" x1="${mL}" y1="${mT+ih}" x2="${W-mR}" y2="${mT+ih}"/>`;
+    serie.forEach((p,i)=>{
+        if(serie.length>2 && i!==0 && i!==serie.length-1) return;
+        const a = i===0?'start':(i===serie.length-1?'end':'middle');
+        g+=`<text class="dzt-tick" x="${x(i).toFixed(1)}" y="${(mT+ih+15).toFixed(1)}" text-anchor="${a}">${esc(p.label)}</text>`;
+    });
+    host.innerHTML = `<div class="dz-trend"><svg viewBox="0 0 ${W} ${H}" role="img">${g}</svg></div>`;
 }
 
 // ── Nutrición · evolución temporal ──────────────────────────────────────────
