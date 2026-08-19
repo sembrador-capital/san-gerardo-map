@@ -2761,6 +2761,30 @@ const I18N = { en: {
 'Sin aplicaciones coincidentes para los filtros seleccionados.':'No matching applications for the selected filters.',
 'Duración promedio':'Average duration', 'Vol. por hectárea':'Vol. per hectare',
 'Estado fenológico':'Phenological stage', 'Detalle por plaga':'Breakdown by pest',
+'sectores con riego':'sectors with irrigation',
+'sectores sin respuesta de la API — reintenta si faltan datos.':'sectors with no API response — retry if data is missing.',
+'totales':'total',
+'campo':'farm',
+'sectores regados':'sectors irrigated',
+'Nº eventos':'No. of events',
+'Frecuencia':'Frequency',
+'Tiempo total':'Total time',
+'hrs/riego':'hrs/irrigation',
+'horas':'hours',
+'Volumen por evento':'Volume per event',
+'Detalle de eventos':'Event detail',
+'eventos':'events',
+'Inicio':'Start',
+'Fin':'End',
+'Duración':'Duration',
+'Vol.':'Vol.',
+'Días hasta sig.':'Days to next',
+'Volumen':'Volume',
+'500 – 1.500':'500 – 1,500',
+'1.500 – 3.000':'1,500 – 3,000',
+'5.000 – 7.500':'5,000 – 7,500',
+'> 7.500':'> 7,500',
+'< 500':'< 500',
 'Todas las temporadas':'All seasons',
 'todos los meses':'all months',
 'Sin datos':'No data',
@@ -2883,6 +2907,30 @@ const I18N = { en: {
 'Escala fija para toda la temporada: un mismo color significa el mismo valor en las 9 visitas.':'Fixed scale for the whole season: the same colour means the same value across all 9 visits.',
 'Sin puntos levantados en este cuartel con los filtros actuales.':'No points recorded in this block under the current filters.',
 'Detalle por plaga':'Breakdown by pest',
+'sectores con riego':'sectors with irrigation',
+'sectores sin respuesta de la API — reintenta si faltan datos.':'sectors with no API response — retry if data is missing.',
+'totales':'total',
+'campo':'farm',
+'sectores regados':'sectors irrigated',
+'Nº eventos':'No. of events',
+'Frecuencia':'Frequency',
+'Tiempo total':'Total time',
+'hrs/riego':'hrs/irrigation',
+'horas':'hours',
+'Volumen por evento':'Volume per event',
+'Detalle de eventos':'Event detail',
+'eventos':'events',
+'Inicio':'Start',
+'Fin':'End',
+'Duración':'Duration',
+'Vol.':'Vol.',
+'Días hasta sig.':'Days to next',
+'Volumen':'Volume',
+'500 – 1.500':'500 – 1,500',
+'1.500 – 3.000':'1,500 – 3,000',
+'5.000 – 7.500':'5,000 – 7,500',
+'> 7.500':'> 7,500',
+'< 500':'< 500',
 'Todas las temporadas':'All seasons',
 'todos los meses':'all months',
 'Sin datos':'No data',
@@ -3949,8 +3997,7 @@ function switchMode(mode){
         if(!isRiego && !isAgro && !isFin && !isPest) map.setPaintProperty('sectores-fill','fill-opacity',['case',['boolean',['feature-state','hover'],false],0.85,0.60]);
         if(isGen) map.setPaintProperty('sectores-fill','fill-color',getEquipoColorExpr());
         else if(isProd) applyProdToMap(map,'A');
-        else if(isRiego) { applyRiegoToMap(map,'A'); updateRiegoLegend();
-initFinControls(); }
+        else if(isRiego) { applyRiegoToMap(map,'A'); initFinControls(); }
         else if(isAgro) applyAgroToMap(map);
         else if(isFin) applyFinToMap(map);
         else if(isPest){
@@ -3965,7 +4012,8 @@ initFinControls(); }
     // setPestSubview reaplica el estado recordado: clase, subpestaña y mapa.
     if(isPest) setPestSubview(PEST_SUBVIEW);
     else document.body.classList.remove('dz-active');
-    if(isRiego){ updateRiegoStats('A'); updateRiegoStats('B'); }
+    // La leyenda se repinta siempre: es DOM, no depende de la capa del mapa.
+    if(isRiego){ updateRiegoStats('A'); updateRiegoStats('B'); updateRiegoLegend(); }
     if(isAgro){ recomputeAgroCache(); updateAgroLegend(); updateAgroStats(); updateAgroFilterSummary(); }
     if(isFin){ updateFinLegend(); updateFinStats(); updateFinFilterSummary(); }
     if(map&&map.loaded()&&previousMode!==mode) fitGeojson(map,isSoil?SOIL_GEOJSON:GEOJSON,isSoil?16:15.2);
@@ -7544,7 +7592,7 @@ function updateDaysRange(side='A'){
     const box = document.getElementById('riegoDaysRange'+side);
     if(st.selDays.length === 0){ box.textContent = t('Selecciona uno o más días'); return; }
     if(st.selDays.length === 1){ box.textContent = fmtDate(st.selDays[0]); return; }
-    box.textContent = `${fmtDate(st.selDays[0])} → ${fmtDate(st.selDays[st.selDays.length-1])} (${st.selDays.length} días)`;
+    box.textContent = `${fmtDate(st.selDays[0])} → ${fmtDate(st.selDays[st.selDays.length-1])} (${st.selDays.length} ${t('días')})`;
 }
 function fmtDate(iso){ const [y,m,d] = iso.split('-'); return `${d}/${m}/${y}`; }
 
@@ -7596,7 +7644,7 @@ function buildSeasonsGrid(side='A'){
         </div>`
     ).join('');
     document.getElementById('riegoSeasonsRange'+side).textContent =
-        st.selSeason ? `Temporada ${st.selSeason}` : 'Selecciona una temporada';
+        st.selSeason ? `${t('Temporada')} ${st.selSeason}` : t('Selecciona una temporada');
 }
 function selectSeason(k, side='A'){
     RIEGO_STATE[side].selSeason = k;
@@ -7753,7 +7801,7 @@ async function cargarRiego(side='A'){
         for(let m = 7; m <= 12; m++) queries.push(`?mes=${y1}-${String(m).padStart(2,'0')}`);
         // Enero a Junio año 2
         for(let m = 1; m <= 6; m++) queries.push(`?mes=${y2}-${String(m).padStart(2,'0')}`);
-        label = `Temporada ${st.selSeason}`;
+        label = `${t('Temporada')} ${st.selSeason}`;
     }
 
     // Start loading UI
@@ -7799,9 +7847,9 @@ async function cargarRiego(side='A'){
         const nSec = agg.resumen.sectores_con_riego || 0;
         status.className = 'riego-status success';
         const now = new Date().toLocaleTimeString(LOC(),{hour:'2-digit',minute:'2-digit'});
-        let msg = `<strong>${label}</strong> · ${nSec} sectores con riego · <span class="rs-time">${now}</span>`;
+        let msg = `<strong>${label}</strong> · ${nSec} ${t('sectores con riego')} · <span class="rs-time">${now}</span>`;
         if(conFallos > 0){
-            msg += `<br><span class="rs-warn">${conFallos} sectores sin respuesta de la API — reintenta si faltan datos.</span>`;
+            msg += `<br><span class="rs-warn">${conFallos} ${t('sectores sin respuesta de la API — reintenta si faltan datos.')}</span>`;
         }
         status.innerHTML = msg;
 
@@ -7854,7 +7902,7 @@ function updateRiegoLegend(){
         meta.textContent = RIEGO_STATE.A.meta ? RIEGO_STATE.A.meta.consulta : t('Selecciona un periodo');
     }
     scale.innerHTML = RIEGO_SCALE_FIXED.map(b =>
-        `<div class="rg-scale-row"><div class="rg-swatch" style="background:${b.color}"></div><div>${b.label}</div></div>`
+        `<div class="rg-scale-row"><div class="rg-swatch" style="background:${b.color}"></div><div>${t(b.label)}</div></div>`
     ).join('') + `<div class="rg-scale-row"><div class="rg-swatch" style="background:${RIEGO_NO_DATA_COLOR}"></div><div>${t('Sin datos')}</div></div>`;
 }
 
@@ -7877,16 +7925,16 @@ function updateRiegoStats(side='A'){
             ${chip}
             <div>
                 <div class="riego-context-title">${st.meta.consulta}</div>
-                <div class="riego-context-meta">Riego San Gerardo</div>
+                <div class="riego-context-meta">${t('Riego')} San Gerardo</div>
             </div>
         </div>
         <div class="stat-div"></div>`;
     const stats = `
-        <div class="stat"><div class="num">${Number(r.total_m3||0).toLocaleString(LOC(),{maximumFractionDigits:0})}</div><div class="unit">m³ totales</div></div>
+        <div class="stat"><div class="num">${Number(r.total_m3||0).toLocaleString(LOC(),{maximumFractionDigits:0})}</div><div class="unit">m³ ${t('totales')}</div></div>
         <div class="stat-div"></div>
-        <div class="stat"><div class="num">${Number(r.total_m3_ha||0).toLocaleString(LOC(),{maximumFractionDigits:0})}</div><div class="unit">m³/ha campo</div></div>
+        <div class="stat"><div class="num">${Number(r.total_m3_ha||0).toLocaleString(LOC(),{maximumFractionDigits:0})}</div><div class="unit">m³/ha ${t('campo')}</div></div>
         <div class="stat-div"></div>
-        <div class="stat"><div class="num">${r.sectores_con_riego||0}<span class="sem-muted-xs";font-weight:400"> / ${r.sectores_activos||23}</span></div><div class="unit">sectores regados</div></div>
+        <div class="stat"><div class="num">${r.sectores_con_riego||0}<span class="sem-muted-xs";font-weight:400"> / ${r.sectores_activos||23}</span></div><div class="unit">${t('sectores regados')}</div></div>
         <div class="stat-div"></div>
         <div class="stat"><div class="num">${Number(r.hectareas_total||0).toLocaleString(LOC(),{maximumFractionDigits:1})}</div><div class="unit">${t('hectáreas')}</div></div>`;
     row.innerHTML = context + stats;
@@ -7919,31 +7967,31 @@ function openRiegoModal(sec, side='A'){
 
     body.innerHTML = `
         <div class="riego-modal-kpis">
-            <div class="rm-kpi"><div class="k">Superficie</div><div class="v">${sec.area_ha}<span class="u">ha</span></div></div>
-            <div class="rm-kpi"><div class="k">Vol. total</div><div class="v">${Number(sec.total_m3).toLocaleString(LOC(),{maximumFractionDigits:0})}<span class="u">m³</span></div></div>
-            <div class="rm-kpi"><div class="k">Vol. por hectárea</div><div class="v">${Number(sec.total_m3_ha).toLocaleString(LOC(),{maximumFractionDigits:0})}<span class="u">m³/ha</span></div></div>
-            <div class="rm-kpi"><div class="k">Nº eventos</div><div class="v">${sec.n_eventos || 0}</div></div>
+            <div class="rm-kpi"><div class="k">${t('Superficie')}</div><div class="v">${sec.area_ha}<span class="u">ha</span></div></div>
+            <div class="rm-kpi"><div class="k">${t('Vol. total')}</div><div class="v">${Number(sec.total_m3).toLocaleString(LOC(),{maximumFractionDigits:0})}<span class="u">m³</span></div></div>
+            <div class="rm-kpi"><div class="k">${t('Vol. por hectárea')}</div><div class="v">${Number(sec.total_m3_ha).toLocaleString(LOC(),{maximumFractionDigits:0})}<span class="u">m³/ha</span></div></div>
+            <div class="rm-kpi"><div class="k">${t('Nº eventos')}</div><div class="v">${sec.n_eventos || 0}</div></div>
         </div>
 
         <div class="riego-modal-kpis" style="grid-template-columns:repeat(3, 1fr); margin-top:-8px;">
-            <div class="rm-kpi"><div class="k">Frecuencia</div><div class="v">${freqStr}<span class="u">${freqStr==='—'?'':'días'}</span></div></div>
-            <div class="rm-kpi"><div class="k">Duración promedio</div><div class="v">${durStr}<span class="u">${durStr==='—'?'':'hrs/riego'}</span></div></div>
-            <div class="rm-kpi"><div class="k">Tiempo total</div><div class="v">${Number(totalHrs).toLocaleString(LOC(),{maximumFractionDigits:1})}<span class="u">horas</span></div></div>
+            <div class="rm-kpi"><div class="k">${t('Frecuencia')}</div><div class="v">${freqStr}<span class="u">${freqStr==='—'?'':t('días')}</span></div></div>
+            <div class="rm-kpi"><div class="k">${t('Duración promedio')}</div><div class="v">${durStr}<span class="u">${durStr==='—'?'':t('hrs/riego')}</span></div></div>
+            <div class="rm-kpi"><div class="k">${t('Tiempo total')}</div><div class="v">${Number(totalHrs).toLocaleString(LOC(),{maximumFractionDigits:1})}<span class="u">${t('horas')}</span></div></div>
         </div>
 
-        <div class="rm-section-title">Volumen por evento (m³)</div>
+        <div class="rm-section-title">${t('Volumen por evento')} (m³)</div>
         <div class="rm-chart-wrap">
             ${eventos.length > 0
                 ? '<canvas id="riegoEventChart" height="200"></canvas>'
                 : '<div class="rm-empty">No hay eventos de riego registrados en el periodo seleccionado.</div>'}
         </div>
 
-        <div class="rm-section-title">Detalle de eventos <span class="sem-muted";font-weight:400;text-transform:none;letter-spacing:0;margin-left:6px;">(${eventos.length} eventos)</span></div>
+        <div class="rm-section-title">${t('Detalle de eventos')} <span class="sem-muted";font-weight:400;text-transform:none;letter-spacing:0;margin-left:6px;">(${eventos.length} ${t('eventos')})</span></div>
         <div class="rm-events">
             ${eventos.length > 0 ? `
                 <table class="rm-events-table">
                     <thead><tr>
-                        <th>#</th><th>Fecha</th><th>Inicio</th><th>Fin</th><th>Duración</th><th>Vol. (m³)</th><th>mm</th><th>Días hasta sig.</th>
+                        <th>#</th><th>${t('Fecha')}</th><th>${t('Inicio')}</th><th>${t('Fin')}</th><th>${t('Duración')}</th><th>${t('Vol.')} (m³)</th><th>mm</th><th>${t('Días hasta sig.')}</th>
                     </tr></thead>
                     <tbody>
                         ${eventos.slice().reverse().map((ev, i) => {
@@ -7983,7 +8031,7 @@ function openRiegoModal(sec, side='A'){
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Volumen (m³)',
+                    label: t('Volumen') + ' (m³)',
                     data: values,
                     backgroundColor: colors,
                     borderRadius: 4,
