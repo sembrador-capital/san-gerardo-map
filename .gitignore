@@ -1,0 +1,16 @@
+# ── Credenciales ──────────────────────────────────────────────────────────
+# Este repo es público. El token de Ceres se lee de la variable de entorno
+# CERES_TOKEN; este archivo es sólo una conveniencia para correr el script en
+# local. Nunca debe llegar a un commit.
+.ceres_token
+
+# ── Python ────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# ── Sistema operativo ─────────────────────────────────────────────────────
+Thumbs.db
+desktop.ini
+.DS_Store
