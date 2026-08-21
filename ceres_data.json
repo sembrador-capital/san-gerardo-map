@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-21T19:30:57Z",
+  "generated_at": "2026-08-21T20:39:48Z",
   "source": "Ceres Imaging",
   "farm": {
     "name": "San Gerardo",
@@ -9,8 +9,12 @@
   "params": [
     {
       "id": "water_stress",
-      "es": "Estrés hídrico",
-      "en": "Water stress",
+      "es": "Estrés Hídrico - perennes",
+      "en": "Water stress - perennials",
+      "desc_es": "Déficit de transpiración",
+      "desc_en": "Transpiration deficit",
+      "group_es": "Irrigación",
+      "group_en": "Irrigation",
       "min": 0.0,
       "max": 1.0,
       "higher_is_better": false,
@@ -51,56 +55,102 @@
       "bands_source": "ceres"
     },
     {
+      "id": "cumulative_thermal_stress",
+      "es": "Estrés Acumulado",
+      "en": "Cumulative stress",
+      "desc_es": "Déficit promedio de transpiración esta temporada",
+      "desc_en": "Average transpiration deficit this season",
+      "group_es": "Irrigación",
+      "group_en": "Irrigation",
+      "min": 0.0,
+      "max": 1.0,
+      "higher_is_better": false,
+      "bands": [
+        {
+          "min": 0.0,
+          "max": 0.25,
+          "es": "Óptimo",
+          "en": "Optimal",
+          "status": "opt",
+          "severity": 0
+        },
+        {
+          "min": 0.25,
+          "max": 0.5,
+          "es": "Adecuado",
+          "en": "Adequate",
+          "status": "bajo",
+          "severity": 1
+        },
+        {
+          "min": 0.5,
+          "max": 0.75,
+          "es": "Alerta",
+          "en": "Warning",
+          "status": "alto",
+          "severity": 2
+        },
+        {
+          "min": 0.75,
+          "max": 1.0,
+          "es": "Crítico",
+          "en": "Critical",
+          "status": "exc",
+          "severity": 3
+        }
+      ],
+      "bands_source": "ceres:water_stress"
+    },
+    {
       "id": "absolute_ndvi",
-      "es": "NDVI",
-      "en": "NDVI",
+      "es": "Índice de Vegetación Absoluto",
+      "en": "Absolute vegetation index",
+      "desc_es": "Crecimiento del dosel",
+      "desc_en": "Canopy growth",
+      "group_es": "Desarrollo de cultivos",
+      "group_en": "Crop development",
       "min": 0.5279,
       "max": 0.8848,
       "higher_is_better": true,
       "bands": [],
       "bands_source": "unclassified",
-      "unclassified_es": "Ceres publica una rampa de 11 tramos, no umbrales agronómicos.",
-      "unclassified_en": "Ceres publishes an 11-step ramp, not agronomic thresholds.",
+      "unclassified_es": "Ceres publica una rampa de tramos iguales de 0,05, no umbrales agronómicos.",
+      "unclassified_en": "Ceres publishes a uniform 0.05-step ramp, not agronomic thresholds.",
       "ceres_bands_found": 11
     },
     {
       "id": "season_average_ndvi",
-      "es": "NDVI promedio temporada",
-      "en": "Season avg NDVI",
+      "es": "Índice de Vegetación promedio temporada",
+      "en": "Season average vegetation index",
+      "desc_es": "Crecimiento promedio del dosel esta temporada",
+      "desc_en": "Average canopy growth this season",
+      "group_es": "Desarrollo de cultivos",
+      "group_en": "Crop development",
       "min": 0.5279,
       "max": 0.8764,
       "higher_is_better": true,
       "bands": [],
       "bands_source": "unclassified",
-      "unclassified_es": "Ceres no publica cortes para este indicador.",
-      "unclassified_en": "Ceres publishes no cuts for this indicator.",
+      "unclassified_es": "Es el promedio de temporada del NDVI, que tampoco tiene umbrales publicados.",
+      "unclassified_en": "It is the season average of NDVI, which has no published thresholds either.",
       "ceres_bands_found": 0
     },
     {
       "id": "chlorophyll_class",
       "es": "Clorofila",
       "en": "Chlorophyll",
+      "desc_es": "Crecimiento relativo del dosel",
+      "desc_en": "Relative canopy growth",
+      "group_es": "Desarrollo de cultivos",
+      "group_en": "Crop development",
       "min": 0.1462,
       "max": 0.7395,
       "higher_is_better": true,
       "bands": [],
       "bands_source": "unclassified",
-      "unclassified_es": "Los cortes de Ceres son percentiles de un vuelo, no umbrales fijos.",
-      "unclassified_en": "Ceres cuts are one flight's percentiles, not fixed thresholds.",
+      "unclassified_es": "Es un índice relativo: Ceres recalcula sus cortes para cada campo y cada vuelo.",
+      "unclassified_en": "It is a relative index: Ceres recomputes its cuts for every field and flight.",
       "ceres_bands_found": 4
-    },
-    {
-      "id": "cumulative_thermal_stress",
-      "es": "Estrés térmico acumulado",
-      "en": "Cumulative thermal stress",
-      "min": 0.1401,
-      "max": 0.5506,
-      "higher_is_better": false,
-      "bands": [],
-      "bands_source": "unclassified",
-      "unclassified_es": "Ceres publica una rampa de 10 tramos, no umbrales agronómicos.",
-      "unclassified_en": "Ceres publishes a 10-step ramp, not agronomic thresholds.",
-      "ceres_bands_found": 10
     }
   ],
   "sectors": {
@@ -504,6 +554,68 @@
             "alto": 1297,
             "exc": 0
           }
+        },
+        "cumulative_thermal_stress": {
+          "by_sector": {
+            "opt": 4,
+            "bajo": 18,
+            "alto": 1,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 228149,
+            "bajo": 1035785,
+            "alto": 57012,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 5260,
+            "bajo": 23897,
+            "alto": 1297,
+            "exc": 0
+          }
+        }
+      },
+      "compliance_equipos": {
+        "water_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
+            "alto": 0,
+            "exc": 0
+          }
         }
       }
     },
@@ -715,145 +827,145 @@
         "sectors": {
           "E1-S1": {
             "water_stress": -0.1926,
-            "chlorophyll_class": 0.1706,
-            "cumulative_thermal_stress": -0.1926
+            "cumulative_thermal_stress": -0.1926,
+            "chlorophyll_class": 0.1706
           },
           "E1-S2": {
             "water_stress": -0.051,
-            "chlorophyll_class": 0.1937,
-            "cumulative_thermal_stress": -0.051
+            "cumulative_thermal_stress": -0.051,
+            "chlorophyll_class": 0.1937
           },
           "E1-S3": {
             "water_stress": 0.0468,
-            "chlorophyll_class": 0.2115,
-            "cumulative_thermal_stress": 0.0468
+            "cumulative_thermal_stress": 0.0468,
+            "chlorophyll_class": 0.2115
           },
           "E1-S4": {
             "water_stress": -0.0678,
-            "chlorophyll_class": 0.2054,
-            "cumulative_thermal_stress": -0.0678
+            "cumulative_thermal_stress": -0.0678,
+            "chlorophyll_class": 0.2054
           },
           "E1-S5": {
             "water_stress": -0.097,
-            "chlorophyll_class": 0.203,
-            "cumulative_thermal_stress": -0.097
+            "cumulative_thermal_stress": -0.097,
+            "chlorophyll_class": 0.203
           },
           "E2-S1": {
             "water_stress": 0.0083,
-            "chlorophyll_class": 0.2065,
-            "cumulative_thermal_stress": 0.0083
+            "cumulative_thermal_stress": 0.0083,
+            "chlorophyll_class": 0.2065
           },
           "E2-S2": {
             "water_stress": -0.068,
-            "chlorophyll_class": 0.2026,
-            "cumulative_thermal_stress": -0.068
+            "cumulative_thermal_stress": -0.068,
+            "chlorophyll_class": 0.2026
           },
           "E2-S3": {
             "water_stress": 0.0117,
-            "chlorophyll_class": 0.2109,
-            "cumulative_thermal_stress": 0.0117
+            "cumulative_thermal_stress": 0.0117,
+            "chlorophyll_class": 0.2109
           },
           "E3-S1": {
             "water_stress": -0.1597,
-            "chlorophyll_class": 0.2458,
-            "cumulative_thermal_stress": -0.1597
+            "cumulative_thermal_stress": -0.1597,
+            "chlorophyll_class": 0.2458
           },
           "E3-S2": {
             "water_stress": -0.2014,
-            "chlorophyll_class": 0.2027,
-            "cumulative_thermal_stress": -0.2014
+            "cumulative_thermal_stress": -0.2014,
+            "chlorophyll_class": 0.2027
           },
           "E3-S3": {
             "water_stress": 0.0213,
-            "chlorophyll_class": 0.2288,
-            "cumulative_thermal_stress": 0.0213
+            "cumulative_thermal_stress": 0.0213,
+            "chlorophyll_class": 0.2288
           },
           "E3-S4": {
             "water_stress": 0.073,
-            "chlorophyll_class": 0.2237,
-            "cumulative_thermal_stress": 0.073
+            "cumulative_thermal_stress": 0.073,
+            "chlorophyll_class": 0.2237
           },
           "E3-S5": {
             "water_stress": 0.0118,
-            "chlorophyll_class": 0.213,
-            "cumulative_thermal_stress": 0.0118
+            "cumulative_thermal_stress": 0.0118,
+            "chlorophyll_class": 0.213
           },
           "E4-S1": {
             "water_stress": -0.127,
-            "chlorophyll_class": 0.2492,
-            "cumulative_thermal_stress": -0.127
+            "cumulative_thermal_stress": -0.127,
+            "chlorophyll_class": 0.2492
           },
           "E4-S2": {
             "water_stress": -0.2981,
-            "chlorophyll_class": 0.218,
-            "cumulative_thermal_stress": -0.2981
+            "cumulative_thermal_stress": -0.2981,
+            "chlorophyll_class": 0.218
           },
           "E4-S3": {
             "water_stress": 0.0091,
-            "chlorophyll_class": 0.2405,
-            "cumulative_thermal_stress": 0.0091
+            "cumulative_thermal_stress": 0.0091,
+            "chlorophyll_class": 0.2405
           },
           "E4-S4": {
             "water_stress": 0.0388,
-            "chlorophyll_class": 0.144,
-            "cumulative_thermal_stress": 0.0388
+            "cumulative_thermal_stress": 0.0388,
+            "chlorophyll_class": 0.144
           },
           "E4-S5": {
             "water_stress": 0.0304,
-            "chlorophyll_class": 0.2424,
-            "cumulative_thermal_stress": 0.0304
+            "cumulative_thermal_stress": 0.0304,
+            "chlorophyll_class": 0.2424
           },
           "E5-S1": {
             "water_stress": -0.1194,
-            "chlorophyll_class": 0.2592,
-            "cumulative_thermal_stress": -0.1194
+            "cumulative_thermal_stress": -0.1194,
+            "chlorophyll_class": 0.2592
           },
           "E5-S2": {
             "water_stress": -0.2245,
-            "chlorophyll_class": 0.232,
-            "cumulative_thermal_stress": -0.2245
+            "cumulative_thermal_stress": -0.2245,
+            "chlorophyll_class": 0.232
           },
           "E5-S3": {
             "water_stress": 0.0606,
-            "chlorophyll_class": 0.2267,
-            "cumulative_thermal_stress": 0.0606
+            "cumulative_thermal_stress": 0.0606,
+            "chlorophyll_class": 0.2267
           },
           "E5-S4": {
             "water_stress": 0.0792,
-            "chlorophyll_class": 0.2263,
-            "cumulative_thermal_stress": 0.0792
+            "cumulative_thermal_stress": 0.0792,
+            "chlorophyll_class": 0.2263
           },
           "E5-S5": {
             "water_stress": 0.0275,
-            "chlorophyll_class": 0.2375,
-            "cumulative_thermal_stress": 0.0275
+            "cumulative_thermal_stress": 0.0275,
+            "chlorophyll_class": 0.2375
           }
         },
         "equipos": {
           "E1": {
             "water_stress": -0.0701,
-            "chlorophyll_class": 0.1976,
-            "cumulative_thermal_stress": -0.0701
+            "cumulative_thermal_stress": -0.0701,
+            "chlorophyll_class": 0.1976
           },
           "E2": {
             "water_stress": -0.0162,
-            "chlorophyll_class": 0.2066,
-            "cumulative_thermal_stress": -0.0162
+            "cumulative_thermal_stress": -0.0162,
+            "chlorophyll_class": 0.2066
           },
           "E3": {
             "water_stress": -0.0464,
-            "chlorophyll_class": 0.2219,
-            "cumulative_thermal_stress": -0.0464
+            "cumulative_thermal_stress": -0.0464,
+            "chlorophyll_class": 0.2219
           },
           "E4": {
             "water_stress": -0.0708,
-            "chlorophyll_class": 0.2194,
-            "cumulative_thermal_stress": -0.0708
+            "cumulative_thermal_stress": -0.0708,
+            "chlorophyll_class": 0.2194
           },
           "E5": {
             "water_stress": -0.0324,
-            "chlorophyll_class": 0.2356,
-            "cumulative_thermal_stress": -0.0324
+            "cumulative_thermal_stress": -0.0324,
+            "chlorophyll_class": 0.2356
           }
         }
       },
@@ -874,6 +986,68 @@
           "by_plants": {
             "opt": 7497,
             "bajo": 22957,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_sector": {
+            "opt": 6,
+            "bajo": 17,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 325447,
+            "bajo": 995499,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 7497,
+            "bajo": 22957,
+            "alto": 0,
+            "exc": 0
+          }
+        }
+      },
+      "compliance_equipos": {
+        "water_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
             "alto": 0,
             "exc": 0
           }
@@ -1088,201 +1262,201 @@
         "sectors": {
           "E1-S1": {
             "water_stress": 0.1212,
+            "cumulative_thermal_stress": 0.0606,
             "absolute_ndvi": -0.0147,
             "season_average_ndvi": -0.0073,
-            "chlorophyll_class": 0.0204,
-            "cumulative_thermal_stress": 0.0606
+            "chlorophyll_class": 0.0204
           },
           "E1-S2": {
             "water_stress": -0.1167,
+            "cumulative_thermal_stress": -0.0583,
             "absolute_ndvi": -0.0214,
             "season_average_ndvi": -0.0107,
-            "chlorophyll_class": -0.005,
-            "cumulative_thermal_stress": -0.0583
+            "chlorophyll_class": -0.005
           },
           "E1-S3": {
             "water_stress": -0.0487,
+            "cumulative_thermal_stress": -0.0244,
             "absolute_ndvi": -0.0323,
             "season_average_ndvi": -0.0161,
-            "chlorophyll_class": -0.0091,
-            "cumulative_thermal_stress": -0.0244
+            "chlorophyll_class": -0.0091
           },
           "E1-S4": {
             "water_stress": -0.0056,
+            "cumulative_thermal_stress": -0.0028,
             "absolute_ndvi": -0.0231,
             "season_average_ndvi": -0.0115,
-            "chlorophyll_class": -0.0018,
-            "cumulative_thermal_stress": -0.0028
+            "chlorophyll_class": -0.0018
           },
           "E1-S5": {
             "water_stress": -0.0054,
+            "cumulative_thermal_stress": -0.0027,
             "absolute_ndvi": -0.0186,
             "season_average_ndvi": -0.0093,
-            "chlorophyll_class": 0.0005,
-            "cumulative_thermal_stress": -0.0027
+            "chlorophyll_class": 0.0005
           },
           "E2-S1": {
             "water_stress": -0.0098,
+            "cumulative_thermal_stress": -0.0049,
             "absolute_ndvi": -0.0323,
             "season_average_ndvi": -0.0162,
-            "chlorophyll_class": -0.0092,
-            "cumulative_thermal_stress": -0.0049
+            "chlorophyll_class": -0.0092
           },
           "E2-S2": {
             "water_stress": -0.0499,
+            "cumulative_thermal_stress": -0.025,
             "absolute_ndvi": -0.0289,
             "season_average_ndvi": -0.0145,
-            "chlorophyll_class": -0.0162,
-            "cumulative_thermal_stress": -0.025
+            "chlorophyll_class": -0.0162
           },
           "E2-S3": {
             "water_stress": 0.0395,
+            "cumulative_thermal_stress": 0.0198,
             "absolute_ndvi": -0.0267,
             "season_average_ndvi": -0.0133,
-            "chlorophyll_class": -0.0068,
-            "cumulative_thermal_stress": 0.0198
+            "chlorophyll_class": -0.0068
           },
           "E3-S1": {
             "water_stress": -0.0386,
+            "cumulative_thermal_stress": -0.0193,
             "absolute_ndvi": -0.0292,
             "season_average_ndvi": -0.0146,
-            "chlorophyll_class": -0.0401,
-            "cumulative_thermal_stress": -0.0193
+            "chlorophyll_class": -0.0401
           },
           "E3-S2": {
             "water_stress": 0.062,
+            "cumulative_thermal_stress": 0.031,
             "absolute_ndvi": -0.0203,
             "season_average_ndvi": -0.0102,
-            "chlorophyll_class": -0.0098,
-            "cumulative_thermal_stress": 0.031
+            "chlorophyll_class": -0.0098
           },
           "E3-S3": {
             "water_stress": -0.0318,
+            "cumulative_thermal_stress": -0.0159,
             "absolute_ndvi": -0.0223,
             "season_average_ndvi": -0.0111,
-            "chlorophyll_class": -0.0204,
-            "cumulative_thermal_stress": -0.0159
+            "chlorophyll_class": -0.0204
           },
           "E3-S4": {
             "water_stress": 0.0504,
+            "cumulative_thermal_stress": 0.0252,
             "absolute_ndvi": -0.0181,
             "season_average_ndvi": -0.0091,
-            "chlorophyll_class": -0.0105,
-            "cumulative_thermal_stress": 0.0252
+            "chlorophyll_class": -0.0105
           },
           "E3-S5": {
             "water_stress": 0.0091,
+            "cumulative_thermal_stress": 0.0045,
             "absolute_ndvi": -0.007,
             "season_average_ndvi": -0.0035,
-            "chlorophyll_class": -0.0007,
-            "cumulative_thermal_stress": 0.0045
+            "chlorophyll_class": -0.0007
           },
           "E4-S1": {
             "water_stress": 0.0183,
+            "cumulative_thermal_stress": 0.0093,
             "absolute_ndvi": -0.0559,
             "season_average_ndvi": -0.0283,
-            "chlorophyll_class": -0.0499,
-            "cumulative_thermal_stress": 0.0093
+            "chlorophyll_class": -0.0499
           },
           "E4-S2": {
             "water_stress": 0.0564,
+            "cumulative_thermal_stress": 0.0287,
             "absolute_ndvi": -0.0567,
             "season_average_ndvi": -0.0288,
-            "chlorophyll_class": -0.0415,
-            "cumulative_thermal_stress": 0.0287
+            "chlorophyll_class": -0.0415
           },
           "E4-S3": {
             "water_stress": -0.0082,
+            "cumulative_thermal_stress": -0.0042,
             "absolute_ndvi": -0.0612,
             "season_average_ndvi": -0.0309,
-            "chlorophyll_class": -0.0568,
-            "cumulative_thermal_stress": -0.0042
+            "chlorophyll_class": -0.0568
           },
           "E4-S4": {
             "water_stress": 0.0097,
+            "cumulative_thermal_stress": 0.0049,
             "absolute_ndvi": 0.0348,
             "season_average_ndvi": 0.0176,
-            "chlorophyll_class": 0.0285,
-            "cumulative_thermal_stress": 0.0049
+            "chlorophyll_class": 0.0285
           },
           "E4-S5": {
             "water_stress": 0.006,
+            "cumulative_thermal_stress": 0.003,
             "absolute_ndvi": -0.0348,
             "season_average_ndvi": -0.0174,
-            "chlorophyll_class": -0.0349,
-            "cumulative_thermal_stress": 0.003
+            "chlorophyll_class": -0.0349
           },
           "E5-S1": {
             "water_stress": 0.0212,
+            "cumulative_thermal_stress": 0.0106,
             "absolute_ndvi": -0.0577,
             "season_average_ndvi": -0.029,
-            "chlorophyll_class": -0.0579,
-            "cumulative_thermal_stress": 0.0106
+            "chlorophyll_class": -0.0579
           },
           "E5-S2": {
             "water_stress": 0.0481,
+            "cumulative_thermal_stress": 0.0241,
             "absolute_ndvi": -0.0597,
             "season_average_ndvi": -0.0299,
-            "chlorophyll_class": -0.0537,
-            "cumulative_thermal_stress": 0.0241
+            "chlorophyll_class": -0.0537
           },
           "E5-S3": {
             "water_stress": 0.0368,
+            "cumulative_thermal_stress": 0.0185,
             "absolute_ndvi": -0.0146,
             "season_average_ndvi": -0.0074,
-            "chlorophyll_class": -0.0095,
-            "cumulative_thermal_stress": 0.0185
+            "chlorophyll_class": -0.0095
           },
           "E5-S4": {
             "water_stress": 0.0136,
+            "cumulative_thermal_stress": 0.0068,
             "absolute_ndvi": -0.0221,
             "season_average_ndvi": -0.0111,
-            "chlorophyll_class": -0.0221,
-            "cumulative_thermal_stress": 0.0068
+            "chlorophyll_class": -0.0221
           },
           "E5-S5": {
             "water_stress": -0.0187,
+            "cumulative_thermal_stress": -0.0094,
             "absolute_ndvi": -0.036,
             "season_average_ndvi": -0.018,
-            "chlorophyll_class": -0.0363,
-            "cumulative_thermal_stress": -0.0094
+            "chlorophyll_class": -0.0363
           }
         },
         "equipos": {
           "E1": {
             "water_stress": -0.0114,
+            "cumulative_thermal_stress": -0.0057,
             "absolute_ndvi": -0.0222,
             "season_average_ndvi": -0.0111,
-            "chlorophyll_class": 0.0007,
-            "cumulative_thermal_stress": -0.0057
+            "chlorophyll_class": 0.0007
           },
           "E2": {
             "water_stress": -0.0067,
+            "cumulative_thermal_stress": -0.0033,
             "absolute_ndvi": -0.0293,
             "season_average_ndvi": -0.0146,
-            "chlorophyll_class": -0.0107,
-            "cumulative_thermal_stress": -0.0033
+            "chlorophyll_class": -0.0107
           },
           "E3": {
             "water_stress": 0.012,
+            "cumulative_thermal_stress": 0.006,
             "absolute_ndvi": -0.0189,
             "season_average_ndvi": -0.0095,
-            "chlorophyll_class": -0.0152,
-            "cumulative_thermal_stress": 0.006
+            "chlorophyll_class": -0.0152
           },
           "E4": {
             "water_stress": 0.0161,
+            "cumulative_thermal_stress": 0.0081,
             "absolute_ndvi": -0.0355,
             "season_average_ndvi": -0.0179,
-            "chlorophyll_class": -0.0317,
-            "cumulative_thermal_stress": 0.0081
+            "chlorophyll_class": -0.0317
           },
           "E5": {
             "water_stress": 0.0203,
+            "cumulative_thermal_stress": 0.0102,
             "absolute_ndvi": -0.0373,
             "season_average_ndvi": -0.0187,
-            "chlorophyll_class": -0.0352,
-            "cumulative_thermal_stress": 0.0102
+            "chlorophyll_class": -0.0352
           }
         }
       },
@@ -1303,6 +1477,68 @@
           "by_plants": {
             "opt": 10183,
             "bajo": 20271,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_sector": {
+            "opt": 8,
+            "bajo": 15,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 435976,
+            "bajo": 884970,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 10051,
+            "bajo": 20403,
+            "alto": 0,
+            "exc": 0
+          }
+        }
+      },
+      "compliance_equipos": {
+        "water_stress": {
+          "by_equipo": {
+            "opt": 2,
+            "bajo": 3,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 464084,
+            "bajo": 862572,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 10697,
+            "bajo": 19757,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
             "alto": 0,
             "exc": 0
           }
@@ -1517,201 +1753,201 @@
         "sectors": {
           "E1-S1": {
             "water_stress": 0.0214,
+            "cumulative_thermal_stress": 0.082,
             "absolute_ndvi": 0.0048,
             "season_average_ndvi": -0.0026,
-            "chlorophyll_class": -0.0172,
-            "cumulative_thermal_stress": 0.082
+            "chlorophyll_class": -0.0172
           },
           "E1-S2": {
             "water_stress": 0.069,
+            "cumulative_thermal_stress": 0.0106,
             "absolute_ndvi": 0.0,
             "season_average_ndvi": -0.0107,
-            "chlorophyll_class": -0.0217,
-            "cumulative_thermal_stress": 0.0106
+            "chlorophyll_class": -0.0217
           },
           "E1-S3": {
             "water_stress": 0.1115,
+            "cumulative_thermal_stress": 0.0872,
             "absolute_ndvi": 0.0138,
             "season_average_ndvi": -0.0024,
-            "chlorophyll_class": -0.0082,
-            "cumulative_thermal_stress": 0.0872
+            "chlorophyll_class": -0.0082
           },
           "E1-S4": {
             "water_stress": -0.001,
+            "cumulative_thermal_stress": -0.0038,
             "absolute_ndvi": 0.0285,
             "season_average_ndvi": 0.0169,
-            "chlorophyll_class": 0.0114,
-            "cumulative_thermal_stress": -0.0038
+            "chlorophyll_class": 0.0114
           },
           "E1-S5": {
             "water_stress": 0.0266,
+            "cumulative_thermal_stress": 0.0239,
             "absolute_ndvi": 0.017,
             "season_average_ndvi": 0.0077,
-            "chlorophyll_class": -0.003,
-            "cumulative_thermal_stress": 0.0239
+            "chlorophyll_class": -0.003
           },
           "E2-S1": {
             "water_stress": 0.0498,
+            "cumulative_thermal_stress": 0.0449,
             "absolute_ndvi": -0.0166,
             "season_average_ndvi": -0.0327,
-            "chlorophyll_class": -0.0519,
-            "cumulative_thermal_stress": 0.0449
+            "chlorophyll_class": -0.0519
           },
           "E2-S2": {
             "water_stress": 0.0682,
+            "cumulative_thermal_stress": 0.0433,
             "absolute_ndvi": -0.0017,
             "season_average_ndvi": -0.0161,
-            "chlorophyll_class": -0.0275,
-            "cumulative_thermal_stress": 0.0433
+            "chlorophyll_class": -0.0275
           },
           "E2-S3": {
             "water_stress": 0.0,
+            "cumulative_thermal_stress": 0.0197,
             "absolute_ndvi": -0.0188,
             "season_average_ndvi": -0.0322,
-            "chlorophyll_class": -0.0567,
-            "cumulative_thermal_stress": 0.0197
+            "chlorophyll_class": -0.0567
           },
           "E3-S1": {
             "water_stress": 0.0536,
+            "cumulative_thermal_stress": 0.0343,
             "absolute_ndvi": -0.0009,
             "season_average_ndvi": -0.0155,
-            "chlorophyll_class": -0.0076,
-            "cumulative_thermal_stress": 0.0343
+            "chlorophyll_class": -0.0076
           },
           "E3-S2": {
             "water_stress": 0.0482,
+            "cumulative_thermal_stress": 0.0792,
             "absolute_ndvi": 0.0066,
             "season_average_ndvi": -0.0035,
-            "chlorophyll_class": -0.0065,
-            "cumulative_thermal_stress": 0.0792
+            "chlorophyll_class": -0.0065
           },
           "E3-S3": {
             "water_stress": -0.028,
+            "cumulative_thermal_stress": -0.0439,
             "absolute_ndvi": 0.0019,
             "season_average_ndvi": -0.0093,
-            "chlorophyll_class": -0.0184,
-            "cumulative_thermal_stress": -0.0439
+            "chlorophyll_class": -0.0184
           },
           "E3-S4": {
             "water_stress": -0.0196,
+            "cumulative_thermal_stress": 0.0056,
             "absolute_ndvi": 0.0084,
             "season_average_ndvi": -0.0006,
-            "chlorophyll_class": -0.0155,
-            "cumulative_thermal_stress": 0.0056
+            "chlorophyll_class": -0.0155
           },
           "E3-S5": {
             "water_stress": -0.0533,
+            "cumulative_thermal_stress": -0.0487,
             "absolute_ndvi": -0.0073,
             "season_average_ndvi": -0.0108,
-            "chlorophyll_class": -0.0313,
-            "cumulative_thermal_stress": -0.0487
+            "chlorophyll_class": -0.0313
           },
           "E4-S1": {
             "water_stress": 0.0632,
+            "cumulative_thermal_stress": 0.0722,
             "absolute_ndvi": 0.014,
             "season_average_ndvi": -0.0136,
-            "chlorophyll_class": 0.0001,
-            "cumulative_thermal_stress": 0.0722
+            "chlorophyll_class": 0.0001
           },
           "E4-S2": {
             "water_stress": 0.08,
+            "cumulative_thermal_stress": 0.1077,
             "absolute_ndvi": 0.0197,
             "season_average_ndvi": -0.0082,
-            "chlorophyll_class": 0.0181,
-            "cumulative_thermal_stress": 0.1077
+            "chlorophyll_class": 0.0181
           },
           "E4-S3": {
             "water_stress": -0.0876,
+            "cumulative_thermal_stress": -0.0916,
             "absolute_ndvi": 0.0188,
             "season_average_ndvi": -0.0115,
-            "chlorophyll_class": 0.0012,
-            "cumulative_thermal_stress": -0.0916
+            "chlorophyll_class": 0.0012
           },
           "E4-S4": {
             "water_stress": -0.0024,
+            "cumulative_thermal_stress": 0.0024,
             "absolute_ndvi": 0.0156,
             "season_average_ndvi": 0.0328,
-            "chlorophyll_class": -0.0072,
-            "cumulative_thermal_stress": 0.0024
+            "chlorophyll_class": -0.0072
           },
           "E4-S5": {
             "water_stress": -0.0477,
+            "cumulative_thermal_stress": -0.0447,
             "absolute_ndvi": 0.0114,
             "season_average_ndvi": -0.006,
-            "chlorophyll_class": -0.0129,
-            "cumulative_thermal_stress": -0.0447
+            "chlorophyll_class": -0.0129
           },
           "E5-S1": {
             "water_stress": -0.006,
+            "cumulative_thermal_stress": 0.0046,
             "absolute_ndvi": 0.0218,
             "season_average_ndvi": -0.0069,
-            "chlorophyll_class": 0.0014,
-            "cumulative_thermal_stress": 0.0046
+            "chlorophyll_class": 0.0014
           },
           "E5-S2": {
             "water_stress": -0.0107,
+            "cumulative_thermal_stress": 0.0133,
             "absolute_ndvi": 0.0229,
             "season_average_ndvi": -0.0069,
-            "chlorophyll_class": 0.013,
-            "cumulative_thermal_stress": 0.0133
+            "chlorophyll_class": 0.013
           },
           "E5-S3": {
             "water_stress": 0.0132,
+            "cumulative_thermal_stress": 0.0315,
             "absolute_ndvi": 0.0168,
             "season_average_ndvi": 0.0096,
-            "chlorophyll_class": -0.0095,
-            "cumulative_thermal_stress": 0.0315
+            "chlorophyll_class": -0.0095
           },
           "E5-S4": {
             "water_stress": 0.0053,
+            "cumulative_thermal_stress": 0.0121,
             "absolute_ndvi": 0.021,
             "season_average_ndvi": 0.01,
-            "chlorophyll_class": -0.0006,
-            "cumulative_thermal_stress": 0.0121
+            "chlorophyll_class": -0.0006
           },
           "E5-S5": {
             "water_stress": 0.0195,
+            "cumulative_thermal_stress": 0.0102,
             "absolute_ndvi": 0.0092,
             "season_average_ndvi": -0.0088,
-            "chlorophyll_class": -0.0185,
-            "cumulative_thermal_stress": 0.0102
+            "chlorophyll_class": -0.0185
           }
         },
         "equipos": {
           "E1": {
             "water_stress": 0.0451,
+            "cumulative_thermal_stress": 0.0394,
             "absolute_ndvi": 0.0134,
             "season_average_ndvi": 0.0023,
-            "chlorophyll_class": -0.0071,
-            "cumulative_thermal_stress": 0.0394
+            "chlorophyll_class": -0.0071
           },
           "E2": {
             "water_stress": 0.0391,
+            "cumulative_thermal_stress": 0.0357,
             "absolute_ndvi": -0.0123,
             "season_average_ndvi": -0.027,
-            "chlorophyll_class": -0.0454,
-            "cumulative_thermal_stress": 0.0357
+            "chlorophyll_class": -0.0454
           },
           "E3": {
             "water_stress": -0.0024,
+            "cumulative_thermal_stress": 0.0036,
             "absolute_ndvi": 0.0017,
             "season_average_ndvi": -0.0077,
-            "chlorophyll_class": -0.0164,
-            "cumulative_thermal_stress": 0.0036
+            "chlorophyll_class": -0.0164
           },
           "E4": {
             "water_stress": 0.0022,
+            "cumulative_thermal_stress": 0.0102,
             "absolute_ndvi": 0.016,
             "season_average_ndvi": -0.0016,
-            "chlorophyll_class": 0.0002,
-            "cumulative_thermal_stress": 0.0102
+            "chlorophyll_class": 0.0002
           },
           "E5": {
             "water_stress": 0.0049,
+            "cumulative_thermal_stress": 0.015,
             "absolute_ndvi": 0.0181,
             "season_average_ndvi": -0.0005,
-            "chlorophyll_class": -0.0032,
-            "cumulative_thermal_stress": 0.015
+            "chlorophyll_class": -0.0032
           }
         }
       },
@@ -1732,6 +1968,68 @@
           "by_plants": {
             "opt": 6281,
             "bajo": 24173,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_sector": {
+            "opt": 5,
+            "bajo": 18,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 271282,
+            "bajo": 1049664,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 6281,
+            "bajo": 24173,
+            "alto": 0,
+            "exc": 0
+          }
+        }
+      },
+      "compliance_equipos": {
+        "water_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
             "alto": 0,
             "exc": 0
           }
@@ -1946,201 +2244,201 @@
         "sectors": {
           "E1-S1": {
             "water_stress": 0.047,
+            "cumulative_thermal_stress": 0.0235,
             "absolute_ndvi": 0.0818,
             "season_average_ndvi": 0.0409,
-            "chlorophyll_class": 0.1057,
-            "cumulative_thermal_stress": 0.0235
+            "chlorophyll_class": 0.1057
           },
           "E1-S2": {
             "water_stress": 0.0178,
+            "cumulative_thermal_stress": 0.0089,
             "absolute_ndvi": 0.0792,
             "season_average_ndvi": 0.0396,
-            "chlorophyll_class": 0.0909,
-            "cumulative_thermal_stress": 0.0089
+            "chlorophyll_class": 0.0909
           },
           "E1-S3": {
             "water_stress": -0.0734,
+            "cumulative_thermal_stress": -0.0367,
             "absolute_ndvi": 0.0674,
             "season_average_ndvi": 0.0337,
-            "chlorophyll_class": 0.0765,
-            "cumulative_thermal_stress": -0.0367
+            "chlorophyll_class": 0.0765
           },
           "E1-S4": {
             "water_stress": -0.0622,
+            "cumulative_thermal_stress": -0.0311,
             "absolute_ndvi": 0.0725,
             "season_average_ndvi": 0.0363,
-            "chlorophyll_class": 0.0902,
-            "cumulative_thermal_stress": -0.0311
+            "chlorophyll_class": 0.0902
           },
           "E1-S5": {
             "water_stress": -0.0712,
+            "cumulative_thermal_stress": -0.0356,
             "absolute_ndvi": 0.0815,
             "season_average_ndvi": 0.0408,
-            "chlorophyll_class": 0.0852,
-            "cumulative_thermal_stress": -0.0356
+            "chlorophyll_class": 0.0852
           },
           "E2-S1": {
             "water_stress": -0.0184,
+            "cumulative_thermal_stress": -0.0092,
             "absolute_ndvi": 0.0851,
             "season_average_ndvi": 0.0426,
-            "chlorophyll_class": 0.1213,
-            "cumulative_thermal_stress": -0.0092
+            "chlorophyll_class": 0.1213
           },
           "E2-S2": {
             "water_stress": -0.0555,
+            "cumulative_thermal_stress": -0.0277,
             "absolute_ndvi": 0.0796,
             "season_average_ndvi": 0.0398,
-            "chlorophyll_class": 0.1097,
-            "cumulative_thermal_stress": -0.0277
+            "chlorophyll_class": 0.1097
           },
           "E2-S3": {
             "water_stress": -0.0207,
+            "cumulative_thermal_stress": -0.0104,
             "absolute_ndvi": 0.0883,
             "season_average_ndvi": 0.0442,
-            "chlorophyll_class": 0.1193,
-            "cumulative_thermal_stress": -0.0104
+            "chlorophyll_class": 0.1193
           },
           "E3-S1": {
             "water_stress": 0.0115,
+            "cumulative_thermal_stress": 0.0058,
             "absolute_ndvi": 0.1016,
             "season_average_ndvi": 0.0508,
-            "chlorophyll_class": 0.12,
-            "cumulative_thermal_stress": 0.0058
+            "chlorophyll_class": 0.12
           },
           "E3-S2": {
             "water_stress": -0.0667,
+            "cumulative_thermal_stress": -0.0334,
             "absolute_ndvi": 0.08,
             "season_average_ndvi": 0.04,
-            "chlorophyll_class": 0.0904,
-            "cumulative_thermal_stress": -0.0334
+            "chlorophyll_class": 0.0904
           },
           "E3-S3": {
             "water_stress": -0.0363,
+            "cumulative_thermal_stress": -0.0182,
             "absolute_ndvi": 0.0976,
             "season_average_ndvi": 0.0488,
-            "chlorophyll_class": 0.1077,
-            "cumulative_thermal_stress": -0.0182
+            "chlorophyll_class": 0.1077
           },
           "E3-S4": {
             "water_stress": -0.0403,
+            "cumulative_thermal_stress": -0.0201,
             "absolute_ndvi": 0.0893,
             "season_average_ndvi": 0.0447,
-            "chlorophyll_class": 0.0956,
-            "cumulative_thermal_stress": -0.0201
+            "chlorophyll_class": 0.0956
           },
           "E3-S5": {
             "water_stress": 0.0348,
+            "cumulative_thermal_stress": 0.0174,
             "absolute_ndvi": 0.1109,
             "season_average_ndvi": 0.0554,
-            "chlorophyll_class": 0.1185,
-            "cumulative_thermal_stress": 0.0174
+            "chlorophyll_class": 0.1185
           },
           "E4-S1": {
             "water_stress": -0.0228,
+            "cumulative_thermal_stress": -0.0114,
             "absolute_ndvi": 0.0961,
             "season_average_ndvi": 0.048,
-            "chlorophyll_class": 0.0989,
-            "cumulative_thermal_stress": -0.0114
+            "chlorophyll_class": 0.0989
           },
           "E4-S2": {
             "water_stress": 0.01,
+            "cumulative_thermal_stress": 0.005,
             "absolute_ndvi": 0.098,
             "season_average_ndvi": 0.049,
-            "chlorophyll_class": 0.0975,
-            "cumulative_thermal_stress": 0.005
+            "chlorophyll_class": 0.0975
           },
           "E4-S3": {
             "water_stress": -0.0057,
+            "cumulative_thermal_stress": -0.0028,
             "absolute_ndvi": 0.0872,
             "season_average_ndvi": 0.0436,
-            "chlorophyll_class": 0.0938,
-            "cumulative_thermal_stress": -0.0028
+            "chlorophyll_class": 0.0938
           },
           "E4-S4": {
             "water_stress": -0.0999,
+            "cumulative_thermal_stress": -0.0499,
             "absolute_ndvi": 0.121,
             "season_average_ndvi": 0.0605,
-            "chlorophyll_class": 0.0969,
-            "cumulative_thermal_stress": -0.0499
+            "chlorophyll_class": 0.0969
           },
           "E4-S5": {
             "water_stress": -0.1016,
+            "cumulative_thermal_stress": -0.0508,
             "absolute_ndvi": 0.0841,
             "season_average_ndvi": 0.042,
-            "chlorophyll_class": 0.0881,
-            "cumulative_thermal_stress": -0.0508
+            "chlorophyll_class": 0.0881
           },
           "E5-S1": {
             "water_stress": 0.0826,
+            "cumulative_thermal_stress": 0.0413,
             "absolute_ndvi": 0.0745,
             "season_average_ndvi": 0.0373,
-            "chlorophyll_class": 0.0892,
-            "cumulative_thermal_stress": 0.0413
+            "chlorophyll_class": 0.0892
           },
           "E5-S2": {
             "water_stress": 0.1443,
+            "cumulative_thermal_stress": 0.0722,
             "absolute_ndvi": 0.0852,
             "season_average_ndvi": 0.0426,
-            "chlorophyll_class": 0.0902,
-            "cumulative_thermal_stress": 0.0722
+            "chlorophyll_class": 0.0902
           },
           "E5-S3": {
             "water_stress": -0.1301,
+            "cumulative_thermal_stress": -0.065,
             "absolute_ndvi": 0.0866,
             "season_average_ndvi": 0.0433,
-            "chlorophyll_class": 0.0967,
-            "cumulative_thermal_stress": -0.065
+            "chlorophyll_class": 0.0967
           },
           "E5-S4": {
             "water_stress": -0.084,
+            "cumulative_thermal_stress": -0.042,
             "absolute_ndvi": 0.0884,
             "season_average_ndvi": 0.0442,
-            "chlorophyll_class": 0.0864,
-            "cumulative_thermal_stress": -0.042
+            "chlorophyll_class": 0.0864
           },
           "E5-S5": {
             "water_stress": -0.058,
+            "cumulative_thermal_stress": -0.029,
             "absolute_ndvi": 0.0758,
             "season_average_ndvi": 0.0379,
-            "chlorophyll_class": 0.0777,
-            "cumulative_thermal_stress": -0.029
+            "chlorophyll_class": 0.0777
           }
         },
         "equipos": {
           "E1": {
             "water_stress": -0.0314,
+            "cumulative_thermal_stress": -0.0157,
             "absolute_ndvi": 0.0763,
             "season_average_ndvi": 0.0381,
-            "chlorophyll_class": 0.0894,
-            "cumulative_thermal_stress": -0.0157
+            "chlorophyll_class": 0.0894
           },
           "E2": {
             "water_stress": -0.0316,
+            "cumulative_thermal_stress": -0.0158,
             "absolute_ndvi": 0.0843,
             "season_average_ndvi": 0.0422,
-            "chlorophyll_class": 0.1168,
-            "cumulative_thermal_stress": -0.0158
+            "chlorophyll_class": 0.1168
           },
           "E3": {
             "water_stress": -0.0194,
+            "cumulative_thermal_stress": -0.0097,
             "absolute_ndvi": 0.0959,
             "season_average_ndvi": 0.0479,
-            "chlorophyll_class": 0.1062,
-            "cumulative_thermal_stress": -0.0097
+            "chlorophyll_class": 0.1062
           },
           "E4": {
             "water_stress": -0.0421,
+            "cumulative_thermal_stress": -0.021,
             "absolute_ndvi": 0.0973,
             "season_average_ndvi": 0.0486,
-            "chlorophyll_class": 0.0951,
-            "cumulative_thermal_stress": -0.021
+            "chlorophyll_class": 0.0951
           },
           "E5": {
             "water_stress": -0.013,
+            "cumulative_thermal_stress": -0.0065,
             "absolute_ndvi": 0.0823,
             "season_average_ndvi": 0.0411,
-            "chlorophyll_class": 0.0881,
-            "cumulative_thermal_stress": -0.0065
+            "chlorophyll_class": 0.0881
           }
         }
       },
@@ -2161,6 +2459,68 @@
           "by_plants": {
             "opt": 11802,
             "bajo": 18652,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_sector": {
+            "opt": 3,
+            "bajo": 20,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 157917,
+            "bajo": 1163029,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 3649,
+            "bajo": 26805,
+            "alto": 0,
+            "exc": 0
+          }
+        }
+      },
+      "compliance_equipos": {
+        "water_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
             "alto": 0,
             "exc": 0
           }
@@ -2375,201 +2735,201 @@
         "sectors": {
           "E1-S1": {
             "water_stress": 0.0318,
+            "cumulative_thermal_stress": 0.0184,
             "absolute_ndvi": 0.0002,
             "season_average_ndvi": 0.0137,
-            "chlorophyll_class": 0.052,
-            "cumulative_thermal_stress": 0.0184
+            "chlorophyll_class": 0.052
           },
           "E1-S2": {
             "water_stress": 0.0306,
+            "cumulative_thermal_stress": 0.0132,
             "absolute_ndvi": 0.0053,
             "season_average_ndvi": 0.015,
-            "chlorophyll_class": 0.0685,
-            "cumulative_thermal_stress": 0.0132
+            "chlorophyll_class": 0.0685
           },
           "E1-S3": {
             "water_stress": -0.054,
+            "cumulative_thermal_stress": -0.0302,
             "absolute_ndvi": -0.0035,
             "season_average_ndvi": 0.01,
-            "chlorophyll_class": 0.0375,
-            "cumulative_thermal_stress": -0.0302
+            "chlorophyll_class": 0.0375
           },
           "E1-S4": {
             "water_stress": -0.0398,
+            "cumulative_thermal_stress": -0.0236,
             "absolute_ndvi": -0.0032,
             "season_average_ndvi": 0.011,
-            "chlorophyll_class": 0.0295,
-            "cumulative_thermal_stress": -0.0236
+            "chlorophyll_class": 0.0295
           },
           "E1-S5": {
             "water_stress": 0.06,
+            "cumulative_thermal_stress": 0.0081,
             "absolute_ndvi": 0.0008,
             "season_average_ndvi": 0.0138,
-            "chlorophyll_class": 0.0578,
-            "cumulative_thermal_stress": 0.0081
+            "chlorophyll_class": 0.0578
           },
           "E2-S1": {
             "water_stress": 0.0083,
+            "cumulative_thermal_stress": -0.0003,
             "absolute_ndvi": -0.0057,
             "season_average_ndvi": 0.0122,
-            "chlorophyll_class": 0.0645,
-            "cumulative_thermal_stress": -0.0003
+            "chlorophyll_class": 0.0645
           },
           "E2-S2": {
             "water_stress": 0.0292,
+            "cumulative_thermal_stress": 0.0004,
             "absolute_ndvi": -0.0002,
             "season_average_ndvi": 0.0132,
-            "chlorophyll_class": 0.0537,
-            "cumulative_thermal_stress": 0.0004
+            "chlorophyll_class": 0.0537
           },
           "E2-S3": {
             "water_stress": 0.0175,
+            "cumulative_thermal_stress": 0.0024,
             "absolute_ndvi": -0.0043,
             "season_average_ndvi": 0.0132,
-            "chlorophyll_class": 0.0541,
-            "cumulative_thermal_stress": 0.0024
+            "chlorophyll_class": 0.0541
           },
           "E3-S1": {
             "water_stress": 0.0079,
+            "cumulative_thermal_stress": 0.0045,
             "absolute_ndvi": -0.0019,
             "season_average_ndvi": 0.0163,
-            "chlorophyll_class": 0.0454,
-            "cumulative_thermal_stress": 0.0045
+            "chlorophyll_class": 0.0454
           },
           "E3-S2": {
             "water_stress": -0.0208,
+            "cumulative_thermal_stress": -0.018,
             "absolute_ndvi": 0.0091,
             "season_average_ndvi": 0.0164,
-            "chlorophyll_class": 0.0374,
-            "cumulative_thermal_stress": -0.018
+            "chlorophyll_class": 0.0374
           },
           "E3-S3": {
             "water_stress": 0.0841,
+            "cumulative_thermal_stress": 0.022,
             "absolute_ndvi": 0.0077,
             "season_average_ndvi": 0.0188,
-            "chlorophyll_class": 0.0468,
-            "cumulative_thermal_stress": 0.022
+            "chlorophyll_class": 0.0468
           },
           "E3-S4": {
             "water_stress": -0.0426,
+            "cumulative_thermal_stress": -0.0209,
             "absolute_ndvi": 0.0043,
             "season_average_ndvi": 0.0163,
-            "chlorophyll_class": 0.0287,
-            "cumulative_thermal_stress": -0.0209
+            "chlorophyll_class": 0.0287
           },
           "E3-S5": {
             "water_stress": -0.0184,
+            "cumulative_thermal_stress": -0.0003,
             "absolute_ndvi": 0.0067,
             "season_average_ndvi": 0.0208,
-            "chlorophyll_class": 0.0389,
-            "cumulative_thermal_stress": -0.0003
+            "chlorophyll_class": 0.0389
           },
           "E4-S1": {
             "water_stress": -0.0155,
+            "cumulative_thermal_stress": -0.009,
             "absolute_ndvi": 0.0178,
             "season_average_ndvi": 0.022,
-            "chlorophyll_class": 0.0439,
-            "cumulative_thermal_stress": -0.009
+            "chlorophyll_class": 0.0439
           },
           "E4-S2": {
             "water_stress": -0.0676,
+            "cumulative_thermal_stress": -0.0209,
             "absolute_ndvi": 0.0152,
             "season_average_ndvi": 0.0214,
-            "chlorophyll_class": 0.031,
-            "cumulative_thermal_stress": -0.0209
+            "chlorophyll_class": 0.031
           },
           "E4-S3": {
             "water_stress": -0.012,
+            "cumulative_thermal_stress": -0.005,
             "absolute_ndvi": 0.011,
             "season_average_ndvi": 0.0182,
-            "chlorophyll_class": 0.0289,
-            "cumulative_thermal_stress": -0.005
+            "chlorophyll_class": 0.0289
           },
           "E4-S4": {
             "water_stress": 0.0013,
+            "cumulative_thermal_stress": -0.0162,
             "absolute_ndvi": 0.0624,
             "season_average_ndvi": 0.041,
-            "chlorophyll_class": 0.0803,
-            "cumulative_thermal_stress": -0.0162
+            "chlorophyll_class": 0.0803
           },
           "E4-S5": {
             "water_stress": 0.0648,
+            "cumulative_thermal_stress": 0.0046,
             "absolute_ndvi": 0.0126,
             "season_average_ndvi": 0.0183,
-            "chlorophyll_class": 0.0382,
-            "cumulative_thermal_stress": 0.0046
+            "chlorophyll_class": 0.0382
           },
           "E5-S1": {
             "water_stress": -0.0647,
+            "cumulative_thermal_stress": -0.0078,
             "absolute_ndvi": 0.007,
             "season_average_ndvi": 0.0147,
-            "chlorophyll_class": 0.0302,
-            "cumulative_thermal_stress": -0.0078
+            "chlorophyll_class": 0.0302
           },
           "E5-S2": {
             "water_stress": -0.0234,
+            "cumulative_thermal_stress": 0.0162,
             "absolute_ndvi": 0.0077,
             "season_average_ndvi": 0.0168,
-            "chlorophyll_class": 0.0425,
-            "cumulative_thermal_stress": 0.0162
+            "chlorophyll_class": 0.0425
           },
           "E5-S3": {
             "water_stress": 0.015,
+            "cumulative_thermal_stress": -0.0167,
             "absolute_ndvi": 0.0125,
             "season_average_ndvi": 0.0186,
-            "chlorophyll_class": 0.0521,
-            "cumulative_thermal_stress": -0.0167
+            "chlorophyll_class": 0.0521
           },
           "E5-S4": {
             "water_stress": 0.0171,
+            "cumulative_thermal_stress": -0.0083,
             "absolute_ndvi": 0.0124,
             "season_average_ndvi": 0.0189,
-            "chlorophyll_class": 0.0564,
-            "cumulative_thermal_stress": -0.0083
+            "chlorophyll_class": 0.0564
           },
           "E5-S5": {
             "water_stress": -0.0213,
+            "cumulative_thermal_stress": -0.0168,
             "absolute_ndvi": 0.0079,
             "season_average_ndvi": 0.0153,
-            "chlorophyll_class": 0.058,
-            "cumulative_thermal_stress": -0.0168
+            "chlorophyll_class": 0.058
           }
         },
         "equipos": {
           "E1": {
             "water_stress": 0.004,
+            "cumulative_thermal_stress": -0.0039,
             "absolute_ndvi": -0.0003,
             "season_average_ndvi": 0.0127,
-            "chlorophyll_class": 0.0483,
-            "cumulative_thermal_stress": -0.0039
+            "chlorophyll_class": 0.0483
           },
           "E2": {
             "water_stress": 0.0184,
+            "cumulative_thermal_stress": 0.0009,
             "absolute_ndvi": -0.0033,
             "season_average_ndvi": 0.0129,
-            "chlorophyll_class": 0.0573,
-            "cumulative_thermal_stress": 0.0009
+            "chlorophyll_class": 0.0573
           },
           "E3": {
             "water_stress": 0.0011,
+            "cumulative_thermal_stress": -0.0029,
             "absolute_ndvi": 0.0054,
             "season_average_ndvi": 0.0178,
-            "chlorophyll_class": 0.0392,
-            "cumulative_thermal_stress": -0.0029
+            "chlorophyll_class": 0.0392
           },
           "E4": {
             "water_stress": -0.0072,
+            "cumulative_thermal_stress": -0.0095,
             "absolute_ndvi": 0.0235,
             "season_average_ndvi": 0.0241,
-            "chlorophyll_class": 0.0443,
-            "cumulative_thermal_stress": -0.0095
+            "chlorophyll_class": 0.0443
           },
           "E5": {
             "water_stress": -0.0139,
+            "cumulative_thermal_stress": -0.0068,
             "absolute_ndvi": 0.0096,
             "season_average_ndvi": 0.017,
-            "chlorophyll_class": 0.0484,
-            "cumulative_thermal_stress": -0.0068
+            "chlorophyll_class": 0.0484
           }
         }
       },
@@ -2590,6 +2950,68 @@
           "by_plants": {
             "opt": 9266,
             "bajo": 21188,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_sector": {
+            "opt": 6,
+            "bajo": 17,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 342101,
+            "bajo": 978845,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 7897,
+            "bajo": 22557,
+            "alto": 0,
+            "exc": 0
+          }
+        }
+      },
+      "compliance_equipos": {
+        "water_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
             "alto": 0,
             "exc": 0
           }
@@ -2804,201 +3226,201 @@
         "sectors": {
           "E1-S1": {
             "water_stress": -0.0005,
+            "cumulative_thermal_stress": 0.0091,
             "absolute_ndvi": 0.0138,
             "season_average_ndvi": 0.0103,
-            "chlorophyll_class": 0.0362,
-            "cumulative_thermal_stress": 0.0091
+            "chlorophyll_class": 0.0362
           },
           "E1-S2": {
             "water_stress": 0.1118,
+            "cumulative_thermal_stress": 0.0345,
             "absolute_ndvi": 0.013,
             "season_average_ndvi": 0.0107,
-            "chlorophyll_class": 0.0359,
-            "cumulative_thermal_stress": 0.0345
+            "chlorophyll_class": 0.0359
           },
           "E1-S3": {
             "water_stress": 0.1711,
+            "cumulative_thermal_stress": 0.0276,
             "absolute_ndvi": 0.0129,
             "season_average_ndvi": 0.0083,
-            "chlorophyll_class": 0.049,
-            "cumulative_thermal_stress": 0.0276
+            "chlorophyll_class": 0.049
           },
           "E1-S4": {
             "water_stress": 0.1085,
+            "cumulative_thermal_stress": 0.0153,
             "absolute_ndvi": 0.0208,
             "season_average_ndvi": 0.0107,
-            "chlorophyll_class": 0.0733,
-            "cumulative_thermal_stress": 0.0153
+            "chlorophyll_class": 0.0733
           },
           "E1-S5": {
             "water_stress": 0.0222,
+            "cumulative_thermal_stress": 0.0096,
             "absolute_ndvi": 0.0155,
             "season_average_ndvi": 0.0108,
-            "chlorophyll_class": 0.0385,
-            "cumulative_thermal_stress": 0.0096
+            "chlorophyll_class": 0.0385
           },
           "E2-S1": {
             "water_stress": 0.0433,
+            "cumulative_thermal_stress": 0.0107,
             "absolute_ndvi": 0.011,
             "season_average_ndvi": 0.0089,
-            "chlorophyll_class": 0.0185,
-            "cumulative_thermal_stress": 0.0107
+            "chlorophyll_class": 0.0185
           },
           "E2-S2": {
             "water_stress": 0.0549,
+            "cumulative_thermal_stress": 0.014,
             "absolute_ndvi": 0.0135,
             "season_average_ndvi": 0.01,
-            "chlorophyll_class": 0.0309,
-            "cumulative_thermal_stress": 0.014
+            "chlorophyll_class": 0.0309
           },
           "E2-S3": {
             "water_stress": 0.0919,
+            "cumulative_thermal_stress": 0.0242,
             "absolute_ndvi": 0.007,
             "season_average_ndvi": 0.0084,
-            "chlorophyll_class": 0.0181,
-            "cumulative_thermal_stress": 0.0242
+            "chlorophyll_class": 0.0181
           },
           "E3-S1": {
             "water_stress": 0.1031,
+            "cumulative_thermal_stress": 0.0281,
             "absolute_ndvi": 0.012,
             "season_average_ndvi": 0.0112,
-            "chlorophyll_class": 0.0452,
-            "cumulative_thermal_stress": 0.0281
+            "chlorophyll_class": 0.0452
           },
           "E3-S2": {
             "water_stress": 0.0485,
+            "cumulative_thermal_stress": 0.0031,
             "absolute_ndvi": 0.0218,
             "season_average_ndvi": 0.0136,
-            "chlorophyll_class": 0.085,
-            "cumulative_thermal_stress": 0.0031
+            "chlorophyll_class": 0.085
           },
           "E3-S3": {
             "water_stress": -0.0586,
+            "cumulative_thermal_stress": -0.0036,
             "absolute_ndvi": 0.0204,
             "season_average_ndvi": 0.0146,
-            "chlorophyll_class": 0.0659,
-            "cumulative_thermal_stress": -0.0036
+            "chlorophyll_class": 0.0659
           },
           "E3-S4": {
             "water_stress": 0.0661,
+            "cumulative_thermal_stress": 0.006,
             "absolute_ndvi": 0.019,
             "season_average_ndvi": 0.0129,
-            "chlorophyll_class": 0.084,
-            "cumulative_thermal_stress": 0.006
+            "chlorophyll_class": 0.084
           },
           "E3-S5": {
             "water_stress": 0.0589,
+            "cumulative_thermal_stress": 0.0145,
             "absolute_ndvi": 0.0191,
             "season_average_ndvi": 0.0151,
-            "chlorophyll_class": 0.0686,
-            "cumulative_thermal_stress": 0.0145
+            "chlorophyll_class": 0.0686
           },
           "E4-S1": {
             "water_stress": 0.0406,
+            "cumulative_thermal_stress": 0.0057,
             "absolute_ndvi": 0.0166,
             "season_average_ndvi": 0.0151,
-            "chlorophyll_class": 0.0713,
-            "cumulative_thermal_stress": 0.0057
+            "chlorophyll_class": 0.0713
           },
           "E4-S2": {
             "water_stress": 0.083,
+            "cumulative_thermal_stress": 0.0104,
             "absolute_ndvi": 0.0062,
             "season_average_ndvi": 0.0122,
-            "chlorophyll_class": 0.0649,
-            "cumulative_thermal_stress": 0.0104
+            "chlorophyll_class": 0.0649
           },
           "E4-S3": {
             "water_stress": 0.0053,
+            "cumulative_thermal_stress": -0.0011,
             "absolute_ndvi": 0.0091,
             "season_average_ndvi": 0.0114,
-            "chlorophyll_class": 0.0595,
-            "cumulative_thermal_stress": -0.0011
+            "chlorophyll_class": 0.0595
           },
           "E4-S4": {
             "water_stress": 0.0352,
+            "cumulative_thermal_stress": 0.0006,
             "absolute_ndvi": 0.0484,
             "season_average_ndvi": 0.0326,
-            "chlorophyll_class": 0.1043,
-            "cumulative_thermal_stress": 0.0006
+            "chlorophyll_class": 0.1043
           },
           "E4-S5": {
             "water_stress": 0.0738,
+            "cumulative_thermal_stress": 0.0208,
             "absolute_ndvi": 0.0185,
             "season_average_ndvi": 0.0137,
-            "chlorophyll_class": 0.0748,
-            "cumulative_thermal_stress": 0.0208
+            "chlorophyll_class": 0.0748
           },
           "E5-S1": {
             "water_stress": 0.0304,
+            "cumulative_thermal_stress": 0.0037,
             "absolute_ndvi": 0.0155,
             "season_average_ndvi": 0.0112,
-            "chlorophyll_class": 0.076,
-            "cumulative_thermal_stress": 0.0037
+            "chlorophyll_class": 0.076
           },
           "E5-S2": {
             "water_stress": 0.0388,
+            "cumulative_thermal_stress": 0.0178,
             "absolute_ndvi": 0.0108,
             "season_average_ndvi": 0.0111,
-            "chlorophyll_class": 0.0507,
-            "cumulative_thermal_stress": 0.0178
+            "chlorophyll_class": 0.0507
           },
           "E5-S3": {
             "water_stress": 0.0234,
+            "cumulative_thermal_stress": -0.0025,
             "absolute_ndvi": 0.0181,
             "season_average_ndvi": 0.0138,
-            "chlorophyll_class": 0.0681,
-            "cumulative_thermal_stress": -0.0025
+            "chlorophyll_class": 0.0681
           },
           "E5-S4": {
             "water_stress": -0.0094,
+            "cumulative_thermal_stress": -0.0065,
             "absolute_ndvi": 0.0169,
             "season_average_ndvi": 0.0136,
-            "chlorophyll_class": 0.0585,
-            "cumulative_thermal_stress": -0.0065
+            "chlorophyll_class": 0.0585
           },
           "E5-S5": {
             "water_stress": 0.0705,
+            "cumulative_thermal_stress": 0.0093,
             "absolute_ndvi": 0.019,
             "season_average_ndvi": 0.0123,
-            "chlorophyll_class": 0.0561,
-            "cumulative_thermal_stress": 0.0093
+            "chlorophyll_class": 0.0561
           }
         },
         "equipos": {
           "E1": {
             "water_stress": 0.0842,
+            "cumulative_thermal_stress": 0.0191,
             "absolute_ndvi": 0.0154,
             "season_average_ndvi": 0.0101,
-            "chlorophyll_class": 0.0473,
-            "cumulative_thermal_stress": 0.0191
+            "chlorophyll_class": 0.0473
           },
           "E2": {
             "water_stress": 0.0637,
+            "cumulative_thermal_stress": 0.0163,
             "absolute_ndvi": 0.0105,
             "season_average_ndvi": 0.0091,
-            "chlorophyll_class": 0.0226,
-            "cumulative_thermal_stress": 0.0163
+            "chlorophyll_class": 0.0226
           },
           "E3": {
             "water_stress": 0.0424,
+            "cumulative_thermal_stress": 0.0092,
             "absolute_ndvi": 0.0187,
             "season_average_ndvi": 0.0136,
-            "chlorophyll_class": 0.0705,
-            "cumulative_thermal_stress": 0.0092
+            "chlorophyll_class": 0.0705
           },
           "E4": {
             "water_stress": 0.0468,
+            "cumulative_thermal_stress": 0.007,
             "absolute_ndvi": 0.0195,
             "season_average_ndvi": 0.0169,
-            "chlorophyll_class": 0.0746,
-            "cumulative_thermal_stress": 0.007
+            "chlorophyll_class": 0.0746
           },
           "E5": {
             "water_stress": 0.0314,
+            "cumulative_thermal_stress": 0.0044,
             "absolute_ndvi": 0.0161,
             "season_average_ndvi": 0.0124,
-            "chlorophyll_class": 0.0615,
-            "cumulative_thermal_stress": 0.0044
+            "chlorophyll_class": 0.0615
           }
         }
       },
@@ -3019,6 +3441,68 @@
           "by_plants": {
             "opt": 1344,
             "bajo": 29110,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_sector": {
+            "opt": 4,
+            "bajo": 19,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 223014,
+            "bajo": 1097932,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 5173,
+            "bajo": 25281,
+            "alto": 0,
+            "exc": 0
+          }
+        }
+      },
+      "compliance_equipos": {
+        "water_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
             "alto": 0,
             "exc": 0
           }
@@ -3233,201 +3717,201 @@
         "sectors": {
           "E1-S1": {
             "water_stress": 0.0386,
+            "cumulative_thermal_stress": 0.0659,
             "absolute_ndvi": 0.0266,
             "season_average_ndvi": 0.0575,
-            "chlorophyll_class": 0.0615,
-            "cumulative_thermal_stress": 0.0659
+            "chlorophyll_class": 0.0615
           },
           "E1-S2": {
             "water_stress": -0.0981,
+            "cumulative_thermal_stress": 0.0055,
             "absolute_ndvi": 0.0225,
             "season_average_ndvi": 0.0547,
-            "chlorophyll_class": 0.0615,
-            "cumulative_thermal_stress": 0.0055
+            "chlorophyll_class": 0.0615
           },
           "E1-S3": {
             "water_stress": -0.1028,
+            "cumulative_thermal_stress": -0.0198,
             "absolute_ndvi": 0.0243,
             "season_average_ndvi": 0.0491,
-            "chlorophyll_class": 0.0706,
-            "cumulative_thermal_stress": -0.0198
+            "chlorophyll_class": 0.0706
           },
           "E1-S4": {
             "water_stress": -0.1047,
+            "cumulative_thermal_stress": -0.0588,
             "absolute_ndvi": 0.0204,
             "season_average_ndvi": 0.0525,
-            "chlorophyll_class": 0.0537,
-            "cumulative_thermal_stress": -0.0588
+            "chlorophyll_class": 0.0537
           },
           "E1-S5": {
             "water_stress": -0.1034,
+            "cumulative_thermal_stress": -0.0745,
             "absolute_ndvi": 0.0238,
             "season_average_ndvi": 0.0562,
-            "chlorophyll_class": 0.0724,
-            "cumulative_thermal_stress": -0.0745
+            "chlorophyll_class": 0.0724
           },
           "E2-S1": {
             "water_stress": -0.0286,
+            "cumulative_thermal_stress": 0.0034,
             "absolute_ndvi": 0.0279,
             "season_average_ndvi": 0.0546,
-            "chlorophyll_class": 0.0734,
-            "cumulative_thermal_stress": 0.0034
+            "chlorophyll_class": 0.0734
           },
           "E2-S2": {
             "water_stress": -0.038,
+            "cumulative_thermal_stress": 0.0039,
             "absolute_ndvi": 0.0245,
             "season_average_ndvi": 0.0544,
-            "chlorophyll_class": 0.0747,
-            "cumulative_thermal_stress": 0.0039
+            "chlorophyll_class": 0.0747
           },
           "E2-S3": {
             "water_stress": -0.1129,
+            "cumulative_thermal_stress": -0.0404,
             "absolute_ndvi": 0.035,
             "season_average_ndvi": 0.0602,
-            "chlorophyll_class": 0.0914,
-            "cumulative_thermal_stress": -0.0404
+            "chlorophyll_class": 0.0914
           },
           "E3-S1": {
             "water_stress": -0.0568,
+            "cumulative_thermal_stress": 0.0273,
             "absolute_ndvi": 0.0289,
             "season_average_ndvi": 0.0623,
-            "chlorophyll_class": 0.071,
-            "cumulative_thermal_stress": 0.0273
+            "chlorophyll_class": 0.071
           },
           "E3-S2": {
             "water_stress": 0.0568,
+            "cumulative_thermal_stress": 0.0661,
             "absolute_ndvi": 0.0197,
             "season_average_ndvi": 0.0606,
-            "chlorophyll_class": 0.062,
-            "cumulative_thermal_stress": 0.0661
+            "chlorophyll_class": 0.062
           },
           "E3-S3": {
             "water_stress": -0.0015,
+            "cumulative_thermal_stress": -0.0125,
             "absolute_ndvi": 0.0219,
             "season_average_ndvi": 0.0654,
-            "chlorophyll_class": 0.0727,
-            "cumulative_thermal_stress": -0.0125
+            "chlorophyll_class": 0.0727
           },
           "E3-S4": {
             "water_stress": -0.031,
+            "cumulative_thermal_stress": -0.0128,
             "absolute_ndvi": 0.0207,
             "season_average_ndvi": 0.0594,
-            "chlorophyll_class": 0.0704,
-            "cumulative_thermal_stress": -0.0128
+            "chlorophyll_class": 0.0704
           },
           "E3-S5": {
             "water_stress": -0.119,
+            "cumulative_thermal_stress": -0.0753,
             "absolute_ndvi": 0.0244,
             "season_average_ndvi": 0.0698,
-            "chlorophyll_class": 0.0772,
-            "cumulative_thermal_stress": -0.0753
+            "chlorophyll_class": 0.0772
           },
           "E4-S1": {
             "water_stress": -0.1035,
+            "cumulative_thermal_stress": -0.0865,
             "absolute_ndvi": 0.0395,
             "season_average_ndvi": 0.0849,
-            "chlorophyll_class": 0.0852,
-            "cumulative_thermal_stress": -0.0865
+            "chlorophyll_class": 0.0852
           },
           "E4-S2": {
             "water_stress": -0.1208,
+            "cumulative_thermal_stress": -0.0899,
             "absolute_ndvi": 0.05,
             "season_average_ndvi": 0.0868,
-            "chlorophyll_class": 0.0988,
-            "cumulative_thermal_stress": -0.0899
+            "chlorophyll_class": 0.0988
           },
           "E4-S3": {
             "water_stress": 0.0652,
+            "cumulative_thermal_stress": 0.0617,
             "absolute_ndvi": 0.0384,
             "season_average_ndvi": 0.0725,
-            "chlorophyll_class": 0.0868,
-            "cumulative_thermal_stress": 0.0617
+            "chlorophyll_class": 0.0868
           },
           "E4-S4": {
             "water_stress": -0.0259,
+            "cumulative_thermal_stress": -0.0238,
             "absolute_ndvi": 0.0299,
             "season_average_ndvi": 0.1276,
-            "chlorophyll_class": 0.0724,
-            "cumulative_thermal_stress": -0.0238
+            "chlorophyll_class": 0.0724
           },
           "E4-S5": {
             "water_stress": -0.0126,
+            "cumulative_thermal_stress": 0.0498,
             "absolute_ndvi": 0.0264,
             "season_average_ndvi": 0.0676,
-            "chlorophyll_class": 0.0744,
-            "cumulative_thermal_stress": 0.0498
+            "chlorophyll_class": 0.0744
           },
           "E5-S1": {
             "water_stress": 0.0435,
+            "cumulative_thermal_stress": 0.0546,
             "absolute_ndvi": 0.0283,
             "season_average_ndvi": 0.0621,
-            "chlorophyll_class": 0.0688,
-            "cumulative_thermal_stress": 0.0546
+            "chlorophyll_class": 0.0688
           },
           "E5-S2": {
             "water_stress": -0.0555,
+            "cumulative_thermal_stress": -0.002,
             "absolute_ndvi": 0.0331,
             "season_average_ndvi": 0.0663,
-            "chlorophyll_class": 0.0754,
-            "cumulative_thermal_stress": -0.002
+            "chlorophyll_class": 0.0754
           },
           "E5-S3": {
             "water_stress": 0.0056,
+            "cumulative_thermal_stress": -0.0019,
             "absolute_ndvi": 0.0187,
             "season_average_ndvi": 0.0602,
-            "chlorophyll_class": 0.0597,
-            "cumulative_thermal_stress": -0.0019
+            "chlorophyll_class": 0.0597
           },
           "E5-S4": {
             "water_stress": 0.0088,
+            "cumulative_thermal_stress": -0.0107,
             "absolute_ndvi": 0.0254,
             "season_average_ndvi": 0.0664,
-            "chlorophyll_class": 0.0748,
-            "cumulative_thermal_stress": -0.0107
+            "chlorophyll_class": 0.0748
           },
           "E5-S5": {
             "water_stress": -0.0547,
+            "cumulative_thermal_stress": -0.027,
             "absolute_ndvi": 0.0202,
             "season_average_ndvi": 0.0574,
-            "chlorophyll_class": 0.0709,
-            "cumulative_thermal_stress": -0.027
+            "chlorophyll_class": 0.0709
           }
         },
         "equipos": {
           "E1": {
             "water_stress": -0.076,
+            "cumulative_thermal_stress": -0.0187,
             "absolute_ndvi": 0.0234,
             "season_average_ndvi": 0.0539,
-            "chlorophyll_class": 0.0639,
-            "cumulative_thermal_stress": -0.0187
+            "chlorophyll_class": 0.0639
           },
           "E2": {
             "water_stress": -0.0603,
+            "cumulative_thermal_stress": -0.0112,
             "absolute_ndvi": 0.0291,
             "season_average_ndvi": 0.0564,
-            "chlorophyll_class": 0.0799,
-            "cumulative_thermal_stress": -0.0112
+            "chlorophyll_class": 0.0799
           },
           "E3": {
             "water_stress": -0.031,
+            "cumulative_thermal_stress": -0.0035,
             "absolute_ndvi": 0.0229,
             "season_average_ndvi": 0.0636,
-            "chlorophyll_class": 0.0708,
-            "cumulative_thermal_stress": -0.0035
+            "chlorophyll_class": 0.0708
           },
           "E4": {
             "water_stress": -0.0402,
+            "cumulative_thermal_stress": -0.0192,
             "absolute_ndvi": 0.0371,
             "season_average_ndvi": 0.0878,
-            "chlorophyll_class": 0.0838,
-            "cumulative_thermal_stress": -0.0192
+            "chlorophyll_class": 0.0838
           },
           "E5": {
             "water_stress": -0.0127,
+            "cumulative_thermal_stress": 0.0007,
             "absolute_ndvi": 0.0249,
             "season_average_ndvi": 0.0624,
-            "chlorophyll_class": 0.0698,
-            "cumulative_thermal_stress": 0.0007
+            "chlorophyll_class": 0.0698
           }
         }
       },
@@ -3448,6 +3932,68 @@
           "by_plants": {
             "opt": 4381,
             "bajo": 26073,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_sector": {
+            "opt": 3,
+            "bajo": 20,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 188698,
+            "bajo": 1132248,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 4381,
+            "bajo": 26073,
+            "alto": 0,
+            "exc": 0
+          }
+        }
+      },
+      "compliance_equipos": {
+        "water_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
             "alto": 0,
             "exc": 0
           }
@@ -3662,201 +4208,201 @@
         "sectors": {
           "E1-S1": {
             "water_stress": -0.061,
+            "cumulative_thermal_stress": -0.0305,
             "absolute_ndvi": -0.0346,
             "season_average_ndvi": -0.0173,
-            "chlorophyll_class": -0.0227,
-            "cumulative_thermal_stress": -0.0305
+            "chlorophyll_class": -0.0227
           },
           "E1-S2": {
             "water_stress": -0.0448,
+            "cumulative_thermal_stress": -0.0224,
             "absolute_ndvi": -0.0365,
             "season_average_ndvi": -0.0183,
-            "chlorophyll_class": -0.0229,
-            "cumulative_thermal_stress": -0.0224
+            "chlorophyll_class": -0.0229
           },
           "E1-S3": {
             "water_stress": -0.0197,
+            "cumulative_thermal_stress": -0.0099,
             "absolute_ndvi": -0.045,
             "season_average_ndvi": -0.0225,
-            "chlorophyll_class": -0.0423,
-            "cumulative_thermal_stress": -0.0099
+            "chlorophyll_class": -0.0423
           },
           "E1-S4": {
             "water_stress": 0.1048,
+            "cumulative_thermal_stress": 0.0524,
             "absolute_ndvi": -0.0486,
             "season_average_ndvi": -0.0243,
-            "chlorophyll_class": -0.0344,
-            "cumulative_thermal_stress": 0.0524
+            "chlorophyll_class": -0.0344
           },
           "E1-S5": {
             "water_stress": 0.0309,
+            "cumulative_thermal_stress": 0.0155,
             "absolute_ndvi": -0.0474,
             "season_average_ndvi": -0.0237,
-            "chlorophyll_class": -0.0397,
-            "cumulative_thermal_stress": 0.0155
+            "chlorophyll_class": -0.0397
           },
           "E2-S1": {
             "water_stress": 0.0482,
+            "cumulative_thermal_stress": 0.0241,
             "absolute_ndvi": -0.0472,
             "season_average_ndvi": -0.0236,
-            "chlorophyll_class": -0.0498,
-            "cumulative_thermal_stress": 0.0241
+            "chlorophyll_class": -0.0498
           },
           "E2-S2": {
             "water_stress": 0.0179,
+            "cumulative_thermal_stress": 0.0089,
             "absolute_ndvi": -0.0477,
             "season_average_ndvi": -0.0239,
-            "chlorophyll_class": -0.051,
-            "cumulative_thermal_stress": 0.0089
+            "chlorophyll_class": -0.051
           },
           "E2-S3": {
             "water_stress": 0.0269,
+            "cumulative_thermal_stress": 0.0135,
             "absolute_ndvi": -0.0526,
             "season_average_ndvi": -0.0263,
-            "chlorophyll_class": -0.0521,
-            "cumulative_thermal_stress": 0.0135
+            "chlorophyll_class": -0.0521
           },
           "E3-S1": {
             "water_stress": 0.0299,
+            "cumulative_thermal_stress": 0.0149,
             "absolute_ndvi": -0.0524,
             "season_average_ndvi": -0.0262,
-            "chlorophyll_class": -0.0453,
-            "cumulative_thermal_stress": 0.0149
+            "chlorophyll_class": -0.0453
           },
           "E3-S2": {
             "water_stress": -0.0493,
+            "cumulative_thermal_stress": -0.0247,
             "absolute_ndvi": -0.0448,
             "season_average_ndvi": -0.0224,
-            "chlorophyll_class": -0.0555,
-            "cumulative_thermal_stress": -0.0247
+            "chlorophyll_class": -0.0555
           },
           "E3-S3": {
             "water_stress": 0.1494,
+            "cumulative_thermal_stress": 0.0747,
             "absolute_ndvi": -0.0483,
             "season_average_ndvi": -0.0242,
-            "chlorophyll_class": -0.0483,
-            "cumulative_thermal_stress": 0.0747
+            "chlorophyll_class": -0.0483
           },
           "E3-S4": {
             "water_stress": -0.1318,
+            "cumulative_thermal_stress": -0.0659,
             "absolute_ndvi": -0.0471,
             "season_average_ndvi": -0.0235,
-            "chlorophyll_class": -0.0714,
-            "cumulative_thermal_stress": -0.0659
+            "chlorophyll_class": -0.0714
           },
           "E3-S5": {
             "water_stress": 0.0341,
+            "cumulative_thermal_stress": 0.017,
             "absolute_ndvi": -0.0502,
             "season_average_ndvi": -0.0251,
-            "chlorophyll_class": -0.054,
-            "cumulative_thermal_stress": 0.017
+            "chlorophyll_class": -0.054
           },
           "E4-S1": {
             "water_stress": 0.0003,
+            "cumulative_thermal_stress": 0.0001,
             "absolute_ndvi": -0.0369,
             "season_average_ndvi": -0.0184,
-            "chlorophyll_class": -0.0322,
-            "cumulative_thermal_stress": 0.0001
+            "chlorophyll_class": -0.0322
           },
           "E4-S2": {
             "water_stress": 0.0485,
+            "cumulative_thermal_stress": 0.0243,
             "absolute_ndvi": -0.0408,
             "season_average_ndvi": -0.0204,
-            "chlorophyll_class": -0.0406,
-            "cumulative_thermal_stress": 0.0243
+            "chlorophyll_class": -0.0406
           },
           "E4-S3": {
             "water_stress": 0.0564,
+            "cumulative_thermal_stress": 0.0282,
             "absolute_ndvi": -0.0381,
             "season_average_ndvi": -0.019,
-            "chlorophyll_class": -0.028,
-            "cumulative_thermal_stress": 0.0282
+            "chlorophyll_class": -0.028
           },
           "E4-S4": {
             "water_stress": -0.0913,
+            "cumulative_thermal_stress": -0.0457,
             "absolute_ndvi": -0.0402,
             "season_average_ndvi": -0.0201,
-            "chlorophyll_class": -0.0439,
-            "cumulative_thermal_stress": -0.0457
+            "chlorophyll_class": -0.0439
           },
           "E4-S5": {
             "water_stress": -0.0264,
+            "cumulative_thermal_stress": -0.0132,
             "absolute_ndvi": -0.0368,
             "season_average_ndvi": -0.0184,
-            "chlorophyll_class": -0.0265,
-            "cumulative_thermal_stress": -0.0132
+            "chlorophyll_class": -0.0265
           },
           "E5-S1": {
             "water_stress": 0.1045,
+            "cumulative_thermal_stress": 0.0522,
             "absolute_ndvi": -0.0334,
             "season_average_ndvi": -0.0167,
-            "chlorophyll_class": -0.0232,
-            "cumulative_thermal_stress": 0.0522
+            "chlorophyll_class": -0.0232
           },
           "E5-S2": {
             "water_stress": 0.0457,
+            "cumulative_thermal_stress": 0.0228,
             "absolute_ndvi": -0.0363,
             "season_average_ndvi": -0.0181,
-            "chlorophyll_class": -0.0162,
-            "cumulative_thermal_stress": 0.0228
+            "chlorophyll_class": -0.0162
           },
           "E5-S3": {
             "water_stress": -0.082,
+            "cumulative_thermal_stress": -0.041,
             "absolute_ndvi": -0.031,
             "season_average_ndvi": -0.0155,
-            "chlorophyll_class": -0.023,
-            "cumulative_thermal_stress": -0.041
+            "chlorophyll_class": -0.023
           },
           "E5-S4": {
             "water_stress": -0.0448,
+            "cumulative_thermal_stress": -0.0224,
             "absolute_ndvi": -0.0334,
             "season_average_ndvi": -0.0167,
-            "chlorophyll_class": -0.0144,
-            "cumulative_thermal_stress": -0.0224
+            "chlorophyll_class": -0.0144
           },
           "E5-S5": {
             "water_stress": -0.0374,
+            "cumulative_thermal_stress": -0.0187,
             "absolute_ndvi": -0.0395,
             "season_average_ndvi": -0.0197,
-            "chlorophyll_class": -0.0293,
-            "cumulative_thermal_stress": -0.0187
+            "chlorophyll_class": -0.0293
           }
         },
         "equipos": {
           "E1": {
             "water_stress": 0.0054,
+            "cumulative_thermal_stress": 0.0027,
             "absolute_ndvi": -0.0428,
             "season_average_ndvi": -0.0214,
-            "chlorophyll_class": -0.0328,
-            "cumulative_thermal_stress": 0.0027
+            "chlorophyll_class": -0.0328
           },
           "E2": {
             "water_stress": 0.0308,
+            "cumulative_thermal_stress": 0.0154,
             "absolute_ndvi": -0.0491,
             "season_average_ndvi": -0.0246,
-            "chlorophyll_class": -0.051,
-            "cumulative_thermal_stress": 0.0154
+            "chlorophyll_class": -0.051
           },
           "E3": {
             "water_stress": 0.0053,
+            "cumulative_thermal_stress": 0.0026,
             "absolute_ndvi": -0.0484,
             "season_average_ndvi": -0.0242,
-            "chlorophyll_class": -0.0553,
-            "cumulative_thermal_stress": 0.0026
+            "chlorophyll_class": -0.0553
           },
           "E4": {
             "water_stress": -0.0013,
+            "cumulative_thermal_stress": -0.0007,
             "absolute_ndvi": -0.0385,
             "season_average_ndvi": -0.0192,
-            "chlorophyll_class": -0.0343,
-            "cumulative_thermal_stress": -0.0007
+            "chlorophyll_class": -0.0343
           },
           "E5": {
             "water_stress": -0.0072,
+            "cumulative_thermal_stress": -0.0036,
             "absolute_ndvi": -0.0348,
             "season_average_ndvi": -0.0174,
-            "chlorophyll_class": -0.0213,
-            "cumulative_thermal_stress": -0.0036
+            "chlorophyll_class": -0.0213
           }
         }
       },
@@ -3877,6 +4423,68 @@
           "by_plants": {
             "opt": 5421,
             "bajo": 25033,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_sector": {
+            "opt": 3,
+            "bajo": 20,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 179369,
+            "bajo": 1141577,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 4178,
+            "bajo": 26276,
+            "alto": 0,
+            "exc": 0
+          }
+        }
+      },
+      "compliance_equipos": {
+        "water_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
             "alto": 0,
             "exc": 0
           }
@@ -4091,201 +4699,201 @@
         "sectors": {
           "E1-S1": {
             "water_stress": -0.0284,
+            "cumulative_thermal_stress": -0.0196,
             "absolute_ndvi": -0.0746,
             "season_average_ndvi": -0.0306,
-            "chlorophyll_class": -0.1781,
-            "cumulative_thermal_stress": -0.0196
+            "chlorophyll_class": -0.1781
           },
           "E1-S2": {
             "water_stress": 0.0169,
+            "cumulative_thermal_stress": -0.0018,
             "absolute_ndvi": -0.0653,
             "season_average_ndvi": -0.0278,
-            "chlorophyll_class": -0.1784,
-            "cumulative_thermal_stress": -0.0018
+            "chlorophyll_class": -0.1784
           },
           "E1-S3": {
             "water_stress": 0.0359,
+            "cumulative_thermal_stress": 0.0087,
             "absolute_ndvi": -0.0706,
             "season_average_ndvi": -0.031,
-            "chlorophyll_class": -0.1707,
-            "cumulative_thermal_stress": 0.0087
+            "chlorophyll_class": -0.1707
           },
           "E1-S4": {
             "water_stress": 0.0019,
+            "cumulative_thermal_stress": 0.0181,
             "absolute_ndvi": -0.0742,
             "season_average_ndvi": -0.0328,
-            "chlorophyll_class": -0.1846,
-            "cumulative_thermal_stress": 0.0181
+            "chlorophyll_class": -0.1846
           },
           "E1-S5": {
             "water_stress": -0.0131,
+            "cumulative_thermal_stress": 0.0008,
             "absolute_ndvi": -0.0661,
             "season_average_ndvi": -0.0299,
-            "chlorophyll_class": -0.1828,
-            "cumulative_thermal_stress": 0.0008
+            "chlorophyll_class": -0.1828
           },
           "E2-S1": {
             "water_stress": 0.0451,
+            "cumulative_thermal_stress": 0.0231,
             "absolute_ndvi": -0.0635,
             "season_average_ndvi": -0.029,
-            "chlorophyll_class": -0.1624,
-            "cumulative_thermal_stress": 0.0231
+            "chlorophyll_class": -0.1624
           },
           "E2-S2": {
             "water_stress": 0.0104,
+            "cumulative_thermal_stress": 0.0065,
             "absolute_ndvi": -0.0588,
             "season_average_ndvi": -0.0275,
-            "chlorophyll_class": -0.1492,
-            "cumulative_thermal_stress": 0.0065
+            "chlorophyll_class": -0.1492
           },
           "E2-S3": {
             "water_stress": -0.0497,
+            "cumulative_thermal_stress": -0.0121,
             "absolute_ndvi": -0.0591,
             "season_average_ndvi": -0.0285,
-            "chlorophyll_class": -0.157,
-            "cumulative_thermal_stress": -0.0121
+            "chlorophyll_class": -0.157
           },
           "E3-S1": {
             "water_stress": -0.1184,
+            "cumulative_thermal_stress": -0.0344,
             "absolute_ndvi": -0.0631,
             "season_average_ndvi": -0.0298,
-            "chlorophyll_class": -0.1782,
-            "cumulative_thermal_stress": -0.0344
+            "chlorophyll_class": -0.1782
           },
           "E3-S2": {
             "water_stress": 0.0614,
+            "cumulative_thermal_stress": 0.0123,
             "absolute_ndvi": -0.0707,
             "season_average_ndvi": -0.031,
-            "chlorophyll_class": -0.1456,
-            "cumulative_thermal_stress": 0.0123
+            "chlorophyll_class": -0.1456
           },
           "E3-S3": {
             "water_stress": -0.0865,
+            "cumulative_thermal_stress": -0.0039,
             "absolute_ndvi": -0.0607,
             "season_average_ndvi": -0.0282,
-            "chlorophyll_class": -0.1586,
-            "cumulative_thermal_stress": -0.0039
+            "chlorophyll_class": -0.1586
           },
           "E3-S4": {
             "water_stress": 0.1505,
+            "cumulative_thermal_stress": 0.0282,
             "absolute_ndvi": -0.0699,
             "season_average_ndvi": -0.0312,
-            "chlorophyll_class": -0.1353,
-            "cumulative_thermal_stress": 0.0282
+            "chlorophyll_class": -0.1353
           },
           "E3-S5": {
             "water_stress": 0.0372,
+            "cumulative_thermal_stress": 0.0181,
             "absolute_ndvi": -0.067,
             "season_average_ndvi": -0.0307,
-            "chlorophyll_class": -0.1579,
-            "cumulative_thermal_stress": 0.0181
+            "chlorophyll_class": -0.1579
           },
           "E4-S1": {
             "water_stress": 0.0452,
+            "cumulative_thermal_stress": 0.0152,
             "absolute_ndvi": -0.0706,
             "season_average_ndvi": -0.0297,
-            "chlorophyll_class": -0.147,
-            "cumulative_thermal_stress": 0.0152
+            "chlorophyll_class": -0.147
           },
           "E4-S2": {
             "water_stress": -0.0157,
+            "cumulative_thermal_stress": 0.0028,
             "absolute_ndvi": -0.077,
             "season_average_ndvi": -0.0325,
-            "chlorophyll_class": -0.1593,
-            "cumulative_thermal_stress": 0.0028
+            "chlorophyll_class": -0.1593
           },
           "E4-S3": {
             "water_stress": -0.101,
+            "cumulative_thermal_stress": -0.0243,
             "absolute_ndvi": -0.0737,
             "season_average_ndvi": -0.031,
-            "chlorophyll_class": -0.1738,
-            "cumulative_thermal_stress": -0.0243
+            "chlorophyll_class": -0.1738
           },
           "E4-S4": {
             "water_stress": 0.0161,
+            "cumulative_thermal_stress": -0.0098,
             "absolute_ndvi": -0.0748,
             "season_average_ndvi": -0.0316,
-            "chlorophyll_class": -0.1344,
-            "cumulative_thermal_stress": -0.0098
+            "chlorophyll_class": -0.1344
           },
           "E4-S5": {
             "water_stress": -0.0533,
+            "cumulative_thermal_stress": -0.0222,
             "absolute_ndvi": -0.0707,
             "season_average_ndvi": -0.0297,
-            "chlorophyll_class": -0.1573,
-            "cumulative_thermal_stress": -0.0222
+            "chlorophyll_class": -0.1573
           },
           "E5-S1": {
             "water_stress": -0.1594,
+            "cumulative_thermal_stress": -0.0357,
             "absolute_ndvi": -0.0687,
             "season_average_ndvi": -0.0285,
-            "chlorophyll_class": -0.1677,
-            "cumulative_thermal_stress": -0.0357
+            "chlorophyll_class": -0.1677
           },
           "E5-S2": {
             "water_stress": -0.0311,
+            "cumulative_thermal_stress": -0.0027,
             "absolute_ndvi": -0.0688,
             "season_average_ndvi": -0.029,
-            "chlorophyll_class": -0.1828,
-            "cumulative_thermal_stress": -0.0027
+            "chlorophyll_class": -0.1828
           },
           "E5-S3": {
             "water_stress": 0.0493,
+            "cumulative_thermal_stress": 0.0028,
             "absolute_ndvi": -0.0646,
             "season_average_ndvi": -0.0267,
-            "chlorophyll_class": -0.143,
-            "cumulative_thermal_stress": 0.0028
+            "chlorophyll_class": -0.143
           },
           "E5-S4": {
             "water_stress": 0.0289,
+            "cumulative_thermal_stress": 0.0022,
             "absolute_ndvi": -0.0638,
             "season_average_ndvi": -0.0268,
-            "chlorophyll_class": -0.1678,
-            "cumulative_thermal_stress": 0.0022
+            "chlorophyll_class": -0.1678
           },
           "E5-S5": {
             "water_stress": 0.0733,
+            "cumulative_thermal_stress": 0.0182,
             "absolute_ndvi": -0.0606,
             "season_average_ndvi": -0.0268,
-            "chlorophyll_class": -0.1575,
-            "cumulative_thermal_stress": 0.0182
+            "chlorophyll_class": -0.1575
           }
         },
         "equipos": {
           "E1": {
             "water_stress": 0.0029,
+            "cumulative_thermal_stress": 0.0019,
             "absolute_ndvi": -0.0702,
             "season_average_ndvi": -0.0305,
-            "chlorophyll_class": -0.179,
-            "cumulative_thermal_stress": 0.0019
+            "chlorophyll_class": -0.179
           },
           "E2": {
             "water_stress": 0.0012,
+            "cumulative_thermal_stress": 0.0055,
             "absolute_ndvi": -0.0605,
             "season_average_ndvi": -0.0283,
-            "chlorophyll_class": -0.1561,
-            "cumulative_thermal_stress": 0.0055
+            "chlorophyll_class": -0.1561
           },
           "E3": {
             "water_stress": 0.0142,
+            "cumulative_thermal_stress": 0.0056,
             "absolute_ndvi": -0.0664,
             "season_average_ndvi": -0.0302,
-            "chlorophyll_class": -0.1544,
-            "cumulative_thermal_stress": 0.0056
+            "chlorophyll_class": -0.1544
           },
           "E4": {
             "water_stress": -0.0209,
+            "cumulative_thermal_stress": -0.0071,
             "absolute_ndvi": -0.0734,
             "season_average_ndvi": -0.0309,
-            "chlorophyll_class": -0.1544,
-            "cumulative_thermal_stress": -0.0071
+            "chlorophyll_class": -0.1544
           },
           "E5": {
             "water_stress": -0.0017,
+            "cumulative_thermal_stress": -0.0018,
             "absolute_ndvi": -0.0651,
             "season_average_ndvi": -0.0275,
-            "chlorophyll_class": -0.1633,
-            "cumulative_thermal_stress": -0.0018
+            "chlorophyll_class": -0.1633
           }
         }
       },
@@ -4306,6 +4914,68 @@
           "by_plants": {
             "opt": 2460,
             "bajo": 27994,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_sector": {
+            "opt": 2,
+            "bajo": 21,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 124224,
+            "bajo": 1196722,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 2900,
+            "bajo": 27554,
+            "alto": 0,
+            "exc": 0
+          }
+        }
+      },
+      "compliance_equipos": {
+        "water_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
             "alto": 0,
             "exc": 0
           }
@@ -4520,201 +5190,201 @@
         "sectors": {
           "E1-S1": {
             "water_stress": 0.0083,
+            "cumulative_thermal_stress": -0.0078,
             "absolute_ndvi": 0.0189,
             "season_average_ndvi": -0.0107,
-            "chlorophyll_class": 0.0171,
-            "cumulative_thermal_stress": -0.0078
+            "chlorophyll_class": 0.0171
           },
           "E1-S2": {
             "water_stress": 0.0208,
+            "cumulative_thermal_stress": 0.0043,
             "absolute_ndvi": 0.016,
             "season_average_ndvi": -0.01,
-            "chlorophyll_class": 0.0123,
-            "cumulative_thermal_stress": 0.0043
+            "chlorophyll_class": 0.0123
           },
           "E1-S3": {
             "water_stress": 0.0139,
+            "cumulative_thermal_stress": 0.0079,
             "absolute_ndvi": 0.0195,
             "season_average_ndvi": -0.0107,
-            "chlorophyll_class": 0.0066,
-            "cumulative_thermal_stress": 0.0079
+            "chlorophyll_class": 0.0066
           },
           "E1-S4": {
             "water_stress": 0.0207,
+            "cumulative_thermal_stress": 0.0143,
             "absolute_ndvi": 0.0172,
             "season_average_ndvi": -0.0122,
-            "chlorophyll_class": 0.0016,
-            "cumulative_thermal_stress": 0.0143
+            "chlorophyll_class": 0.0016
           },
           "E1-S5": {
             "water_stress": 0.0801,
+            "cumulative_thermal_stress": 0.0205,
             "absolute_ndvi": 0.0171,
             "season_average_ndvi": -0.0108,
-            "chlorophyll_class": 0.0081,
-            "cumulative_thermal_stress": 0.0205
+            "chlorophyll_class": 0.0081
           },
           "E2-S1": {
             "water_stress": -0.0589,
+            "cumulative_thermal_stress": -0.0033,
             "absolute_ndvi": 0.006,
             "season_average_ndvi": -0.0131,
-            "chlorophyll_class": 0.0047,
-            "cumulative_thermal_stress": -0.0033
+            "chlorophyll_class": 0.0047
           },
           "E2-S2": {
             "water_stress": 0.037,
+            "cumulative_thermal_stress": 0.0125,
             "absolute_ndvi": 0.0131,
             "season_average_ndvi": -0.0106,
-            "chlorophyll_class": 0.0067,
-            "cumulative_thermal_stress": 0.0125
+            "chlorophyll_class": 0.0067
           },
           "E2-S3": {
             "water_stress": 0.0883,
+            "cumulative_thermal_stress": 0.0161,
             "absolute_ndvi": 0.0133,
             "season_average_ndvi": -0.0109,
-            "chlorophyll_class": 0.0149,
-            "cumulative_thermal_stress": 0.0161
+            "chlorophyll_class": 0.0149
           },
           "E3-S1": {
             "water_stress": 0.0505,
+            "cumulative_thermal_stress": -0.0047,
             "absolute_ndvi": 0.0132,
             "season_average_ndvi": -0.0116,
-            "chlorophyll_class": -0.0105,
-            "cumulative_thermal_stress": -0.0047
+            "chlorophyll_class": -0.0105
           },
           "E3-S2": {
             "water_stress": 0.0324,
+            "cumulative_thermal_stress": 0.0142,
             "absolute_ndvi": 0.0209,
             "season_average_ndvi": -0.0103,
-            "chlorophyll_class": -0.0015,
-            "cumulative_thermal_stress": 0.0142
+            "chlorophyll_class": -0.0015
           },
           "E3-S3": {
             "water_stress": -0.0927,
+            "cumulative_thermal_stress": -0.0252,
             "absolute_ndvi": 0.0258,
             "season_average_ndvi": -0.0077,
-            "chlorophyll_class": 0.0003,
-            "cumulative_thermal_stress": -0.0252
+            "chlorophyll_class": 0.0003
           },
           "E3-S4": {
             "water_stress": 0.083,
+            "cumulative_thermal_stress": 0.0349,
             "absolute_ndvi": 0.0179,
             "season_average_ndvi": -0.0111,
-            "chlorophyll_class": -0.0084,
-            "cumulative_thermal_stress": 0.0349
+            "chlorophyll_class": -0.0084
           },
           "E3-S5": {
             "water_stress": 0.018,
+            "cumulative_thermal_stress": 0.0136,
             "absolute_ndvi": 0.0236,
             "season_average_ndvi": -0.0095,
-            "chlorophyll_class": 0.0055,
-            "cumulative_thermal_stress": 0.0136
+            "chlorophyll_class": 0.0055
           },
           "E4-S1": {
             "water_stress": 0.0297,
+            "cumulative_thermal_stress": 0.015,
             "absolute_ndvi": 0.0162,
             "season_average_ndvi": -0.0108,
-            "chlorophyll_class": 0.01,
-            "cumulative_thermal_stress": 0.015
+            "chlorophyll_class": 0.01
           },
           "E4-S2": {
             "water_stress": 0.0193,
+            "cumulative_thermal_stress": 0.0063,
             "absolute_ndvi": 0.0179,
             "season_average_ndvi": -0.0117,
-            "chlorophyll_class": 0.0153,
-            "cumulative_thermal_stress": 0.0063
+            "chlorophyll_class": 0.0153
           },
           "E4-S3": {
             "water_stress": 0.03,
+            "cumulative_thermal_stress": -0.0046,
             "absolute_ndvi": 0.0212,
             "season_average_ndvi": -0.0101,
-            "chlorophyll_class": 0.0192,
-            "cumulative_thermal_stress": -0.0046
+            "chlorophyll_class": 0.0192
           },
           "E4-S4": {
             "water_stress": 0.0887,
+            "cumulative_thermal_stress": 0.0172,
             "absolute_ndvi": 0.0249,
             "season_average_ndvi": -0.0096,
-            "chlorophyll_class": 0.0174,
-            "cumulative_thermal_stress": 0.0172
+            "chlorophyll_class": 0.0174
           },
           "E4-S5": {
             "water_stress": 0.0488,
+            "cumulative_thermal_stress": 0.0012,
             "absolute_ndvi": 0.0176,
             "season_average_ndvi": -0.0104,
-            "chlorophyll_class": 0.0048,
-            "cumulative_thermal_stress": 0.0012
+            "chlorophyll_class": 0.0048
           },
           "E5-S1": {
             "water_stress": 0.0169,
+            "cumulative_thermal_stress": -0.0137,
             "absolute_ndvi": 0.0067,
             "season_average_ndvi": -0.0126,
-            "chlorophyll_class": -0.0084,
-            "cumulative_thermal_stress": -0.0137
+            "chlorophyll_class": -0.0084
           },
           "E5-S2": {
             "water_stress": 0.0069,
+            "cumulative_thermal_stress": 0.0003,
             "absolute_ndvi": 0.0095,
             "season_average_ndvi": -0.0122,
-            "chlorophyll_class": -0.0077,
-            "cumulative_thermal_stress": 0.0003
+            "chlorophyll_class": -0.0077
           },
           "E5-S3": {
             "water_stress": 0.0248,
+            "cumulative_thermal_stress": 0.0076,
             "absolute_ndvi": 0.0144,
             "season_average_ndvi": -0.0099,
-            "chlorophyll_class": -0.003,
-            "cumulative_thermal_stress": 0.0076
+            "chlorophyll_class": -0.003
           },
           "E5-S4": {
             "water_stress": 0.0218,
+            "cumulative_thermal_stress": 0.0066,
             "absolute_ndvi": 0.0096,
             "season_average_ndvi": -0.0111,
-            "chlorophyll_class": -0.03,
-            "cumulative_thermal_stress": 0.0066
+            "chlorophyll_class": -0.03
           },
           "E5-S5": {
             "water_stress": 0.0407,
+            "cumulative_thermal_stress": 0.0195,
             "absolute_ndvi": 0.0147,
             "season_average_ndvi": -0.0098,
-            "chlorophyll_class": -0.0047,
-            "cumulative_thermal_stress": 0.0195
+            "chlorophyll_class": -0.0047
           }
         },
         "equipos": {
           "E1": {
             "water_stress": 0.0291,
+            "cumulative_thermal_stress": 0.0082,
             "absolute_ndvi": 0.0177,
             "season_average_ndvi": -0.0109,
-            "chlorophyll_class": 0.0088,
-            "cumulative_thermal_stress": 0.0082
+            "chlorophyll_class": 0.0088
           },
           "E2": {
             "water_stress": 0.0234,
+            "cumulative_thermal_stress": 0.0087,
             "absolute_ndvi": 0.0109,
             "season_average_ndvi": -0.0115,
-            "chlorophyll_class": 0.0088,
-            "cumulative_thermal_stress": 0.0087
+            "chlorophyll_class": 0.0088
           },
           "E3": {
             "water_stress": 0.0177,
+            "cumulative_thermal_stress": 0.0073,
             "absolute_ndvi": 0.0205,
             "season_average_ndvi": -0.01,
-            "chlorophyll_class": -0.0025,
-            "cumulative_thermal_stress": 0.0073
+            "chlorophyll_class": -0.0025
           },
           "E4": {
             "water_stress": 0.0427,
+            "cumulative_thermal_stress": 0.007,
             "absolute_ndvi": 0.0195,
             "season_average_ndvi": -0.0106,
-            "chlorophyll_class": 0.0135,
-            "cumulative_thermal_stress": 0.007
+            "chlorophyll_class": 0.0135
           },
           "E5": {
             "water_stress": 0.0226,
+            "cumulative_thermal_stress": 0.0048,
             "absolute_ndvi": 0.0112,
             "season_average_ndvi": -0.011,
-            "chlorophyll_class": -0.0105,
-            "cumulative_thermal_stress": 0.0048
+            "chlorophyll_class": -0.0105
           }
         }
       },
@@ -4735,6 +5405,68 @@
           "by_plants": {
             "opt": 1062,
             "bajo": 29392,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_sector": {
+            "opt": 2,
+            "bajo": 21,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 124224,
+            "bajo": 1196722,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 2900,
+            "bajo": 27554,
+            "alto": 0,
+            "exc": 0
+          }
+        }
+      },
+      "compliance_equipos": {
+        "water_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
             "alto": 0,
             "exc": 0
           }
@@ -4949,201 +5681,201 @@
         "sectors": {
           "E1-S1": {
             "water_stress": -0.0131,
+            "cumulative_thermal_stress": -0.0363,
             "absolute_ndvi": 0.0763,
             "season_average_ndvi": 0.0446,
-            "chlorophyll_class": 0.1531,
-            "cumulative_thermal_stress": -0.0363
+            "chlorophyll_class": 0.1531
           },
           "E1-S2": {
             "water_stress": -0.0085,
+            "cumulative_thermal_stress": 0.0043,
             "absolute_ndvi": 0.0713,
             "season_average_ndvi": 0.0416,
-            "chlorophyll_class": 0.1612,
-            "cumulative_thermal_stress": 0.0043
+            "chlorophyll_class": 0.1612
           },
           "E1-S3": {
             "water_stress": -0.0169,
+            "cumulative_thermal_stress": 0.0065,
             "absolute_ndvi": 0.077,
             "season_average_ndvi": 0.0451,
-            "chlorophyll_class": 0.1703,
-            "cumulative_thermal_stress": 0.0065
+            "chlorophyll_class": 0.1703
           },
           "E1-S4": {
             "water_stress": 0.0313,
+            "cumulative_thermal_stress": 0.0739,
             "absolute_ndvi": 0.0896,
             "season_average_ndvi": 0.0533,
-            "chlorophyll_class": 0.1935,
-            "cumulative_thermal_stress": 0.0739
+            "chlorophyll_class": 0.1935
           },
           "E1-S5": {
             "water_stress": 0.024,
+            "cumulative_thermal_stress": 0.0851,
             "absolute_ndvi": 0.0774,
             "season_average_ndvi": 0.0454,
-            "chlorophyll_class": 0.1809,
-            "cumulative_thermal_stress": 0.0851
+            "chlorophyll_class": 0.1809
           },
           "E2-S1": {
             "water_stress": 0.0567,
+            "cumulative_thermal_stress": 0.0472,
             "absolute_ndvi": 0.0805,
             "season_average_ndvi": 0.0415,
-            "chlorophyll_class": 0.1614,
-            "cumulative_thermal_stress": 0.0472
+            "chlorophyll_class": 0.1614
           },
           "E2-S2": {
             "water_stress": -0.0275,
+            "cumulative_thermal_stress": 0.0099,
             "absolute_ndvi": 0.0699,
             "season_average_ndvi": 0.0385,
-            "chlorophyll_class": 0.1486,
-            "cumulative_thermal_stress": 0.0099
+            "chlorophyll_class": 0.1486
           },
           "E2-S3": {
             "water_stress": -0.091,
+            "cumulative_thermal_stress": -0.043,
             "absolute_ndvi": 0.0706,
             "season_average_ndvi": 0.0379,
-            "chlorophyll_class": 0.1442,
-            "cumulative_thermal_stress": -0.043
+            "chlorophyll_class": 0.1442
           },
           "E3-S1": {
             "water_stress": 0.0167,
+            "cumulative_thermal_stress": 0.0029,
             "absolute_ndvi": 0.0859,
             "season_average_ndvi": 0.0512,
-            "chlorophyll_class": 0.1957,
-            "cumulative_thermal_stress": 0.0029
+            "chlorophyll_class": 0.1957
           },
           "E3-S2": {
             "water_stress": -0.004,
+            "cumulative_thermal_stress": 0.0387,
             "absolute_ndvi": 0.0776,
             "season_average_ndvi": 0.0467,
-            "chlorophyll_class": 0.1669,
-            "cumulative_thermal_stress": 0.0387
+            "chlorophyll_class": 0.1669
           },
           "E3-S3": {
             "water_stress": 0.0383,
+            "cumulative_thermal_stress": -0.0371,
             "absolute_ndvi": 0.0695,
             "season_average_ndvi": 0.0464,
-            "chlorophyll_class": 0.1785,
-            "cumulative_thermal_stress": -0.0371
+            "chlorophyll_class": 0.1785
           },
           "E3-S4": {
             "water_stress": -0.1504,
+            "cumulative_thermal_stress": -0.0459,
             "absolute_ndvi": 0.0785,
             "season_average_ndvi": 0.0452,
-            "chlorophyll_class": 0.1802,
-            "cumulative_thermal_stress": -0.0459
+            "chlorophyll_class": 0.1802
           },
           "E3-S5": {
             "water_stress": -0.0143,
+            "cumulative_thermal_stress": 0.0263,
             "absolute_ndvi": 0.073,
             "season_average_ndvi": 0.0447,
-            "chlorophyll_class": 0.1748,
-            "cumulative_thermal_stress": 0.0263
+            "chlorophyll_class": 0.1748
           },
           "E4-S1": {
             "water_stress": -0.0477,
+            "cumulative_thermal_stress": -0.0028,
             "absolute_ndvi": 0.0762,
             "season_average_ndvi": 0.0438,
-            "chlorophyll_class": 0.1435,
-            "cumulative_thermal_stress": -0.0028
+            "chlorophyll_class": 0.1435
           },
           "E4-S2": {
             "water_stress": -0.0061,
+            "cumulative_thermal_stress": 0.0126,
             "absolute_ndvi": 0.0856,
             "season_average_ndvi": 0.0503,
-            "chlorophyll_class": 0.1618,
-            "cumulative_thermal_stress": 0.0126
+            "chlorophyll_class": 0.1618
           },
           "E4-S3": {
             "water_stress": -0.0574,
+            "cumulative_thermal_stress": -0.0713,
             "absolute_ndvi": 0.0713,
             "season_average_ndvi": 0.0408,
-            "chlorophyll_class": 0.1583,
-            "cumulative_thermal_stress": -0.0713
+            "chlorophyll_class": 0.1583
           },
           "E4-S4": {
             "water_stress": -0.0432,
+            "cumulative_thermal_stress": 0.0086,
             "absolute_ndvi": 0.0801,
             "season_average_ndvi": 0.0513,
-            "chlorophyll_class": 0.1442,
-            "cumulative_thermal_stress": 0.0086
+            "chlorophyll_class": 0.1442
           },
           "E4-S5": {
             "water_stress": 0.1094,
+            "cumulative_thermal_stress": 0.1127,
             "absolute_ndvi": 0.0664,
             "season_average_ndvi": 0.035,
-            "chlorophyll_class": 0.1371,
-            "cumulative_thermal_stress": 0.1127
+            "chlorophyll_class": 0.1371
           },
           "E5-S1": {
             "water_stress": -0.0233,
+            "cumulative_thermal_stress": -0.0641,
             "absolute_ndvi": 0.0771,
             "season_average_ndvi": 0.0395,
-            "chlorophyll_class": 0.1601,
-            "cumulative_thermal_stress": -0.0641
+            "chlorophyll_class": 0.1601
           },
           "E5-S2": {
             "water_stress": -0.0744,
+            "cumulative_thermal_stress": -0.0733,
             "absolute_ndvi": 0.0801,
             "season_average_ndvi": 0.0438,
-            "chlorophyll_class": 0.1873,
-            "cumulative_thermal_stress": -0.0733
+            "chlorophyll_class": 0.1873
           },
           "E5-S3": {
             "water_stress": 0.0135,
+            "cumulative_thermal_stress": 0.0362,
             "absolute_ndvi": 0.0625,
             "season_average_ndvi": 0.0334,
-            "chlorophyll_class": 0.136,
-            "cumulative_thermal_stress": 0.0362
+            "chlorophyll_class": 0.136
           },
           "E5-S4": {
             "water_stress": 0.0402,
+            "cumulative_thermal_stress": 0.0597,
             "absolute_ndvi": 0.0689,
             "season_average_ndvi": 0.0359,
-            "chlorophyll_class": 0.1839,
-            "cumulative_thermal_stress": 0.0597
+            "chlorophyll_class": 0.1839
           },
           "E5-S5": {
             "water_stress": -0.0224,
+            "cumulative_thermal_stress": 0.0352,
             "absolute_ndvi": 0.0579,
             "season_average_ndvi": 0.0288,
-            "chlorophyll_class": 0.141,
-            "cumulative_thermal_stress": 0.0352
+            "chlorophyll_class": 0.141
           }
         },
         "equipos": {
           "E1": {
             "water_stress": 0.0042,
+            "cumulative_thermal_stress": 0.0288,
             "absolute_ndvi": 0.0787,
             "season_average_ndvi": 0.0462,
-            "chlorophyll_class": 0.1727,
-            "cumulative_thermal_stress": 0.0288
+            "chlorophyll_class": 0.1727
           },
           "E2": {
             "water_stress": -0.0217,
+            "cumulative_thermal_stress": 0.0041,
             "absolute_ndvi": 0.0735,
             "season_average_ndvi": 0.0392,
-            "chlorophyll_class": 0.1513,
-            "cumulative_thermal_stress": 0.0041
+            "chlorophyll_class": 0.1513
           },
           "E3": {
             "water_stress": -0.0244,
+            "cumulative_thermal_stress": -0.0027,
             "absolute_ndvi": 0.0766,
             "season_average_ndvi": 0.0467,
-            "chlorophyll_class": 0.1786,
-            "cumulative_thermal_stress": -0.0027
+            "chlorophyll_class": 0.1786
           },
           "E4": {
             "water_stress": -0.0117,
+            "cumulative_thermal_stress": 0.0096,
             "absolute_ndvi": 0.0761,
             "season_average_ndvi": 0.0444,
-            "chlorophyll_class": 0.1491,
-            "cumulative_thermal_stress": 0.0096
+            "chlorophyll_class": 0.1491
           },
           "E5": {
             "water_stress": -0.0131,
+            "cumulative_thermal_stress": 0.0012,
             "absolute_ndvi": 0.0688,
             "season_average_ndvi": 0.036,
-            "chlorophyll_class": 0.161,
-            "cumulative_thermal_stress": 0.0012
+            "chlorophyll_class": 0.161
           }
         }
       },
@@ -5164,6 +5896,68 @@
           "by_plants": {
             "opt": 2656,
             "bajo": 27798,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_sector": {
+            "opt": 2,
+            "bajo": 21,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 113897,
+            "bajo": 1207049,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 2656,
+            "bajo": 27798,
+            "alto": 0,
+            "exc": 0
+          }
+        }
+      },
+      "compliance_equipos": {
+        "water_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
             "alto": 0,
             "exc": 0
           }
@@ -5378,201 +6172,201 @@
         "sectors": {
           "E1-S1": {
             "water_stress": 0.0803,
+            "cumulative_thermal_stress": 0.0401,
             "absolute_ndvi": -0.0401,
             "season_average_ndvi": -0.02,
-            "chlorophyll_class": -0.0971,
-            "cumulative_thermal_stress": 0.0401
+            "chlorophyll_class": -0.0971
           },
           "E1-S2": {
             "water_stress": 0.0468,
+            "cumulative_thermal_stress": 0.0234,
             "absolute_ndvi": -0.033,
             "season_average_ndvi": -0.0165,
-            "chlorophyll_class": -0.095,
-            "cumulative_thermal_stress": 0.0234
+            "chlorophyll_class": -0.095
           },
           "E1-S3": {
             "water_stress": 0.0517,
+            "cumulative_thermal_stress": 0.0259,
             "absolute_ndvi": -0.0298,
             "season_average_ndvi": -0.0149,
-            "chlorophyll_class": -0.1047,
-            "cumulative_thermal_stress": 0.0259
+            "chlorophyll_class": -0.1047
           },
           "E1-S4": {
             "water_stress": -0.0525,
+            "cumulative_thermal_stress": -0.0262,
             "absolute_ndvi": -0.035,
             "season_average_ndvi": -0.0175,
-            "chlorophyll_class": -0.0951,
-            "cumulative_thermal_stress": -0.0262
+            "chlorophyll_class": -0.0951
           },
           "E1-S5": {
             "water_stress": -0.0653,
+            "cumulative_thermal_stress": -0.0326,
             "absolute_ndvi": -0.0305,
             "season_average_ndvi": -0.0153,
-            "chlorophyll_class": -0.1026,
-            "cumulative_thermal_stress": -0.0326
+            "chlorophyll_class": -0.1026
           },
           "E2-S1": {
             "water_stress": -0.0846,
+            "cumulative_thermal_stress": -0.0423,
             "absolute_ndvi": -0.0319,
             "season_average_ndvi": -0.016,
-            "chlorophyll_class": -0.0777,
-            "cumulative_thermal_stress": -0.0423
+            "chlorophyll_class": -0.0777
           },
           "E2-S2": {
             "water_stress": -0.0238,
+            "cumulative_thermal_stress": -0.0119,
             "absolute_ndvi": -0.0275,
             "season_average_ndvi": -0.0138,
-            "chlorophyll_class": -0.0855,
-            "cumulative_thermal_stress": -0.0119
+            "chlorophyll_class": -0.0855
           },
           "E2-S3": {
             "water_stress": 0.0323,
+            "cumulative_thermal_stress": 0.0162,
             "absolute_ndvi": -0.0329,
             "season_average_ndvi": -0.0165,
-            "chlorophyll_class": -0.0847,
-            "cumulative_thermal_stress": 0.0162
+            "chlorophyll_class": -0.0847
           },
           "E3-S1": {
             "water_stress": -0.0265,
+            "cumulative_thermal_stress": -0.0133,
             "absolute_ndvi": -0.0371,
             "season_average_ndvi": -0.0186,
-            "chlorophyll_class": -0.0898,
-            "cumulative_thermal_stress": -0.0133
+            "chlorophyll_class": -0.0898
           },
           "E3-S2": {
             "water_stress": -0.0094,
+            "cumulative_thermal_stress": -0.0047,
             "absolute_ndvi": -0.0298,
             "season_average_ndvi": -0.0149,
-            "chlorophyll_class": -0.0876,
-            "cumulative_thermal_stress": -0.0047
+            "chlorophyll_class": -0.0876
           },
           "E3-S3": {
             "water_stress": -0.0276,
+            "cumulative_thermal_stress": -0.0138,
             "absolute_ndvi": -0.029,
             "season_average_ndvi": -0.0145,
-            "chlorophyll_class": -0.0939,
-            "cumulative_thermal_stress": -0.0138
+            "chlorophyll_class": -0.0939
           },
           "E3-S4": {
             "water_stress": 0.1989,
+            "cumulative_thermal_stress": 0.0993,
             "absolute_ndvi": -0.0243,
             "season_average_ndvi": -0.0121,
-            "chlorophyll_class": -0.082,
-            "cumulative_thermal_stress": 0.0993
+            "chlorophyll_class": -0.082
           },
           "E3-S5": {
             "water_stress": 0.0222,
+            "cumulative_thermal_stress": 0.0111,
             "absolute_ndvi": -0.0247,
             "season_average_ndvi": -0.0123,
-            "chlorophyll_class": -0.0891,
-            "cumulative_thermal_stress": 0.0111
+            "chlorophyll_class": -0.0891
           },
           "E4-S1": {
             "water_stress": 0.0532,
+            "cumulative_thermal_stress": 0.0266,
             "absolute_ndvi": -0.0399,
             "season_average_ndvi": -0.02,
-            "chlorophyll_class": -0.0853,
-            "cumulative_thermal_stress": 0.0266
+            "chlorophyll_class": -0.0853
           },
           "E4-S2": {
             "water_stress": 0.0276,
+            "cumulative_thermal_stress": 0.0138,
             "absolute_ndvi": -0.0491,
             "season_average_ndvi": -0.0246,
-            "chlorophyll_class": -0.0939,
-            "cumulative_thermal_stress": 0.0138
+            "chlorophyll_class": -0.0939
           },
           "E4-S3": {
             "water_stress": -0.0225,
+            "cumulative_thermal_stress": -0.0112,
             "absolute_ndvi": -0.037,
             "season_average_ndvi": -0.0185,
-            "chlorophyll_class": -0.097,
-            "cumulative_thermal_stress": -0.0112
+            "chlorophyll_class": -0.097
           },
           "E4-S4": {
             "water_stress": 0.0244,
+            "cumulative_thermal_stress": 0.0122,
             "absolute_ndvi": -0.0341,
             "season_average_ndvi": -0.017,
-            "chlorophyll_class": -0.0765,
-            "cumulative_thermal_stress": 0.0122
+            "chlorophyll_class": -0.0765
           },
           "E4-S5": {
             "water_stress": 0.0158,
+            "cumulative_thermal_stress": 0.0079,
             "absolute_ndvi": -0.0282,
             "season_average_ndvi": -0.0142,
-            "chlorophyll_class": -0.095,
-            "cumulative_thermal_stress": 0.0079
+            "chlorophyll_class": -0.095
           },
           "E5-S1": {
             "water_stress": -0.0163,
+            "cumulative_thermal_stress": -0.0082,
             "absolute_ndvi": -0.036,
             "season_average_ndvi": -0.018,
-            "chlorophyll_class": -0.0844,
-            "cumulative_thermal_stress": -0.0082
+            "chlorophyll_class": -0.0844
           },
           "E5-S2": {
             "water_stress": 0.0118,
+            "cumulative_thermal_stress": 0.0059,
             "absolute_ndvi": -0.039,
             "season_average_ndvi": -0.0195,
-            "chlorophyll_class": -0.0967,
-            "cumulative_thermal_stress": 0.0059
+            "chlorophyll_class": -0.0967
           },
           "E5-S3": {
             "water_stress": 0.0854,
+            "cumulative_thermal_stress": 0.0427,
             "absolute_ndvi": -0.0277,
             "season_average_ndvi": -0.0139,
-            "chlorophyll_class": -0.0858,
-            "cumulative_thermal_stress": 0.0427
+            "chlorophyll_class": -0.0858
           },
           "E5-S4": {
             "water_stress": -0.0194,
+            "cumulative_thermal_stress": -0.0097,
             "absolute_ndvi": -0.0322,
             "season_average_ndvi": -0.0161,
-            "chlorophyll_class": -0.0975,
-            "cumulative_thermal_stress": -0.0097
+            "chlorophyll_class": -0.0975
           },
           "E5-S5": {
             "water_stress": 0.049,
+            "cumulative_thermal_stress": 0.0245,
             "absolute_ndvi": -0.03,
             "season_average_ndvi": -0.015,
-            "chlorophyll_class": -0.0933,
-            "cumulative_thermal_stress": 0.0245
+            "chlorophyll_class": -0.0933
           }
         },
         "equipos": {
           "E1": {
             "water_stress": 0.0096,
+            "cumulative_thermal_stress": 0.0048,
             "absolute_ndvi": -0.0336,
             "season_average_ndvi": -0.0168,
-            "chlorophyll_class": -0.099,
-            "cumulative_thermal_stress": 0.0048
+            "chlorophyll_class": -0.099
           },
           "E2": {
             "water_stress": -0.0246,
+            "cumulative_thermal_stress": -0.0123,
             "absolute_ndvi": -0.0307,
             "season_average_ndvi": -0.0153,
-            "chlorophyll_class": -0.0827,
-            "cumulative_thermal_stress": -0.0123
+            "chlorophyll_class": -0.0827
           },
           "E3": {
             "water_stress": 0.0338,
+            "cumulative_thermal_stress": 0.0169,
             "absolute_ndvi": -0.0287,
             "season_average_ndvi": -0.0143,
-            "chlorophyll_class": -0.0884,
-            "cumulative_thermal_stress": 0.0169
+            "chlorophyll_class": -0.0884
           },
           "E4": {
             "water_stress": 0.0199,
+            "cumulative_thermal_stress": 0.0099,
             "absolute_ndvi": -0.0379,
             "season_average_ndvi": -0.019,
-            "chlorophyll_class": -0.0895,
-            "cumulative_thermal_stress": 0.0099
+            "chlorophyll_class": -0.0895
           },
           "E5": {
             "water_stress": 0.0248,
+            "cumulative_thermal_stress": 0.0124,
             "absolute_ndvi": -0.0328,
             "season_average_ndvi": -0.0164,
-            "chlorophyll_class": -0.0917,
-            "cumulative_thermal_stress": 0.0124
+            "chlorophyll_class": -0.0917
           }
         }
       },
@@ -5593,6 +6387,68 @@
           "by_plants": {
             "opt": 3604,
             "bajo": 26850,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_sector": {
+            "opt": 2,
+            "bajo": 21,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 103304,
+            "bajo": 1217642,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 2406,
+            "bajo": 28048,
+            "alto": 0,
+            "exc": 0
+          }
+        }
+      },
+      "compliance_equipos": {
+        "water_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
             "alto": 0,
             "exc": 0
           }
@@ -5807,201 +6663,201 @@
         "sectors": {
           "E1-S1": {
             "water_stress": -0.0296,
+            "cumulative_thermal_stress": 0.0036,
             "absolute_ndvi": 0.0712,
             "season_average_ndvi": 0.017,
-            "chlorophyll_class": 0.0971,
-            "cumulative_thermal_stress": 0.0036
+            "chlorophyll_class": 0.0971
           },
           "E1-S2": {
             "water_stress": 0.0153,
+            "cumulative_thermal_stress": 0.0129,
             "absolute_ndvi": 0.062,
             "season_average_ndvi": 0.0152,
-            "chlorophyll_class": 0.0873,
-            "cumulative_thermal_stress": 0.0129
+            "chlorophyll_class": 0.0873
           },
           "E1-S3": {
             "water_stress": 0.0259,
+            "cumulative_thermal_stress": 0.0172,
             "absolute_ndvi": 0.0643,
             "season_average_ndvi": 0.0165,
-            "chlorophyll_class": 0.1118,
-            "cumulative_thermal_stress": 0.0172
+            "chlorophyll_class": 0.1118
           },
           "E1-S4": {
             "water_stress": 0.015,
+            "cumulative_thermal_stress": -0.0038,
             "absolute_ndvi": 0.0705,
             "season_average_ndvi": 0.0177,
-            "chlorophyll_class": 0.1024,
-            "cumulative_thermal_stress": -0.0038
+            "chlorophyll_class": 0.1024
           },
           "E1-S5": {
             "water_stress": 0.0255,
+            "cumulative_thermal_stress": -0.0024,
             "absolute_ndvi": 0.0644,
             "season_average_ndvi": 0.0164,
-            "chlorophyll_class": 0.1054,
-            "cumulative_thermal_stress": -0.0024
+            "chlorophyll_class": 0.1054
           },
           "E2-S1": {
             "water_stress": 0.118,
+            "cumulative_thermal_stress": 0.0252,
             "absolute_ndvi": 0.0602,
             "season_average_ndvi": 0.0148,
-            "chlorophyll_class": 0.0745,
-            "cumulative_thermal_stress": 0.0252
+            "chlorophyll_class": 0.0745
           },
           "E2-S2": {
             "water_stress": 0.062,
+            "cumulative_thermal_stress": 0.0167,
             "absolute_ndvi": 0.0606,
             "season_average_ndvi": 0.0157,
-            "chlorophyll_class": 0.0876,
-            "cumulative_thermal_stress": 0.0167
+            "chlorophyll_class": 0.0876
           },
           "E2-S3": {
             "water_stress": -0.0071,
+            "cumulative_thermal_stress": 0.003,
             "absolute_ndvi": 0.0655,
             "season_average_ndvi": 0.0164,
-            "chlorophyll_class": 0.0915,
-            "cumulative_thermal_stress": 0.003
+            "chlorophyll_class": 0.0915
           },
           "E3-S1": {
             "water_stress": 0.0053,
+            "cumulative_thermal_stress": -0.0026,
             "absolute_ndvi": 0.0694,
             "season_average_ndvi": 0.017,
-            "chlorophyll_class": 0.1011,
-            "cumulative_thermal_stress": -0.0026
+            "chlorophyll_class": 0.1011
           },
           "E3-S2": {
             "water_stress": 0.1186,
+            "cumulative_thermal_stress": 0.038,
             "absolute_ndvi": 0.0681,
             "season_average_ndvi": 0.0178,
-            "chlorophyll_class": 0.1114,
-            "cumulative_thermal_stress": 0.038
+            "chlorophyll_class": 0.1114
           },
           "E3-S3": {
             "water_stress": 0.0361,
+            "cumulative_thermal_stress": 0.0074,
             "absolute_ndvi": 0.0626,
             "season_average_ndvi": 0.016,
-            "chlorophyll_class": 0.1094,
-            "cumulative_thermal_stress": 0.0074
+            "chlorophyll_class": 0.1094
           },
           "E3-S4": {
             "water_stress": -0.0056,
+            "cumulative_thermal_stress": 0.0314,
             "absolute_ndvi": 0.0653,
             "season_average_ndvi": 0.0177,
-            "chlorophyll_class": 0.1187,
-            "cumulative_thermal_stress": 0.0314
+            "chlorophyll_class": 0.1187
           },
           "E3-S5": {
             "water_stress": -0.0083,
+            "cumulative_thermal_stress": 0.0009,
             "absolute_ndvi": 0.0656,
             "season_average_ndvi": 0.0177,
-            "chlorophyll_class": 0.1203,
-            "cumulative_thermal_stress": 0.0009
+            "chlorophyll_class": 0.1203
           },
           "E4-S1": {
             "water_stress": -0.0112,
+            "cumulative_thermal_stress": 0.0052,
             "absolute_ndvi": 0.0787,
             "season_average_ndvi": 0.0196,
-            "chlorophyll_class": 0.1091,
-            "cumulative_thermal_stress": 0.0052
+            "chlorophyll_class": 0.1091
           },
           "E4-S2": {
             "water_stress": -0.0822,
+            "cumulative_thermal_stress": -0.0228,
             "absolute_ndvi": 0.0848,
             "season_average_ndvi": 0.0201,
-            "chlorophyll_class": 0.1039,
-            "cumulative_thermal_stress": -0.0228
+            "chlorophyll_class": 0.1039
           },
           "E4-S3": {
             "water_stress": 0.1549,
+            "cumulative_thermal_stress": 0.0479,
             "absolute_ndvi": 0.0702,
             "season_average_ndvi": 0.0172,
-            "chlorophyll_class": 0.0947,
-            "cumulative_thermal_stress": 0.0479
+            "chlorophyll_class": 0.0947
           },
           "E4-S4": {
             "water_stress": 0.0704,
+            "cumulative_thermal_stress": 0.0275,
             "absolute_ndvi": 0.0815,
             "season_average_ndvi": 0.0215,
-            "chlorophyll_class": 0.1133,
-            "cumulative_thermal_stress": 0.0275
+            "chlorophyll_class": 0.1133
           },
           "E4-S5": {
             "water_stress": 0.0881,
+            "cumulative_thermal_stress": 0.032,
             "absolute_ndvi": 0.0696,
             "season_average_ndvi": 0.0186,
-            "chlorophyll_class": 0.1114,
-            "cumulative_thermal_stress": 0.032
+            "chlorophyll_class": 0.1114
           },
           "E5-S1": {
             "water_stress": 0.0385,
+            "cumulative_thermal_stress": 0.0102,
             "absolute_ndvi": 0.0662,
             "season_average_ndvi": 0.0161,
-            "chlorophyll_class": 0.0831,
-            "cumulative_thermal_stress": 0.0102
+            "chlorophyll_class": 0.0831
           },
           "E5-S2": {
             "water_stress": 0.045,
+            "cumulative_thermal_stress": 0.017,
             "absolute_ndvi": 0.0692,
             "season_average_ndvi": 0.0166,
-            "chlorophyll_class": 0.0847,
-            "cumulative_thermal_stress": 0.017
+            "chlorophyll_class": 0.0847
           },
           "E5-S3": {
             "water_stress": -0.0108,
+            "cumulative_thermal_stress": 0.0106,
             "absolute_ndvi": 0.0691,
             "season_average_ndvi": 0.0184,
-            "chlorophyll_class": 0.101,
-            "cumulative_thermal_stress": 0.0106
+            "chlorophyll_class": 0.101
           },
           "E5-S4": {
             "water_stress": 0.0492,
+            "cumulative_thermal_stress": 0.0132,
             "absolute_ndvi": 0.0671,
             "season_average_ndvi": 0.017,
-            "chlorophyll_class": 0.0981,
-            "cumulative_thermal_stress": 0.0132
+            "chlorophyll_class": 0.0981
           },
           "E5-S5": {
             "water_stress": 0.0112,
+            "cumulative_thermal_stress": 0.0119,
             "absolute_ndvi": 0.0701,
             "season_average_ndvi": 0.0183,
-            "chlorophyll_class": 0.1109,
-            "cumulative_thermal_stress": 0.0119
+            "chlorophyll_class": 0.1109
           }
         },
         "equipos": {
           "E1": {
             "water_stress": 0.0111,
+            "cumulative_thermal_stress": 0.0053,
             "absolute_ndvi": 0.0665,
             "season_average_ndvi": 0.0166,
-            "chlorophyll_class": 0.1012,
-            "cumulative_thermal_stress": 0.0053
+            "chlorophyll_class": 0.1012
           },
           "E2": {
             "water_stress": 0.0568,
+            "cumulative_thermal_stress": 0.0148,
             "absolute_ndvi": 0.0621,
             "season_average_ndvi": 0.0155,
-            "chlorophyll_class": 0.0847,
-            "cumulative_thermal_stress": 0.0148
+            "chlorophyll_class": 0.0847
           },
           "E3": {
             "water_stress": 0.0293,
+            "cumulative_thermal_stress": 0.0154,
             "absolute_ndvi": 0.0661,
             "season_average_ndvi": 0.0172,
-            "chlorophyll_class": 0.1127,
-            "cumulative_thermal_stress": 0.0154
+            "chlorophyll_class": 0.1127
           },
           "E4": {
             "water_stress": 0.0431,
+            "cumulative_thermal_stress": 0.0177,
             "absolute_ndvi": 0.077,
             "season_average_ndvi": 0.0194,
-            "chlorophyll_class": 0.1064,
-            "cumulative_thermal_stress": 0.0177
+            "chlorophyll_class": 0.1064
           },
           "E5": {
             "water_stress": 0.0254,
+            "cumulative_thermal_stress": 0.0126,
             "absolute_ndvi": 0.0685,
             "season_average_ndvi": 0.0174,
-            "chlorophyll_class": 0.0962,
-            "cumulative_thermal_stress": 0.0126
+            "chlorophyll_class": 0.0962
           }
         }
       },
@@ -6023,6 +6879,68 @@
             "opt": 1062,
             "bajo": 28196,
             "alto": 1196,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_sector": {
+            "opt": 1,
+            "bajo": 22,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 46051,
+            "bajo": 1274895,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 1062,
+            "bajo": 29392,
+            "alto": 0,
+            "exc": 0
+          }
+        }
+      },
+      "compliance_equipos": {
+        "water_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
+            "alto": 0,
+            "exc": 0
+          }
+        },
+        "cumulative_thermal_stress": {
+          "by_equipo": {
+            "opt": 0,
+            "bajo": 5,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_area_m2": {
+            "opt": 0,
+            "bajo": 1326656,
+            "alto": 0,
+            "exc": 0
+          },
+          "by_plants": {
+            "opt": 0,
+            "bajo": 30454,
+            "alto": 0,
             "exc": 0
           }
         }

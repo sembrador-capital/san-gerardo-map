@@ -126,46 +126,94 @@ FIELD_TO_EQUIPO = {
 # vuelos, 322 observaciones por indicador), no una heuristica: por eso vive aca
 # escrita y con su motivo, y no se infiere en runtime. Los motivos se emiten al
 # JSON en es/en para que la leyenda del mapa pueda decirlos.
+# Los nombres en espanol son los de la plataforma de Ceres, tal como los ve
+# agronomia: si el mapa los llamara de otra forma, habria que traducir de cabeza
+# entre las dos herramientas. Los de ingles son equivalentes razonables (solo se
+# verifico la interfaz en espanol).
+#
+# `group` reproduce la agrupacion de la plataforma, para que el selector del mapa
+# se lea igual.
 PARAMS = OrderedDict([
     ("water_stress", {
-        "es": "Estrés hídrico", "en": "Water stress",
+        "es": "Estrés Hídrico - perennes", "en": "Water stress - perennials",
+        "desc_es": "Déficit de transpiración",
+        "desc_en": "Transpiration deficit",
+        "group_es": "Irrigación", "group_en": "Irrigation",
         "higher_is_better": False,
         "bands_policy": "ceres",
     }),
+    ("cumulative_thermal_stress", {
+        "es": "Estrés Acumulado", "en": "Cumulative stress",
+        "desc_es": "Déficit promedio de transpiración esta temporada",
+        "desc_en": "Average transpiration deficit this season",
+        "group_es": "Irrigación", "group_en": "Irrigation",
+        "higher_is_better": False,
+        # Verificado sobre las 322 observaciones con error 0.0000: este indicador
+        # es el promedio corrido de water_stress dentro de la temporada. Misma
+        # magnitud fisica (deficit de transpiracion), misma escala 0-1, mismo
+        # significado, asi que le corresponden los MISMOS cortes publicados que a
+        # water_stress. No es un umbral inventado: es el umbral de Ceres aplicado
+        # a la media de Ceres de la misma cantidad. La rampa de 10 tramos que
+        # publica para este overlay es una eleccion de despliegue del mapa de
+        # calor, no una clasificacion.
+        "bands_policy": "share:water_stress",
+    }),
     ("absolute_ndvi", {
-        "es": "NDVI", "en": "NDVI",
+        "es": "Índice de Vegetación Absoluto", "en": "Absolute vegetation index",
+        "desc_es": "Crecimiento del dosel",
+        "desc_en": "Canopy growth",
+        "group_es": "Desarrollo de cultivos", "group_en": "Crop development",
         "higher_is_better": True,
         "bands_policy": "unclassified",
-        "why_es": "Ceres publica una rampa de 11 tramos, no umbrales agronómicos.",
-        "why_en": "Ceres publishes an 11-step ramp, not agronomic thresholds.",
+        # La auditoria de los 845 overlays muestra que la escala SI es fija (las
+        # dos firmas observadas difieren solo en el piso del primer tramo, -1.0
+        # vs 0.0, con los cortes interiores identicos). El problema no es que
+        # varie: son 9 tramos iguales de 0.05 entre 0.40 y 0.85, o sea una rampa
+        # de despliegue. Como clasificacion daria una leyenda de 11 filas
+        # rotuladas por rango numerico, que no permite decidir nada.
+        "why_es": "Ceres publica una rampa de tramos iguales de 0,05, no umbrales agronómicos.",
+        "why_en": "Ceres publishes a uniform 0.05-step ramp, not agronomic thresholds.",
     }),
     ("season_average_ndvi", {
-        "es": "NDVI promedio temporada", "en": "Season avg NDVI",
+        "es": "Índice de Vegetación promedio temporada",
+        "en": "Season average vegetation index",
+        "desc_es": "Crecimiento promedio del dosel esta temporada",
+        "desc_en": "Average canopy growth this season",
+        "group_es": "Desarrollo de cultivos", "group_en": "Crop development",
         "higher_is_better": True,
         "bands_policy": "unclassified",
-        "why_es": "Ceres no publica cortes para este indicador.",
-        "why_en": "Ceres publishes no cuts for this indicator.",
+        # Mismo patron que Estres Acumulado: es el promedio corrido del NDVI
+        # dentro de la temporada (verificado, error 0.0000 en 299 obs). Pero el
+        # NDVI tampoco tiene umbrales publicados, asi que no hay nada que
+        # compartir y queda sin clasificar.
+        "why_es": "Es el promedio de temporada del NDVI, que tampoco tiene umbrales publicados.",
+        "why_en": "It is the season average of NDVI, which has no published thresholds either.",
     }),
     ("chlorophyll_class", {
         "es": "Clorofila", "en": "Chlorophyll",
+        "desc_es": "Crecimiento relativo del dosel",
+        "desc_en": "Relative canopy growth",
+        "group_es": "Desarrollo de cultivos", "group_en": "Crop development",
         "higher_is_better": True,
         "bands_policy": "unclassified",
-        # Los cortes publicados (0.193 / 0.545 / 0.615 / 0.685 / 0.827) son
-        # percentiles de la distribucion de un solo vuelo, y hay valores
-        # historicos por debajo del minimo. Aplicarlos a cuatro anos haria que
-        # el mismo valor cambie de categoria segun que vuelo definio la escala.
-        "why_es": "Los cortes de Ceres son percentiles de un vuelo, no umbrales fijos.",
-        "why_en": "Ceres cuts are one flight's percentiles, not fixed thresholds.",
-    }),
-    ("cumulative_thermal_stress", {
-        "es": "Estrés térmico acumulado", "en": "Cumulative thermal stress",
-        "higher_is_better": False,
-        "bands_policy": "unclassified",
-        "why_es": "Ceres publica una rampa de 10 tramos, no umbrales agronómicos.",
-        "why_en": "Ceres publishes a 10-step ramp, not agronomic thresholds.",
+        # La plataforma lo describe como "crecimiento RELATIVO del dosel", y la
+        # auditoria de los 845 overlays lo confirma de la forma mas cruda posible:
+        # 67 colorMap DISTINTOS en 69 overlays. No varia por vuelo, varia por
+        # campo Y por vuelo. En el vuelo del 2026-03-23 hay cinco escalas, una por
+        # equipo. El mismo valor de clorofila caeria en categorias distintas segun
+        # en que equipo este, dentro del mismo vuelo. No son umbrales.
+        "why_es": "Es un índice relativo: Ceres recalcula sus cortes para cada campo y cada vuelo.",
+        "why_en": "It is a relative index: Ceres recomputes its cuts for every field and flight.",
     }),
 ])
-IGNORED_OVERLAYS = {"colorized_ndvi"}
+
+# colorized_ndvi queda fuera: la plataforma lo describe como "crecimiento
+# RELATIVO del dosel" frente al "crecimiento del dosel" del absoluto, o sea es el
+# mismo NDVI renderizado contra la distribucion del vuelo. Como valor por sector
+# no es comparable entre vuelos, que es justo lo que el mapa necesita.
+# cir (Infrarroja Color) y core_thermal (Térmica) tampoco entran: son imagenes
+# para mirar, no indices con un valor por unidad.
+IGNORED_OVERLAYS = {"colorized_ndvi", "cir", "core_thermal"}
 
 # ── Escalera de estados ──────────────────────────────────────────────────────
 # Los codigos salen de STATUS_COLORS / STATUS_PALETTES de index.html: no se crea
@@ -496,10 +544,47 @@ def audit_colormaps(session):
             print("                  fechas=%s%s"
                   % (", ".join(sorted(set(fechas))[:4]),
                      " ..." if len(set(fechas)) > 4 else ""))
-        veredicto = ("ESCALA FIJA -> los cortes son candidatos a umbral"
-                     if len(firmas) == 1
-                     else "SE RECALCULA POR VUELO -> no son umbrales")
-        print("      => %s" % veredicto)
+        print("      => %s" % verdict(firmas))
+
+
+def verdict(firmas):
+    """
+    Veredicto sobre un conjunto de colorMap observados.
+
+    Un test de "uno contra muchos" es demasiado grosero: absolute_ndvi publica
+    dos firmas que difieren SOLO en el piso del primer tramo (-1.0 vs 0.0) y
+    tienen los cortes interiores identicos, o sea es una escala fija con una
+    variante cosmetica, no una escala recalculada. Por eso se comparan tambien
+    los cortes interiores, y se marca por separado la uniformidad: una rampa de
+    tramos iguales es una eleccion de despliegue, no una clasificacion.
+    """
+    n_over = sum(len(v) for v in firmas.values())
+    cortes = [json.loads(f) for f in firmas]
+
+    # Cortes interiores: los extremos del rango son los que suelen variar.
+    interiores = {tuple(round(x[0], 4) for x in c[1:]) for c in cortes}
+
+    if len(firmas) == 1:
+        base = "ESCALA FIJA"
+    elif len(interiores) == 1:
+        base = ("ESCALA FIJA con %d variantes solo en los extremos" % len(firmas))
+    elif len(firmas) >= n_over * 0.5:
+        return ("SE RECALCULA POR OVERLAY (%d firmas en %d overlays) -> "
+                "no son umbrales: el mismo valor cambiaria de categoria segun "
+                "el campo y el vuelo" % (len(firmas), n_over))
+    else:
+        return ("VARIA ENTRE VUELOS (%d firmas) -> no son umbrales"
+                % len(firmas))
+
+    # Escala fija: falta decidir si es clasificacion o rampa de despliegue.
+    anchos = [round(x[1] - x[0], 4) for x in cortes[0]]
+    interior = anchos[1:-1] if len(anchos) > 2 else anchos
+    uniforme = len(set(interior)) == 1
+    if uniforme and len(anchos) > 5:
+        return ("%s, pero es una RAMPA de %d tramos iguales de %s -> eleccion de "
+                "despliegue, no umbrales agronomicos"
+                % (base, len(anchos), interior[0]))
+    return "%s -> los cortes son candidatos a umbral" % base
 
 
 def unit_key(row, level):
@@ -647,6 +732,21 @@ def build_params(colormaps, overrides, warn, value_ranges=None):
             reason_en = "Could not read the Ceres colorMap."
             warn("`%s` tiene politica `ceres` pero no se pudo extraer su "
                  "colorMap: queda sin clasificar." % pid)
+        elif policy.startswith("share:"):
+            # Toma prestados los cortes publicados de otro indicador que mide la
+            # MISMA magnitud. La procedencia queda escrita en bands_source, para
+            # que se pueda auditar de donde salio cada banda.
+            donor = policy.split(":", 1)[1]
+            if donor in overrides:
+                raw, source = overrides[donor], "custom:" + donor
+            elif donor in colormaps:
+                raw, source = colormaps[donor], "ceres:" + donor
+            else:
+                raw, source = [], "unclassified"
+                reason_es = "No se pudo leer el colorMap de %s, del que toma sus cortes." % donor
+                reason_en = "Could not read the colorMap of %s, whose cuts it borrows." % donor
+                warn("`%s` toma sus cortes de `%s`, pero no se pudo extraer ese "
+                     "colorMap: queda sin clasificar." % (pid, donor))
         else:
             raw, source = [], "unclassified"
             reason_es = meta.get("why_es")
@@ -668,6 +768,10 @@ def build_params(colormaps, overrides, warn, value_ranges=None):
             ("id", pid),
             ("es", meta["es"]),
             ("en", meta["en"]),
+            ("desc_es", meta.get("desc_es", "")),
+            ("desc_en", meta.get("desc_en", "")),
+            ("group_es", meta.get("group_es", "")),
+            ("group_en", meta.get("group_en", "")),
             ("min", round(lo, 6)),
             ("max", round(hi, 6)),
             ("higher_is_better", meta["higher_is_better"]),
@@ -719,39 +823,52 @@ def compute_deltas(flights):
         flight["deltas"] = deltas
 
 
-def compute_compliance(flights, params, sectors_meta, warn):
+def compute_compliance(flights, params, sectors_meta, equipos_meta, warn):
     """
-    Cuantos sectores, cuanta superficie y cuantas plantas caen en cada banda.
+    Cuantas unidades, cuanta superficie y cuantas plantas caen en cada banda.
     Precalculado aca: el navegador no debe contar nada.
+
+    Se calcula para los DOS niveles. El mapa pinta 5 equipos o 23 sectores segun
+    el toggle, y si solo existiera el cumplimiento por sector, al mirar equipos la
+    leyenda diria "22 de 23" sobre un mapa de 5 poligonos.
     """
     for flight in flights:
-        compliance = OrderedDict()
-        for param in params:
-            if not param.get("bands"):
+        flight["compliance"] = _compliance_for(
+            flight, "sectors", params, sectors_meta, N_SECTORES, warn)
+        flight["compliance_equipos"] = _compliance_for(
+            flight, "equipos", params, equipos_meta, N_EQUIPOS, warn)
+
+
+def _compliance_for(flight, level, params, meta_by_unit, expected, warn):
+    out = OrderedDict()
+    for param in params:
+        if not param.get("bands"):
+            continue
+        statuses = [b["status"] for b in param["bands"]]
+        by_unit = OrderedDict((s, 0) for s in statuses)
+        by_area = OrderedDict((s, 0) for s in statuses)
+        by_plants = OrderedDict((s, 0) for s in statuses)
+        classified = 0
+        for unit, values in (flight.get(level) or {}).items():
+            band = band_of(param, values.get(param["id"]))
+            if band is None:
                 continue
-            statuses = [b["status"] for b in param["bands"]]
-            by_sector = OrderedDict((s, 0) for s in statuses)
-            by_area = OrderedDict((s, 0) for s in statuses)
-            by_plants = OrderedDict((s, 0) for s in statuses)
-            classified = 0
-            for unit, values in flight["sectors"].items():
-                band = band_of(param, values.get(param["id"]))
-                if band is None:
-                    continue
-                meta = sectors_meta.get(unit) or {}
-                by_sector[band["status"]] += 1
-                by_area[band["status"]] += int(meta.get("area_m2") or 0)
-                by_plants[band["status"]] += int(meta.get("plants") or 0)
-                classified += 1
-            if classified and classified != N_SECTORES:
-                warn("vuelo %s / %s: %d sectores clasificados, se esperaban %d."
-                     % (flight["week_key"], param["id"], classified, N_SECTORES))
-            compliance[param["id"]] = OrderedDict([
-                ("by_sector", by_sector),
-                ("by_area_m2", by_area),
-                ("by_plants", by_plants),
-            ])
-        flight["compliance"] = compliance
+            meta = meta_by_unit.get(unit) or {}
+            by_unit[band["status"]] += 1
+            by_area[band["status"]] += int(meta.get("area_m2") or 0)
+            by_plants[band["status"]] += int(meta.get("plants") or 0)
+            classified += 1
+        if classified and classified != expected:
+            warn("vuelo %s / %s / %s: %d unidades clasificadas, se esperaban %d."
+                 % (flight["week_key"], level, param["id"], classified, expected))
+        # La clave de conteo se llama by_sector en el nivel sector, que es el
+        # nombre que ya documenta el esquema; en equipos, by_equipo.
+        out[param["id"]] = OrderedDict([
+            ("by_sector" if level == "sectors" else "by_equipo", by_unit),
+            ("by_area_m2", by_area),
+            ("by_plants", by_plants),
+        ])
+    return out
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -1104,7 +1221,7 @@ def main():
     params = build_params(colormaps, overrides, warn, value_ranges(flights))
 
     compute_deltas(flights)
-    compute_compliance(flights, params, sectors_meta, warn)
+    compute_compliance(flights, params, sectors_meta, equipos_meta, warn)
 
     payload = OrderedDict([
         ("generated_at", (existing or {}).get("generated_at") or now_iso()),
