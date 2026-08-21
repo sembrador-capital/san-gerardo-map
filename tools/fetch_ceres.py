@@ -332,14 +332,35 @@ RETRIES = 3
 # Credencial
 # ═══════════════════════════════════════════════════════════════════════════
 
+def unquote_token(tok):
+    """
+    Saca las comillas que envuelven el valor, si estan.
+
+    Los secrets de GitHub se guardan literalmente: no hay shell que interprete
+    nada, asi que pegar "abc123" deja las comillas DENTRO del valor y el header
+    sale como `Token "abc123"`. Ceres devuelve 401 y el mensaje no dice por que.
+    Un token DRF nunca lleva comillas, asi que quitarlas no puede romper uno
+    valido. Se avisa por stderr para que el problema quede visible en el log en
+    vez de arreglarse en silencio.
+    """
+    for q in ('"', "'"):
+        if len(tok) >= 2 and tok.startswith(q) and tok.endswith(q):
+            sys.stderr.write(
+                "ADVERTENCIA: el token venia entre comillas (%s). Se quitaron, "
+                "pero conviene corregir el valor: en un secret de GitHub va el "
+                "token solo, sin comillas ni el prefijo `Token `.\n" % q)
+            return tok[1:-1].strip()
+    return tok
+
+
 def read_token():
-    tok = (os.environ.get("CERES_TOKEN") or "").strip()
+    tok = unquote_token((os.environ.get("CERES_TOKEN") or "").strip())
     if tok:
         return tok
     if os.path.isfile(TOKEN_FILE):
         try:
             with open(TOKEN_FILE, "r", encoding="utf-8") as fh:
-                tok = fh.read().strip()
+                tok = unquote_token(fh.read().strip())
         except OSError as exc:
             sys.stderr.write("ERROR: no se pudo leer .ceres_token: %s\n" % exc)
             sys.exit(1)
@@ -1340,9 +1361,15 @@ def main():
         # pegado truncado, uno con el prefijo "Token " adentro o uno con un salto
         # de linea en medio, que son las tres formas tipicas de romper un secret.
         raw = os.environ.get("CERES_TOKEN")
+        crudo = (raw or "").strip()
         print("origen:            %s" % ("variable de entorno CERES_TOKEN" if raw
                                          else "archivo .ceres_token"))
-        print("largo:             %d caracteres" % len(token))
+        entre_comillas = (len(crudo) >= 2 and crudo[0] == crudo[-1]
+                          and crudo[0] in ('"', "'"))
+        print("entre comillas:    %s" % ("SI - sobran, va el token solo"
+                                         if entre_comillas else "no"))
+        print("largo:             %d caracteres%s"
+              % (len(token), " (ya sin las comillas)" if entre_comillas else ""))
         print("espacios internos: %s" % ("SI - probablemente se pego mal"
                                          if any(c.isspace() for c in token) else "no"))
         print("empieza con Token: %s" % ("SI - sobra el prefijo, va solo el valor"
