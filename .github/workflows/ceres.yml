@@ -1,0 +1,57 @@
+name: Ceres Imaging
+
+# Cron holgado a proposito: hay 3-4 vuelos por temporada y ninguno entre abril
+# y octubre. Un chequeo semanal alcanza de sobra; el script es incremental y no
+# vuelve a pedir los vuelos que ya estan en ceres_data.json.
+#
+# Solo schedule y workflow_dispatch. Nada de pull_request_target: en un repo
+# publico ese evento entrega los secrets a PRs de forks.
+on:
+  schedule:
+    - cron: '0 6 * * 1'      # lunes 06:00 UTC
+  workflow_dispatch:
+
+# Lo minimo para commitear el resultado. Nada mas.
+permissions:
+  contents: write
+
+# Dos corridas simultaneas se pisarian al pushear.
+concurrency:
+  group: ceres-fetch
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
+
+      - name: Setup Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065  # v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar dependencias
+        run: pip install --disable-pip-version-check requests
+
+      # El token viaja solo por env, nunca por linea de comandos (los argv son
+      # visibles en la lista de procesos del runner). Sin set -x, sin echo.
+      - name: Descargar vuelos de Ceres
+        env:
+          CERES_TOKEN: ${{ secrets.CERES_TOKEN }}
+        run: python tools/fetch_ceres.py
+
+      - name: Commitear si cambio algo
+        run: |
+          if git diff --quiet -- ceres_data.json data-version.json; then
+            echo "Sin cambios: no hay vuelo nuevo que commitear."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ceres_data.json data-version.json
+          git commit -m "Actualizar datos de Ceres Imaging"
+          git push
