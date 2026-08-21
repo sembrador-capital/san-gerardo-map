@@ -10,6 +10,11 @@ on:
   schedule:
     - cron: '0 6 * * 1'      # lunes 06:00 UTC
   workflow_dispatch:
+    inputs:
+      check_token:
+        description: 'Solo verificar el token, sin descargar nada'
+        type: boolean
+        default: false
 
 # Lo minimo para commitear el resultado. Nada mas.
 permissions:
@@ -37,14 +42,24 @@ jobs:
       - name: Instalar dependencias
         run: pip install --disable-pip-version-check requests
 
+      # Verificacion opcional del secret. Describe la FORMA del token (largo,
+      # espacios, prefijo) sin imprimir su valor, y hace una sola llamada.
+      - name: Verificar el token
+        if: inputs.check_token
+        env:
+          CERES_TOKEN: ${{ secrets.CERES_TOKEN }}
+        run: python tools/fetch_ceres.py --check-token
+
       # El token viaja solo por env, nunca por linea de comandos (los argv son
       # visibles en la lista de procesos del runner). Sin set -x, sin echo.
       - name: Descargar vuelos de Ceres
+        if: ${{ !inputs.check_token }}
         env:
           CERES_TOKEN: ${{ secrets.CERES_TOKEN }}
         run: python tools/fetch_ceres.py
 
       - name: Commitear si cambio algo
+        if: ${{ !inputs.check_token }}
         run: |
           if git diff --quiet -- ceres_data.json data-version.json; then
             echo "Sin cambios: no hay vuelo nuevo que commitear."

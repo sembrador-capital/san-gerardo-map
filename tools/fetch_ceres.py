@@ -1321,6 +1321,10 @@ def main():
     ap.add_argument("--inspect-overlays", action="store_true",
                     help="diagnostico: imprime la forma de /api/overlays/ para "
                          "ajustar el parseo del colorMap. No escribe nada.")
+    ap.add_argument("--check-token", action="store_true",
+                    help="diagnostico: valida el token con una sola llamada y "
+                         "describe su FORMA (largo, espacios, prefijo) sin "
+                         "imprimir el valor. Sirve para depurar el secret de CI.")
     args = ap.parse_args()
 
     warnings = []
@@ -1330,6 +1334,46 @@ def main():
         sys.stderr.write("  !  %s\n" % msg)
 
     token = read_token()
+
+    if args.check_token:
+        # Describe la FORMA del token, nunca su valor: alcanza para distinguir un
+        # pegado truncado, uno con el prefijo "Token " adentro o uno con un salto
+        # de linea en medio, que son las tres formas tipicas de romper un secret.
+        raw = os.environ.get("CERES_TOKEN")
+        print("origen:            %s" % ("variable de entorno CERES_TOKEN" if raw
+                                         else "archivo .ceres_token"))
+        print("largo:             %d caracteres" % len(token))
+        print("espacios internos: %s" % ("SI - probablemente se pego mal"
+                                         if any(c.isspace() for c in token) else "no"))
+        print("empieza con Token: %s" % ("SI - sobra el prefijo, va solo el valor"
+                                         if token.lower().startswith("token") else "no"))
+        print("solo ASCII:        %s" % ("si" if all(ord(c) < 128 for c in token)
+                                         else "NO - hay caracteres raros"))
+        if raw is not None and raw != raw.strip():
+            print("ADVERTENCIA:       venia con espacios al principio o al final "
+                  "(se recortaron)")
+        sys.stdout.flush()
+        s = requests.Session()
+        s.headers.update({"Authorization": "Token %s" % token,
+                          "Accept": "application/json"})
+        url = BASE_URL + "/admin_groups/weeks/%s/%s/" % (
+            USER_ID, urllib.parse.quote(ADMIN_GROUP, safe=""))
+        try:
+            resp = s.get(url, timeout=TIMEOUT)
+        except requests.RequestException as exc:
+            print("resultado:         fallo de red (%s)" % type(exc).__name__)
+            return 1
+        print("resultado:         HTTP %d" % resp.status_code)
+        if resp.status_code == 200:
+            print("")
+            print("El token es valido.")
+            return 0
+        if resp.status_code in (401, 403):
+            print("")
+            print("Ceres rechazo el token. Con el largo de arriba se distingue si")
+            print("el pegado quedo incompleto o si el valor ya no sirve.")
+        return 1
+
     session = requests.Session()
     session.headers.update({
         "Authorization": "Token %s" % token,
