@@ -222,7 +222,7 @@ body.compare-mode #map2 { display:block; }
 /* En pestañas con barra de métricas arriba a la derecha, el selector la
    desplazaría: la barra baja al pie en esos modos, así que sólo choca en
    General y Cosecha, donde se le cede el borde. */
-body:not(.foliar-active):not(.soil-active):not(.prod-active):not(.pest-active):not(.riego-active):not(.agro-active):not(.fin-active) .stats-bar { right:112px; }
+body:not(.foliar-active):not(.soil-active):not(.prod-active):not(.pest-active):not(.riego-active):not(.ceres-active):not(.agro-active):not(.fin-active) .stats-bar { right:112px; }
 
 /* ── Análisis IA ────────────────────────────────────────────────────────── */
 .ia-btn {
@@ -377,6 +377,7 @@ use[href^="#ic-"] { stroke:currentColor; }
 .foliar-stat-row .stat .num { font-size:13.5px; }
 
 body.foliar-active .stats-bar,
+body.ceres-active .stats-bar,
 body.riego-active .stats-bar,
 body.prod-active .stats-bar,
 body.soil-active .stats-bar,
@@ -387,6 +388,7 @@ body.pest-active .stats-bar {
     padding:7px 10px; overflow-x:auto; scrollbar-width:thin;
 }
 body.foliar-active .mapboxgl-ctrl-bottom-right,
+body.ceres-active .mapboxgl-ctrl-bottom-right,
 body.riego-active .mapboxgl-ctrl-bottom-right,
 body.prod-active .mapboxgl-ctrl-bottom-right,
 body.soil-active .mapboxgl-ctrl-bottom-right,
@@ -591,7 +593,7 @@ body.compare-mode .foliar-controls-B { display:flex; gap:14px; align-items:cente
 .mapboxgl-ctrl-attrib, .mapboxgl-ctrl-attrib a { color:var(--sem-text-2); font-size:11px; }
 
 /* ── COMPONENTE 4 · Paneles laterales ───────────────────────────────────── */
-.riego-controls, .agro-controls, .fin-controls, .pest-controls {
+.ceres-controls, .riego-controls, .agro-controls, .fin-controls, .pest-controls {
     position:absolute; z-index:var(--z-panel); display:none; overflow:hidden;
     background:var(--sem-surface); color:var(--sem-ink);
     border:var(--sem-border-hair);
@@ -603,28 +605,29 @@ body.compare-mode .foliar-controls-B { display:flex; gap:14px; align-items:cente
 /* Los cuatro arrancan bajo la barra de navegación: a top:16px la tapaban. */
 /* Arrancan bajo la barra de pestañas; el alto libre es la ventana menos ese
    arranque menos el aire que necesita la barra de métricas abajo. */
+.ceres-controls { top:60px; right:16px; width:330px; max-height:calc(100vh - 146px); overflow:auto; }
 .riego-controls { top:60px; right:16px; width:318px; max-height:calc(100vh - 146px); overflow:auto; }
 .agro-controls  { top:60px; right:16px; width:364px; max-height:calc(100vh - 146px); overflow:auto; }
 .fin-controls   { top:60px; right:16px; width:336px; max-height:calc(100vh - 146px); overflow:auto; }
 .pest-controls  { top:60px; right:16px; width:336px; max-height:calc(100vh - 146px); overflow:auto; }
-.riego-controls.visible, .agro-controls.visible, .fin-controls.visible, .pest-controls.visible { display:block; }
+.ceres-controls.visible, .riego-controls.visible, .agro-controls.visible, .fin-controls.visible, .pest-controls.visible { display:block; }
 
-.riego-controls-header, .agro-controls-header, .fin-controls-header, .pest-controls-header {
+.ceres-controls-header, .riego-controls-header, .agro-controls-header, .fin-controls-header, .pest-controls-header {
     padding:10px 14px 9px; background:var(--sem-beige-wash);
     border-bottom:var(--sem-border-soft);
 }
-.riego-controls-title, .agro-controls-title, .fin-controls-title, .pest-controls-title {
+.ceres-controls-title, .riego-controls-title, .agro-controls-title, .fin-controls-title, .pest-controls-title {
     font-size:11px; font-weight:600; letter-spacing:0.04em; text-transform:uppercase;
     color:var(--sem-navy); display:flex; align-items:center; gap:7px;
 }
-.riego-controls-title .rc-dot, .agro-controls-title .ac-dot,
+.ceres-controls-title .cs-dot, .riego-controls-title .rc-dot, .agro-controls-title .ac-dot,
 .fin-controls-title .fc-dot, .pest-controls-title .pc-dot {
     width:7px; height:7px; border-radius:50%; background:var(--sem-green); flex:0 0 7px;
 }
-.riego-controls-subtitle, .agro-controls-subtitle, .fin-controls-subtitle, .pest-controls-subtitle {
+.ceres-controls-subtitle, .riego-controls-subtitle, .agro-controls-subtitle, .fin-controls-subtitle, .pest-controls-subtitle {
     font-size:11px; color:var(--sem-text-2); margin-top:4px; line-height:1.35;
 }
-.riego-controls-body, .agro-controls-body, .fin-controls-body, .pest-controls-body { padding:11px 13px 13px; }
+.ceres-controls-body, .riego-controls-body, .agro-controls-body, .fin-controls-body, .pest-controls-body { padding:11px 13px 13px; }
 
 /* Sub-pestañas del panel de riego */
 .riego-mode-tabs {
@@ -838,6 +841,132 @@ body:not(.compare-mode) #riegoLabelASlot { display:none !important; }
 .riego-legend .fl-nutrient { font-size:13px; }
 .riego-legend .fl-subtitle { font-size:12px; margin-top:4px; }
 
+/* ── Ceres Imaging ───────────────────────────────────────────────────────── */
+/* Nivel Equipo/Sector: mismo componente segmentado que las sub-pestañas de
+   riego, para que la pestaña no se sienta pegada aparte. */
+.ceres-level-tabs {
+    display:flex; gap:2px; background:var(--sem-beige-wash);
+    padding:3px; border-radius:var(--sem-radius);
+}
+.ceres-level-tab {
+    /* Mismo padding que .riego-mode-tab: el control se usa en terreno, en un
+       teléfono, y además así los dos paneles tienen la misma altura de fila. */
+    flex:1; padding:8px 4px; border:none; cursor:pointer;
+    background:transparent; color:var(--sem-text-2);
+    border-radius:6px; font-size:12px; font-family:inherit;
+    transition:all 0.15s;
+}
+.ceres-level-tab:hover { color:var(--sem-navy); }
+.ceres-level-tab.active {
+    background:var(--sem-surface); color:var(--sem-navy); font-weight:600;
+    box-shadow:var(--sem-shadow-sm);
+}
+
+.ceres-period { margin-top:14px; }
+.ceres-period-b { border-top:var(--sem-border-soft); padding-top:12px; }
+.ceres-period-label { margin-bottom:7px; }
+
+/* Los vuelos se agrupan por temporada: con 14 fechas en 5 temporadas y nada
+   entre abril y octubre, la temporada es la única agrupación que se lee. */
+.ceres-flights { margin-top:5px; }
+.ceres-season-group { margin-bottom:9px; }
+.ceres-season-label {
+    font-size:10px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase;
+    color:var(--sem-text-3); margin-bottom:4px;
+}
+.ceres-flight-row { display:flex; flex-wrap:wrap; gap:4px; }
+.ceres-flight {
+    padding:5px 9px; border:var(--sem-border-hair); cursor:pointer;
+    background:var(--sem-surface); color:var(--sem-text-2);
+    border-radius:var(--sem-radius-pill); font-size:11px; font-family:inherit;
+    line-height:1.3; transition:all 0.15s; min-height:32px;
+}
+.ceres-flight:hover { border-color:var(--sem-navy); color:var(--sem-navy); }
+.ceres-flight.active {
+    background:var(--sem-navy); border-color:var(--sem-navy);
+    color:var(--sem-surface); font-weight:600;
+}
+
+.ceres-status { font-size:11px; color:var(--sem-text-2); margin-top:11px; line-height:1.4; }
+
+/* Gráficos del panel (vistas 3 y 4). Alto fijo: Chart.js necesita que el
+   contenedor lo defina cuando maintainAspectRatio es false. */
+.ceres-panel-charts { margin-top:15px; border-top:var(--sem-border-soft); padding-top:13px; }
+.ceres-chart-block + .ceres-chart-block { margin-top:15px; }
+.ceres-chart-title {
+    font-size:11px; font-weight:600; letter-spacing:0.03em; text-transform:uppercase;
+    color:var(--sem-navy); margin-bottom:7px;
+}
+.ceres-chart-wrap { position:relative; height:150px; }
+.ceres-rank-wrap { height:290px; }
+.ceres-chart-empty { font-size:11px; color:var(--sem-text-2); line-height:1.4; padding:6px 0; }
+
+/* Leyenda */
+.ceres-legend .fl-nutrient { font-size:13px; }
+.ceres-legend .fl-subtitle { font-size:12px; margin-top:4px; }
+.ceres-age {
+    font-size:11px; font-weight:600; color:var(--sem-navy);
+    background:var(--sem-navy-wash); border-radius:var(--sem-radius);
+    padding:5px 8px; margin-top:7px; line-height:1.35;
+}
+.cs-scale { margin-top:9px; }
+.cs-scale-row { display:flex; align-items:center; gap:7px; font-size:11px; margin-bottom:4px; }
+/* Banda sin ninguna unidad: sigue en la escala como referencia, pero atenuada
+   para que no compita con las bandas que sí son un hallazgo. */
+.cs-scale-row.is-empty { opacity:0.45; }
+.cs-swatch {
+    width:14px; height:14px; border-radius:3px; flex:0 0 14px;
+    border:var(--sem-border-hair);
+}
+.cs-scale-label { flex:1; }
+.cs-scale-range { color:var(--sem-text-3); font-variant-numeric:tabular-nums; }
+.cs-scale-count {
+    min-width:18px; text-align:right; font-weight:600;
+    font-variant-numeric:tabular-nums; color:var(--sem-ink);
+}
+.cs-compliance { display:flex; flex-wrap:wrap; align-items:center; gap:4px; margin-top:8px; }
+.cs-chip-label {
+    flex:0 0 100%; font-size:10px; font-weight:600; letter-spacing:0.04em;
+    text-transform:uppercase; color:var(--sem-text-3); margin-bottom:1px;
+}
+.cs-chip {
+    font-size:10px; padding:3px 7px; border-radius:var(--sem-radius-pill);
+    background:var(--sem-beige-wash); color:var(--sem-text-2);
+    border:var(--sem-border-soft); font-variant-numeric:tabular-nums;
+}
+.cs-chip strong { color:var(--sem-ink); font-weight:600; }
+.ceres-legend-note {
+    font-size:10px; color:var(--sem-text-2); line-height:1.4;
+    margin-top:8px; padding-top:7px; border-top:var(--sem-border-soft);
+}
+
+/* Tooltip */
+/* La banda como píldora del color de su propia banda: ata el número al color
+   que el usuario está viendo en el polígono. */
+.ct-band {
+    display:inline-block; margin-left:7px; padding:2px 8px;
+    border-radius:var(--sem-radius-pill); font-size:11px; font-weight:600;
+    vertical-align:middle;
+}
+.ct-delta { font-size:11px; margin-top:5px; font-variant-numeric:tabular-nums; }
+.ct-delta .ct-arrow { font-weight:700; margin-right:3px; }
+.ct-delta.up-good, .ct-delta.down-good { color:var(--dat-st-opt); }
+.ct-delta.up-bad, .ct-delta.down-bad { color:var(--dat-st-def); }
+.ct-delta.flat { color:var(--sem-text-2); }
+.ct-flag {
+    font-size:10px; margin-top:6px; padding:4px 7px; line-height:1.35;
+    background:var(--dat-st-alto-bg); color:var(--dat-st-alto-fg);
+    border-radius:var(--sem-radius);
+}
+
+/* Modal */
+.ceres-modal .rm-chart-wrap { position:relative; height:210px; }
+.ceres-unclassified-note {
+    font-size:11px; line-height:1.45; color:var(--sem-text-2);
+    background:var(--sem-beige-wash); border:var(--sem-border-soft);
+    border-radius:var(--sem-radius); padding:8px 10px; margin-bottom:12px;
+}
+
 /* Visibilidad de leyendas y paneles por pestaña (sin cambios de lógica) */
 body.foliar-active .foliar-legend { display:block; }
 body.soil-active .soil-legend { display:block; }
@@ -849,15 +978,21 @@ body.foliar-active #legendGeneral, body.foliar-active #legendProd { display:none
 body.soil-active #legendGeneral, body.soil-active #legendProd, body.soil-active #legendFoliar { display:none !important; }
 body.riego-active #legendGeneral, body.riego-active #legendProd,
 body.riego-active .foliar-legend:not(.riego-legend), body.riego-active .soil-legend,
-body.riego-active #legendAgro, body.riego-active #legendPest { display:none !important; }
+body.riego-active #legendAgro, body.riego-active #legendPest, body.riego-active #legendCeres { display:none !important; }
 body.agro-active #legendGeneral, body.agro-active #legendProd, body.agro-active #legendFoliar,
-body.agro-active #legendSoil, body.agro-active #legendRiego, body.agro-active #legendPest { display:none !important; }
+body.agro-active #legendSoil, body.agro-active #legendRiego, body.agro-active #legendPest, body.agro-active #legendCeres { display:none !important; }
 body.fin-active #legendGeneral, body.fin-active #legendProd, body.fin-active #legendFoliar,
-body.fin-active #legendSoil, body.fin-active #legendRiego, body.fin-active #legendAgro,
+body.fin-active #legendSoil, body.fin-active #legendRiego, body.fin-active #legendAgro, body.fin-active #legendCeres,
 body.fin-active #legendPest { display:none !important; }
 body.pest-active #legendGeneral, body.pest-active #legendProd, body.pest-active #legendFoliar,
-body.pest-active #legendSoil, body.pest-active #legendRiego, body.pest-active #legendAgro,
+body.pest-active #legendSoil, body.pest-active #legendRiego, body.pest-active #legendAgro, body.pest-active #legendCeres,
 body.pest-active .fin-legend { display:none !important; }
+body.ceres-active .ceres-legend { display:block !important; }
+body.ceres-active #legendGeneral, body.ceres-active #legendProd,
+body.ceres-active .foliar-legend:not(.ceres-legend), body.ceres-active .soil-legend,
+body.ceres-active #legendAgro, body.ceres-active #legendPest,
+body.ceres-active .fin-legend, body.ceres-active #legendRiego { display:none !important; }
+body:not(.ceres-active) .ceres-legend, body:not(.ceres-active) .ceres-controls { display:none !important; }
 body:not(.riego-active) .riego-legend, body:not(.riego-active) .riego-controls { display:none !important; }
 body:not(.agro-active) .agro-controls, body:not(.agro-active) .agro-legend { display:none !important; }
 body:not(.fin-active) .fin-controls, body:not(.fin-active) .fin-legend { display:none !important; }
@@ -1703,7 +1838,7 @@ body.pest-active #dataStamp { top:56px; }
 
 /* ── Ajuste de ancho medio: la barra inferior no debe recibir también top ── */
 @media (max-width:1280px) and (min-width:721px) {
-    body:not(.foliar-active):not(.soil-active):not(.prod-active):not(.pest-active):not(.riego-active):not(.agro-active):not(.fin-active) .stats-bar:not(.hidden) { top:58px; }
+    body:not(.foliar-active):not(.soil-active):not(.prod-active):not(.pest-active):not(.riego-active):not(.ceres-active):not(.agro-active):not(.fin-active) .stats-bar:not(.hidden) { top:58px; }
 }
 
 </style>
@@ -1735,6 +1870,10 @@ body.pest-active #dataStamp { top:56px; }
         <path d="M7 2h4M8.5 2v9.5a2.5 2.5 0 1 0 5 0V2"/><path d="M8.6 8h4.8"/></g>
     <g id="ic-gota" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
         <path d="M9 2.5c3 3.5 4.5 6 4.5 8.2A4.5 4.5 0 0 1 4.5 10.7C4.5 8.5 6 6 9 2.5Z"/></g>
+    <g id="ic-satelite" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+        <path d="M9 6.2a2.8 2.8 0 1 1 0 5.6 2.8 2.8 0 0 1 0-5.6Z"/>
+        <path d="M2.6 9a6.4 6.4 0 0 1 12.8 0"/><path d="M4.9 13.6a6.4 6.4 0 0 0 8.2 0"/>
+        <path d="M9 2.6V4M9 14v1.4"/></g>
     <g id="ic-spray" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
         <path d="M5 6.5h5V15H5V6.5Z"/><path d="M6.5 6.5V4h2v2.5"/><path d="M12 4h2M12 6.5h2M12 9h2"/></g>
     <g id="ic-insecto" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
@@ -1800,6 +1939,7 @@ body.pest-active #dataStamp { top:56px; }
          dos: data-modes le dice a la barra cuándo pintarse activa. -->
     <button class="tab-btn" data-mode="nutricion" data-modes="foliares suelo" onclick="switchMode(NUTRI_SUBMODE)"><span class="ic"><svg viewBox="0 0 18 18"><use href="#ic-hoja"/></svg></span><span data-i18n="Nutrición">Nutrición</span></button>
     <button class="tab-btn" data-mode="riego" onclick="switchMode('riego')"><span class="ic"><svg viewBox="0 0 18 18"><use href="#ic-gota"/></svg></span><span data-i18n="Riego">Riego</span></button>
+    <button class="tab-btn" data-mode="ceres" onclick="switchMode('ceres')"><span class="ic"><svg viewBox="0 0 18 18"><use href="#ic-satelite"/></svg></span><span data-i18n="Ceres">Ceres</span></button>
     <button class="tab-btn" data-mode="agroquimicos" onclick="switchMode('agroquimicos')"><span class="ic"><svg viewBox="0 0 18 18"><use href="#ic-spray"/></svg></span><span data-i18n="Aplicaciones">Aplicaciones</span></button>
     <button class="tab-btn" data-mode="plagas" onclick="switchMode('plagas')"><span class="ic"><svg viewBox="0 0 18 18"><use href="#ic-insecto"/></svg></span><span data-i18n="Control de Plagas y Enfermedades">Control de Plagas y Enfermedades</span></button>
     <button class="tab-btn" data-mode="financiero" onclick="switchMode('financiero')"><span class="ic"><svg viewBox="0 0 18 18"><use href="#ic-billete"/></svg></span><span data-i18n="Financiero">Financiero</span></button>
@@ -1821,6 +1961,10 @@ body.pest-active #dataStamp { top:56px; }
     <div class="riego-stats-wrap" id="riegoStats">
         <div class="riego-stats" id="riegoStatsA"></div>
         <div class="riego-stats" id="riegoStatsB"></div>
+    </div>
+    <div class="riego-stats-wrap" id="ceresStats">
+        <div class="riego-stats" id="ceresStatsA"></div>
+        <div class="riego-stats" id="ceresStatsB"></div>
     </div>
     <div class="agro-stats" id="agroStats"></div>
     <div class="fin-stats" id="finStats"></div>
@@ -1921,6 +2065,65 @@ body.pest-active #dataStamp { top:56px; }
             <label class="fc-label" data-i18n="Fecha del informe">Fecha del informe</label>
             <select class="fc-select" id="selSoilDateB"></select>
         </div>
+    </div>
+</div>
+
+<!-- Ceres Imaging controls -->
+<div class="ceres-controls" id="ceresControls">
+    <div class="ceres-controls-header">
+        <div class="ceres-controls-title"><span class="cs-dot"></span><span data-i18n="Imágenes aéreas">Imágenes aéreas</span></div>
+        <div class="ceres-controls-subtitle" data-i18n="Vuelos de Ceres Imaging sobre el predio">Vuelos de Ceres Imaging sobre el predio</div>
+    </div>
+    <div class="ceres-controls-body">
+        <button class="fc-compare-btn ceres-compare-btn" id="compareBtnCeres" onclick="toggleCompare()">
+            <span class="ic"><svg viewBox="0 0 18 18"><use href="#ic-comparar"/></svg></span>
+            <span id="compareLabelCeres" data-i18n="Comparar vuelos">Comparar vuelos</span>
+        </button>
+
+        <!-- Indicador y nivel son ajustes de vista: valen para los dos lados. Lo
+             que se compara entre A y B es el vuelo, que es el eje con dato
+             estacional. Por eso el panel B solo repite el selector de vuelo. -->
+        <div class="fc-group">
+            <label class="fc-label" data-i18n="Indicador">Indicador</label>
+            <select class="fc-select" id="selCeresParam" onchange="setCeresParam(this.value)"></select>
+        </div>
+
+        <div class="fc-group">
+            <label class="fc-label" data-i18n="Nivel">Nivel</label>
+            <div class="ceres-level-tabs">
+                <button class="ceres-level-tab" data-clevel="equipos" onclick="setCeresLevel('equipos')" data-i18n="Equipo">Equipo</button>
+                <button class="ceres-level-tab active" data-clevel="sectors" onclick="setCeresLevel('sectors')" data-i18n="Sector">Sector</button>
+            </div>
+        </div>
+
+        <div class="ceres-period" data-side="A">
+            <div class="ceres-period-label" id="ceresLabelASlot" style="display:none">
+                <span class="fc-side-label fc-side-A" data-i18n="Vuelo A">Vuelo A</span>
+            </div>
+            <label class="fc-label" data-i18n="Vuelo">Vuelo</label>
+            <div class="ceres-flights" id="ceresFlightsA"></div>
+        </div>
+
+        <div class="ceres-period ceres-period-b" id="ceresPeriodB" data-side="B" style="display:none">
+            <div class="ceres-period-label"><span class="fc-side-label fc-side-B" data-i18n="Vuelo B">Vuelo B</span></div>
+            <div class="ceres-flights" id="ceresFlightsB"></div>
+        </div>
+
+        <!-- Vistas 3 y 4 del §5.4: viven en el panel del modo, no en el modal. -->
+        <div class="ceres-panel-charts">
+            <div class="ceres-chart-block">
+                <div class="ceres-chart-title" id="ceresRankTitle" data-i18n="Ranking del vuelo">Ranking del vuelo</div>
+                <div class="ceres-chart-wrap ceres-rank-wrap"><canvas id="ceresRankChart"></canvas></div>
+                <div class="ceres-chart-empty" id="ceresRankEmpty" style="display:none"></div>
+            </div>
+            <div class="ceres-chart-block">
+                <div class="ceres-chart-title" data-i18n="Comparación entre temporadas">Comparación entre temporadas</div>
+                <div class="ceres-chart-wrap"><canvas id="ceresSeasonChart"></canvas></div>
+                <div class="ceres-chart-empty" id="ceresSeasonEmpty" style="display:none"></div>
+            </div>
+        </div>
+
+        <div class="ceres-status" id="ceresStatus"></div>
     </div>
 </div>
 
@@ -2368,6 +2571,20 @@ body.pest-active #dataStamp { top:56px; }
 </div>
 
 
+<!-- Modal detalle de Ceres Imaging -->
+<div class="riego-modal ceres-modal" id="ceresModal" onclick="if(event.target===this)closeCeresModal()">
+    <div class="riego-modal-content">
+        <div class="riego-modal-head">
+            <div>
+                <h2 id="ceresModalTitle" data-i18n="Detalle del vuelo">Detalle del vuelo</h2>
+                <div class="rm-sub" id="ceresModalSubtitle"></div>
+            </div>
+            <button class="riego-modal-close" onclick="closeCeresModal()" aria-label="Cerrar" data-i18n-aria="Cerrar"><svg viewBox="0 0 18 18"><use href="#ic-cerrar"/></svg></button>
+        </div>
+        <div id="ceresModalBody"></div>
+    </div>
+</div>
+
 <!-- Modal detalle de aplicaciones agroquímicas -->
 
 
@@ -2476,6 +2693,20 @@ body.pest-active #dataStamp { top:56px; }
 </div>
 
 
+<div class="foliar-legend ceres-legend glass" id="legendCeres">
+    <div class="fl-nutrient">
+        <span id="ceresLegendName" data-i18n="Estrés Hídrico - perennes">Estrés Hídrico - perennes</span>
+        <span class="fl-symbol" id="ceresLegendUnit" data-i18n="0–1">0–1</span>
+    </div>
+    <div class="fl-subtitle" id="ceresLegendMeta"></div>
+    <!-- Antigüedad del dato: el último vuelo puede tener meses. Va acá, en el
+         cuerpo de la leyenda, no en letra chica. -->
+    <div class="ceres-age" id="ceresLegendAge"></div>
+    <div class="cs-scale" id="ceresScale"></div>
+    <div class="cs-compliance" id="ceresCompliance"></div>
+    <div class="ceres-legend-note" id="ceresLegendNote"></div>
+</div>
+
 <div class="agro-legend glass" id="legendAgro">
     <div class="agro-legend-title">
         <span data-i18n="Aplicaciones coincidentes">Aplicaciones coincidentes</span>
@@ -2580,6 +2811,28 @@ body.pest-active #dataStamp { top:56px; }
     </div>
 
 
+    <div id="ttCeresBlock" style="display:none">
+        <div id="ttCeresContent">
+            <div class="rt-metric">
+                <span class="rt-value" id="ttCeresVal">—</span>
+                <span class="ct-band" id="ttCeresBand"></span>
+            </div>
+            <!-- El cambio contra el vuelo anterior es el dato accionable: no
+                 "está en 0,52" sino "pasó de Adecuado a Alerta". -->
+            <div class="ct-delta" id="ttCeresDelta"></div>
+            <div class="rt-details">
+                <div class="rt-detail"><div class="k" data-i18n="Superficie">Superficie</div><div class="v" id="ttCeresHa">—</div></div>
+                <div class="rt-detail"><div class="k" data-i18n="Plantas">Plantas</div><div class="v" id="ttCeresPlants">—</div></div>
+                <div class="rt-detail"><div class="k" data-i18n="Densidad">Densidad</div><div class="v" id="ttCeresDens">—</div></div>
+                <div class="rt-detail"><div class="k" data-i18n="Vuelo">Vuelo</div><div class="v" id="ttCeresDate">—</div></div>
+            </div>
+            <div class="ct-flag" id="ttCeresFlag" style="display:none"></div>
+            <button class="rt-cta" id="ttCeresDetailBtn" onclick="openCeresModalFromTooltip()" data-i18n="Ver detalle">Ver detalle</button>
+            <div class="rt-source" id="ttCeresSource"></div>
+        </div>
+        <div id="ttCeresNoData" class="rt-nodata" style="display:none"></div>
+    </div>
+
     <div id="ttProspBlock" style="display:none">
         <div class="tp-metric"><span class="tp-value" id="ttProspVal">—</span><span class="tp-unit" id="ttProspUnit"></span></div>
         <div class="tp-cmp" id="ttProspCmp"></div>
@@ -2642,6 +2895,45 @@ let LANG = 'es';
 // Las claves con entidades (&gt;) van decodificadas: getAttribute las devuelve
 // ya resueltas, así que aquí se escriben con el carácter real.
 const I18N = { en: {
+// ── Ceres Imaging ──
+'Ceres':'Ceres', 'Imágenes aéreas':'Aerial imagery',
+'Vuelos de Ceres Imaging sobre el predio':'Ceres Imaging flights over the farm',
+'Comparar vuelos':'Compare flights', 'Indicador':'Indicator', 'Nivel':'Level',
+'Sector':'Sector', 'Vuelo':'Flight',
+'Vuelo A':'Flight A', 'Vuelo B':'Flight B',
+'Ranking del vuelo':'Flight ranking',
+'Comparación entre temporadas':'Season comparison',
+'Detalle del vuelo':'Flight detail',
+// Nombres de indicador tal como los muestra la plataforma de Ceres. Vienen del
+// JSON en los dos idiomas (params[].es / .en), así que no necesitan t(); estas
+// entradas cubren los rótulos fijos del markup y los grupos del selector.
+'Estrés Hídrico - perennes':'Water stress - perennials',
+// Los nombres de indicador, sus grupos y las etiquetas de banda vienen del JSON
+// ya resueltos en es/en, así que no pasan por t() y no llevan entrada acá.
+// 'Equipo', 'Clorofila', 'Óptimo' y 'Crítico' ya viven más abajo con el mismo
+// valor: no se repiten acá para no dejar entradas muertas (en JS gana la última).
+'Plantas':'Plants', 'Densidad':'Density', 'plantas/ha':'plants/ha',
+'Sin clasificar':'Unclassified',
+'Sin umbrales publicados':'No published thresholds',
+// El motivo de "sin clasificar" y el nombre de cada indicador vienen del JSON
+// ya resueltos en es/en (params[].unclassified_es / _en), así que no pasan por
+// t() y no llevan entrada acá: tenerla sería una traducción muerta.
+'Este indicador no tiene umbrales definidos, así que el mapa lo muestra en gris. El valor, el cambio y la evolución sí están disponibles. Para clasificarlo, agrega sus cortes a ceres_thresholds.json.':'This indicator has no defined thresholds, so the map shows it in grey. The value, the change and the trend are still available. To classify it, add its cuts to ceres_thresholds.json.',
+'sectores':'sectors', 'superficie':'area', 'plantas':'plants',
+'Sin datos en este vuelo':'No data in this flight',
+'Sin vuelo seleccionado':'No flight selected',
+'Sin datos de Ceres para este cuartel':'No Ceres data for this block',
+'Densidad anómala respecto a la mediana del predio':'Density anomalous vs farm median',
+'Evolución del indicador':'Indicator trend',
+'Sectores del equipo':'Sectors in the unit',
+'Cambio vs vuelo anterior':'Change vs previous flight',
+'Primer vuelo del histórico: no hay con qué comparar.':'First flight on record: nothing to compare against.',
+'Sin cambio':'No change',
+'mejora':'improving', 'deterioro':'worsening',
+'Se necesitan al menos dos temporadas con vuelos.':'At least two seasons with flights are needed.',
+'con dato':'with data',
+'en cumplimiento':'compliant', 'peor':'worst', 'promedio':'average',
+'En cumplimiento':'Compliant', 'respecto al vuelo anterior':'vs previous flight',
 // ── Navegación y subvistas ──
 'General':'Overview', 'Cosecha':'Harvest', 'Nutrición':'Nutrition', 'Riego':'Irrigation',
 'Aplicaciones':'Applications', 'Control de Plagas y Enfermedades':'Pest & Disease Control',
@@ -3139,6 +3431,9 @@ function setLang(lang){
         if(typeof initAgroControls === 'function' && typeof AGRO !== 'undefined' && AGRO && AGRO.rows && AGRO.rows.length) initAgroControls();
         if(typeof initPestControls === 'function' && typeof PEST !== 'undefined' && PEST) initPestControls();
         if(typeof initDiseaseControls === 'function' && typeof DISEASE !== 'undefined' && DISEASE) initDiseaseControls();
+        // El selector de indicador y los chips de vuelo se construyen una sola
+        // vez con el idioma activo: hay que rehacerlos, no basta con repintar.
+        if(typeof initCeresControls === 'function' && typeof CERES !== 'undefined' && CERES) initCeresControls();
         // Los calendarios de riego llevan meses y días de la semana escritos.
         if(typeof setRiegoFilterMode === 'function'){
             ['A','B'].forEach(s=>{
@@ -3159,6 +3454,7 @@ function initLang(){
 
 let PEST = null;
 let DISEASE = null;
+let CERES = null;
 // Subvista de la pestaña Control de Plagas y Enfermedades. Se declara junto al
 // resto del estado —y no en su módulo— porque refreshDataNotice la consulta y
 // quedaría en zona muerta temporal si se inicializara más abajo.
@@ -3177,8 +3473,8 @@ function SEM(token){
 
 let DATA_VERSION = {};
 const DATA_ERRORS = {};
-const DATA_LABELS = {soil:'Análisis de Suelo', foliar:'Foliares', agro:'Aplicaciones Agroquímicos', financial:'Financiero', pest:'Monitoreo de Plagas', disease:'Base fitopatológica'};
-const MODE_DATASET = {suelo:'soil', foliares:'foliar', agroquimicos:'agro', financiero:'financial', plagas:'pest'};
+const DATA_LABELS = {soil:'Análisis de Suelo', foliar:'Foliares', agro:'Aplicaciones Agroquímicos', financial:'Financiero', pest:'Monitoreo de Plagas', disease:'Base fitopatológica', ceres:'Ceres Imaging'};
+const MODE_DATASET = {suelo:'soil', foliares:'foliar', agroquimicos:'agro', financiero:'financial', plagas:'pest', ceres:'ceres'};
 
 function loadDataset(key,file,apply){
   return fetch('./'+file+'?v='+encodeURIComponent(DATA_VERSION[key]||'0'))
@@ -3227,6 +3523,13 @@ fetch('./data-version.json?v='+Date.now())
       DISEASE=data;
       console.log('DISEASE loaded:',DISEASE.readings.length,'lecturas ·',DISEASE.reports.length,'informes');
       if(typeof initDiseaseControls==='function') initDiseaseControls();
+    });
+    loadDataset('ceres','ceres_data.json',data=>{
+      CERES=data;
+      console.log('CERES loaded:',CERES.flights.length,'vuelos ·',Object.keys(CERES.sectors).length,'sectores ·',
+                  CERES.params.filter(p=>p.bands&&p.bands.length).length,'de',CERES.params.length,'indicadores clasificados');
+      if(typeof initCeresControls==='function') initCeresControls();
+      if(currentMode==='ceres' && map) applyCeresToMap(map,'A');
     });
   });
 
@@ -3846,11 +4149,14 @@ function updateStatsBar(){
     const isAgro=currentMode==='agroquimicos';
     const isFin=currentMode==='financiero';
     const isPest=currentMode==='plagas';
+    const isCeres=currentMode==='ceres';
+    const ceresStats=document.getElementById('ceresStats');
     statsBar.classList.toggle('hidden',isGeneral);
     productivityStats.style.display=isProductivity?'flex':'none';
     foliarStats.style.display=isFoliar?'flex':'none';
     soilStats.style.display=isSoil?'flex':'none';
     if(riegoStats) riegoStats.style.display=isRiego?'flex':'none';
+    if(ceresStats) ceresStats.style.display=isCeres?'flex':'none';
     if(agroStats) agroStats.style.display=isAgro?'flex':'none';
     if(finStats) finStats.style.display=isFin?'flex':'none';
     if(pestStats) pestStats.style.display=isPest?'flex':'none';
@@ -3859,6 +4165,7 @@ function updateStatsBar(){
     if(isProductivity){updateProdStats('A');updateProdStats('B');}
     if(isSoil){updateSoilStats('A');updateSoilStats('B');}
     if(isRiego){updateRiegoStats('A');updateRiegoStats('B');}
+    if(isCeres){updateCeresStats('A');updateCeresStats('B');}
     if(isAgro){updateAgroStats();}
     if(isFin){updateFinStats();}
 }
@@ -3948,7 +4255,7 @@ function switchMode(mode){
         const covers = (b.dataset.modes||'').split(' ').filter(Boolean);
         b.classList.toggle('active', b.dataset.mode===mode || covers.includes(mode));
     });
-    const isGen=mode==='general', isProd=mode==='productividad', isFol=mode==='foliares', isSoil=mode==='suelo', isRiego=mode==='riego', isAgro=mode==='agroquimicos', isFin=mode==='financiero', isPest=mode==='plagas';
+    const isGen=mode==='general', isProd=mode==='productividad', isFol=mode==='foliares', isSoil=mode==='suelo', isRiego=mode==='riego', isAgro=mode==='agroquimicos', isFin=mode==='financiero', isPest=mode==='plagas', isCeres=mode==='ceres';
     if(isFol || isSoil) NUTRI_SUBMODE = mode;
     // Las subpestañas viven duplicadas en los dos paneles: se sincronizan por
     // índice. El selector va acotado a los paneles de Nutrición porque Plagas
@@ -3964,6 +4271,7 @@ function switchMode(mode){
     document.body.classList.toggle('soil-active',isSoil);
     document.body.classList.toggle('prod-active',isProd);
     document.body.classList.toggle('riego-active',isRiego);
+    document.body.classList.toggle('ceres-active',isCeres);
     document.body.classList.toggle('agro-active',isAgro);
     document.body.classList.toggle('fin-active',isFin);
     document.body.classList.toggle('pest-active',isPest);
@@ -3977,6 +4285,7 @@ function switchMode(mode){
     document.getElementById('prodControls').classList.toggle('visible',isProd);
     document.getElementById('soilControls').classList.toggle('visible',isSoil);
     document.getElementById('riegoControls').classList.toggle('visible',isRiego);
+    document.getElementById('ceresControls').classList.toggle('visible',isCeres);
     document.getElementById('agroControls').classList.toggle('visible',isAgro);
     document.getElementById('finControls').classList.toggle('visible',isFin);
     document.getElementById('pestControls').classList.toggle('visible',isPest);
@@ -3989,6 +4298,7 @@ function switchMode(mode){
     setLayerVisibility(map,['pest-points-layer'],isPest);
     // La evolución pertenece a Nutrición: al salir de foliares/suelo se cierra.
     if(!isFol && !isSoil && typeof closeNutEvo==='function') closeNutEvo();
+    if(!isCeres) closeCeresModal();
     if(!isPest){ closePestPopup(); closePestReport(); pestHoverSector=null;
                  if(typeof closePvSector==='function') closePvSector();
                  document.body.classList.remove('pv-view-prosp'); }
@@ -3998,6 +4308,7 @@ function switchMode(mode){
         if(isGen) map.setPaintProperty('sectores-fill','fill-color',getEquipoColorExpr());
         else if(isProd) applyProdToMap(map,'A');
         else if(isRiego) { applyRiegoToMap(map,'A'); initFinControls(); }
+        else if(isCeres) applyCeresToMap(map,'A');
         else if(isAgro) applyAgroToMap(map);
         else if(isFin) applyFinToMap(map);
         else if(isPest){
@@ -4014,6 +4325,9 @@ function switchMode(mode){
     else document.body.classList.remove('dz-active');
     // La leyenda se repinta siempre: es DOM, no depende de la capa del mapa.
     if(isRiego){ updateRiegoStats('A'); updateRiegoStats('B'); updateRiegoLegend(); }
+    // Ceres arranca útil solo: al entrar ya hay último vuelo, estrés hídrico,
+    // nivel sector y ranking a la vista, sin tocar un control.
+    if(isCeres){ initCeresControls(); updateCeresLegend(); updateCeresStats('A'); updateCeresStats('B'); updateCeresPanelCharts(); }
     if(isAgro){ recomputeAgroCache(); updateAgroLegend(); updateAgroStats(); updateAgroFilterSummary(); }
     if(isFin){ updateFinLegend(); updateFinStats(); updateFinFilterSummary(); }
     if(map&&map.loaded()&&previousMode!==mode) fitGeojson(map,isSoil?SOIL_GEOJSON:GEOJSON,isSoil?16:15.2);
@@ -4049,6 +4363,7 @@ function applyModeToMap(mapInstance, side){
     else if(currentMode === 'productividad') applyProdToMap(mapInstance, side);
     else if(currentMode === 'suelo') applySoilToMap(mapInstance, side);
     else if(currentMode === 'riego') applyRiegoToMap(mapInstance, side);
+    else if(currentMode === 'ceres') applyCeresToMap(mapInstance, side);
 }
 
 function syncMapLayersForMode(mapInstance){
@@ -4059,7 +4374,7 @@ function syncMapLayersForMode(mapInstance){
 }
 
 function enableCompare(){
-    if(currentMode !== 'foliares' && currentMode !== 'productividad' && currentMode !== 'suelo' && currentMode !== 'riego') return;
+    if(currentMode !== 'foliares' && currentMode !== 'productividad' && currentMode !== 'suelo' && currentMode !== 'riego' && currentMode !== 'ceres') return;
     if(!map._loaded){ setTimeout(enableCompare, 200); return; }
     compareMode = true;
     document.body.classList.add('compare-mode');
@@ -4095,6 +4410,14 @@ function enableCompare(){
         document.getElementById('riegoLabelASlot').style.display = 'flex';
         document.getElementById('riegoPeriodB').style.display = 'block';
         updateRiegoStats('A'); updateRiegoStats('B'); updateRiegoLegend();
+    }
+    if(currentMode === 'ceres'){
+        document.getElementById('compareBtnCeres').classList.add('active');
+        document.getElementById('compareLabelCeres').textContent = t('Salir de comparación');
+        document.getElementById('ceresLabelASlot').style.display = 'flex';
+        document.getElementById('ceresPeriodB').style.display = 'block';
+        buildCeresFlights('B');
+        updateCeresStats('A'); updateCeresStats('B'); updateCeresLegend();
     }
 
     // Init map2 if needed
@@ -4156,6 +4479,11 @@ function disableCompare(){
     document.getElementById('compareLabelRiego').textContent = 'Comparar periodos';
     document.getElementById('riegoLabelASlot').style.display = 'none';
     document.getElementById('riegoPeriodB').style.display = 'none';
+    // Ceres controls
+    document.getElementById('compareBtnCeres').classList.remove('active');
+    document.getElementById('compareLabelCeres').textContent = t('Comparar vuelos');
+    document.getElementById('ceresLabelASlot').style.display = 'none';
+    document.getElementById('ceresPeriodB').style.display = 'none';
     if(compareInstance){ compareInstance.remove(); compareInstance = null; }
     updateFoliarStats('A'); updateFoliarStats('B');
     updateProdStats('A');   updateProdStats('B');
@@ -4163,6 +4491,8 @@ function disableCompare(){
     updateSoilStats('A');   updateSoilStats('B');
     updateRiegoStats('A');  updateRiegoStats('B');
     updateRiegoLegend();
+    updateCeresStats('A');  updateCeresStats('B');
+    if(currentMode === 'ceres') updateCeresLegend();
     hideTooltipNow();
 }
 
@@ -4357,6 +4687,7 @@ function setupMapInteractions(mapInstance, side){
         document.getElementById('ttFoliarBlock').style.display = 'none';
         document.getElementById('ttSoilBlock').style.display = 'none';
         document.getElementById('ttRiegoBlock').style.display = 'none';
+        document.getElementById('ttCeresBlock').style.display = 'none';
         document.getElementById('ttAgroBlock').style.display = 'none';
         document.getElementById('ttFinBlock').style.display = 'none';
         document.getElementById('ttPestBlock').style.display = 'none';
@@ -4364,7 +4695,11 @@ function setupMapInteractions(mapInstance, side){
         document.getElementById('ttDzBlock').style.display = 'none';
         tooltip.classList.remove('riego-mode','agro-mode','fin-mode','pest-mode');
 
-        if(currentMode === 'plagas' && PEST_SUBVIEW === 'enfermedades'){
+        if(currentMode === 'ceres'){
+            document.getElementById('ttCeresBlock').style.display = 'block';
+            tooltip.classList.add('riego-mode');
+            fillCeresTooltip(p, side);
+        } else if(currentMode === 'plagas' && PEST_SUBVIEW === 'enfermedades'){
             // El mapa muestra inóculo: el tooltip de prospección MIP no aplica.
             const sel = dzSelection();
             if(sel.report && sel.report.scheme === 'equipo'){
@@ -8078,9 +8413,904 @@ function closeRiegoModal(){
     document.getElementById('riegoModal').classList.remove('visible');
     if(riegoModalChart){ riegoModalChart.destroy(); riegoModalChart = null; }
 }
+
+// ════════════════════════════════════════════════════════════════════════════
+// CERES IMAGING
+// Modelado sobre el módulo de riego: estado por lado A/B, expresión de color
+// Mapbox, leyenda, barra de métricas, tooltip y modal.
+// ════════════════════════════════════════════════════════════════════════════
+
+// El JSON trae, por banda, un `status` (opt/bajo/alto/exc) y una `severity`
+// (0 = mejor). El color se elige por SEVERIDAD y no por status, porque la escala
+// foliar de la que salen los tokens es de dos lados —def, bajo, óptimo, alto,
+// exc— y tomarla en ese orden daría naranjo antes que amarillo: la leyenda se
+// leería como si la segunda banda fuera peor que la tercera. Esta escalera
+// reordena los MISMOS tokens para que suba monótona de verde a café.
+const CERES_SEVERITY_LADDER = {
+    2: ['óptimo', 'excesivo'],
+    3: ['óptimo', 'alto', 'excesivo'],
+    4: ['óptimo', 'alto', 'bajo', 'excesivo'],
+    5: ['óptimo', 'alto', 'bajo', 'deficiente', 'excesivo']
+};
+const CERES_NO_DATA_COLOR = SEM('--sem-grey');
+// Desvío de densidad que se marca como anómalo respecto a la mediana del predio.
+const CERES_DENS_TOL = 0.15;
+
+function newCeresSideState(){
+    return { flightIdx: null, lastHoverKey: null };
+}
+// `param` y `level` son ajustes de vista y valen para los dos lados: lo que se
+// compara entre A y B es el vuelo, que es el eje con dato estacional. Aun así el
+// estado vive por lado, igual que RIEGO_STATE, para que el resto del módulo
+// tome `side` como parámetro sin casos especiales.
+const CERES_STATE = { A: newCeresSideState(), B: newCeresSideState() };
+let CERES_PARAM = 'water_stress';
+let CERES_LEVEL = 'sectors';
+let CERES_LAST_HOVER_SIDE = 'A';
+
+// ── Accesores ──
+function ceresParam(id){
+    if(!CERES || !CERES.params) return null;
+    return CERES.params.find(p => p.id === (id || CERES_PARAM)) || null;
+}
+function ceresFlights(){ return (CERES && CERES.flights) ? CERES.flights : []; }
+function ceresFlight(side){
+    const st = CERES_STATE[side];
+    const fs = ceresFlights();
+    return (st.flightIdx != null && fs[st.flightIdx]) ? fs[st.flightIdx] : null;
+}
+// Clave de la unidad según el nivel. A nivel sector se resuelve con riegoKey()
+// desde equipo_num/sector_num: nunca por string matching contra el "E1 - S1" del
+// GEOJSON, que lleva espacios y no calza con el "E1-S1" de Ceres.
+function ceresUnitKey(props, level){
+    return (level || CERES_LEVEL) === 'equipos'
+        ? props.equipo
+        : riegoKey(props.equipo_num, props.sector_num);
+}
+function ceresValue(flight, key, level, paramId){
+    if(!flight) return null;
+    const bucket = flight[level || CERES_LEVEL];
+    const row = bucket ? bucket[key] : null;
+    const v = row ? row[paramId || CERES_PARAM] : undefined;
+    return v === undefined ? null : v;
+}
+function ceresDelta(flight, key, level, paramId){
+    if(!flight || !flight.deltas) return null;
+    const bucket = flight.deltas[level || CERES_LEVEL];
+    const row = bucket ? bucket[key] : null;
+    const v = row ? row[paramId || CERES_PARAM] : undefined;
+    return v === undefined ? null : v;
+}
+function ceresMeta(key, level){
+    if(!CERES) return null;
+    const src = (level || CERES_LEVEL) === 'equipos' ? CERES.equipos : CERES.sectors;
+    return (src && src[key]) || null;
+}
+function ceresLabel(param){ return param ? (LANG === 'en' ? param.en : param.es) : ''; }
+function ceresDesc(param){ return param ? (LANG === 'en' ? (param.desc_en || '') : (param.desc_es || '')) : ''; }
+function ceresGroup(param){ return param ? (LANG === 'en' ? (param.group_en || '') : (param.group_es || '')) : ''; }
+// Procedencia de las bandas, para que la leyenda no afirme más de lo que sabe.
+// "ceres:<otro>" = toma prestados los cortes publicados de otro indicador que
+// mide la misma magnitud (Estrés Acumulado es el promedio de Estrés Hídrico).
+function ceresBandsOrigin(param){
+    const src = (param && param.bands_source) || '';
+    if(src.indexOf(':') === -1){
+        return src === 'custom' ? 'ceres_thresholds.json' : 'Ceres Imaging';
+    }
+    const parts = src.split(':');
+    const donor = ceresParam(parts[1]);
+    const base = parts[0] === 'custom' ? 'ceres_thresholds.json' : 'Ceres Imaging';
+    return `${base} · ${ceresLabel(donor) || parts[1]}`;
+}
+function ceresBandLabel(band){ return band ? (LANG === 'en' ? band.en : band.es) : ''; }
+function ceresIsClassified(param){ return !!(param && param.bands && param.bands.length); }
+// Bandas que cuentan como "en cumplimiento": la mitad mejor de la escala de
+// severidad. Con 4 bandas son Óptimo y Adecuado; con 3, sólo Óptimo. Se calcula
+// una sola vez acá para que la leyenda y la barra de métricas no puedan discrepar.
+function ceresCompliantBands(param){
+    if(!ceresIsClassified(param)) return [];
+    return param.bands.filter(b => b.severity < param.bands.length / 2);
+}
+// Cumplimiento del nivel que se está pintando, normalizado. El script lo
+// precalcula para los dos niveles; sin esto, con el toggle en Equipo la leyenda
+// informaría "22 de 23" sobre un mapa de 5 polígonos.
+function ceresCompliance(flight, param){
+    if(!flight || !ceresIsClassified(param)) return null;
+    const eq = CERES_LEVEL === 'equipos';
+    const src = eq ? flight.compliance_equipos : flight.compliance;
+    const row = src ? src[param.id] : null;
+    if(!row) return null;
+    const counts = eq ? row.by_equipo : row.by_sector;
+    if(!counts) return null;
+    const sum = o => Object.values(o).reduce((a, b) => a + b, 0);
+    const ok = ceresCompliantBands(param).map(b => b.status);
+    const pick = o => ok.reduce((a, s) => a + (o[s] || 0), 0);
+    return {
+        counts: counts,
+        totalUnits: sum(counts), okUnits: pick(counts),
+        totalArea: sum(row.by_area_m2), okArea: pick(row.by_area_m2),
+        totalPlants: sum(row.by_plants), okPlants: pick(row.by_plants)
+    };
+}
+
+// ── Banda y color ──
+function ceresBandOf(param, v){
+    if(v == null || !ceresIsClassified(param)) return null;
+    const bands = param.bands;
+    for(let i = 0; i < bands.length; i++){
+        const b = bands[i], last = (i === bands.length - 1);
+        if((v >= b.min && v < b.max) || (last && v <= b.max)) return b;
+    }
+    // Fuera de rango: se pega al extremo, no se pierde el sector en gris.
+    return v > bands[bands.length - 1].max ? bands[bands.length - 1] : bands[0];
+}
+function ceresStatusKey(param, band){
+    const ladder = CERES_SEVERITY_LADDER[param.bands.length];
+    return (ladder && ladder[band.severity]) || 'sin dato';
+}
+function ceresColor(param, v){
+    const band = ceresBandOf(param, v);
+    if(!band) return CERES_NO_DATA_COLOR;
+    const key = ceresStatusKey(param, band);
+    const pal = STATUS_PALETTES[key] || [STATUS_COLORS[key], STATUS_COLORS[key]];
+    // Se interpola DENTRO de la banda, como getFoliarColor(): el degradé vive
+    // dentro del umbral y no lo reemplaza. El extremo que se acerca a la
+    // siguiente banda peor es el tono fuerte, así que si alto = mejor se invierte.
+    const span = band.max - band.min;
+    let ratio = span > 0 ? clamp01((v - band.min) / span) : 0.5;
+    if(param.higher_is_better) ratio = 1 - ratio;
+    return mixHex(pal[0], pal[1], ratio);
+}
+function ceresBandColor(param, band){
+    const key = ceresStatusKey(param, band);
+    const pal = STATUS_PALETTES[key] || [STATUS_COLORS[key], STATUS_COLORS[key]];
+    return mixHex(pal[0], pal[1], 0.62);
+}
+
+// ── Pintado ──
+function getCeresColorExpr(side = 'A'){
+    const expr = ['match', ['get', 'name']];
+    const param = ceresParam();
+    const flight = ceresFlight(side);
+    GEOJSON.features.forEach(f => {
+        const p = f.properties;
+        const v = ceresValue(flight, ceresUnitKey(p), CERES_LEVEL);
+        expr.push(p.name, param ? ceresColor(param, v) : CERES_NO_DATA_COLOR);
+    });
+    expr.push(CERES_NO_DATA_COLOR);
+    return expr;
+}
+function applyCeresToMap(mapInstance, side = 'A'){
+    if(!mapInstance || !mapInstance.getLayer || !mapInstance.getLayer('sectores-fill')) return;
+    mapInstance.setPaintProperty('sectores-fill', 'fill-color', getCeresColorExpr(side));
+    if(side === 'A'){ updateCeresLegend(); updateCeresPanelCharts(); }
+    updateCeresStats(side);
+}
+
+// ── Antigüedad del dato ──
+// El último vuelo es de marzo y hoy puede ser agosto: un dato de cinco meses
+// presentado como actual es peor que no mostrarlo.
+function ceresMonthsAgo(iso){
+    const d = new Date(iso + 'T00:00:00');
+    const now = new Date();
+    return (now.getFullYear() - d.getFullYear()) * 12 + (now.getMonth() - d.getMonth());
+}
+function ceresAgeText(iso){
+    const m = ceresMonthsAgo(iso);
+    if(LANG === 'en'){
+        if(m <= 0) return 'less than a month ago';
+        if(m === 1) return '1 month ago';
+        if(m < 12) return m + ' months ago';
+        const y = Math.floor(m / 12), r = m % 12;
+        return (y === 1 ? '1 year' : y + ' years') + (r ? ' ' + r + ' mo' : '') + ' ago';
+    }
+    if(m <= 0) return 'hace menos de un mes';
+    if(m === 1) return 'hace 1 mes';
+    if(m < 12) return 'hace ' + m + ' meses';
+    const y = Math.floor(m / 12), r = m % 12;
+    return 'hace ' + (y === 1 ? '1 año' : y + ' años') + (r ? ' y ' + r + ' meses' : '');
+}
+function ceresFlightLabel(flight){
+    return flight ? fmtDataVersion(flight.date) : t('Sin vuelo seleccionado');
+}
+
+// ── Controles ──
+function initCeresControls(){
+    if(!CERES) return;
+    const sel = document.getElementById('selCeresParam');
+    if(sel){
+        // Agrupado igual que la plataforma de Ceres (Desarrollo de cultivos /
+        // Irrigación): quien usa las dos herramientas encuentra lo mismo en el
+        // mismo lugar y con el mismo nombre.
+        const groups = [];
+        (CERES.params || []).forEach(p => {
+            const g = ceresGroup(p);
+            let bucket = groups.find(x => x.name === g);
+            if(!bucket){ bucket = { name: g, items: [] }; groups.push(bucket); }
+            bucket.items.push(p);
+        });
+        sel.innerHTML = groups.map(g => {
+            const opts = g.items.map(p =>
+                `<option value="${p.id}"${p.id === CERES_PARAM ? ' selected' : ''}>` +
+                `${ceresLabel(p)}${ceresIsClassified(p) ? '' : ' · ' + t('Sin clasificar')}</option>`
+            ).join('');
+            return g.name ? `<optgroup label="${g.name}">${opts}</optgroup>` : opts;
+        }).join('');
+    }
+    document.querySelectorAll('.ceres-level-tab').forEach(b =>
+        b.classList.toggle('active', b.dataset.clevel === CERES_LEVEL));
+    // Estado inicial útil solo: último vuelo en A, y el anterior en B para que
+    // al abrir la comparación ya muestre dos fechas distintas.
+    const fs = ceresFlights();
+    if(CERES_STATE.A.flightIdx == null) CERES_STATE.A.flightIdx = fs.length ? fs.length - 1 : null;
+    if(CERES_STATE.B.flightIdx == null) CERES_STATE.B.flightIdx = fs.length > 1 ? fs.length - 2 : CERES_STATE.A.flightIdx;
+    buildCeresFlights('A');
+    buildCeresFlights('B');
+}
+
+// Las 14 fechas agrupadas por temporada, más reciente primero. Eje de categoría
+// y no temporal: entre abril y octubre no hay vuelos y un eje lineal dejaría
+// más de la mitad vacío.
+function buildCeresFlights(side = 'A'){
+    const host = document.getElementById('ceresFlights' + side);
+    if(!host) return;
+    const fs = ceresFlights();
+    if(!fs.length){ host.innerHTML = `<div class="ceres-chart-empty">${t('Sin datos en este vuelo')}</div>`; return; }
+    const groups = [];
+    fs.forEach((f, i) => {
+        let g = groups.find(x => x.season === f.season);
+        if(!g){ g = { season: f.season, items: [] }; groups.push(g); }
+        g.items.push({ f: f, i: i });
+    });
+    groups.reverse();
+    const sel = CERES_STATE[side].flightIdx;
+    host.innerHTML = groups.map(g => {
+        const items = g.items.slice().reverse().map(it => {
+            const d = it.f.date;
+            const label = Number(d.slice(8, 10)) + ' ' + mesNombre(Number(d.slice(5, 7)) - 1).slice(0, 3).toLowerCase();
+            return `<button type="button" class="ceres-flight${it.i === sel ? ' active' : ''}" ` +
+                   `onclick="setCeresFlight(${it.i},'${side}')" title="${d}">${label}</button>`;
+        }).join('');
+        return `<div class="ceres-season-group">
+                    <div class="ceres-season-label">${t('Temporada')} ${g.season}</div>
+                    <div class="ceres-flight-row">${items}</div>
+                </div>`;
+    }).join('');
+}
+
+function setCeresParam(id){
+    CERES_PARAM = id;
+    refreshCeres();
+}
+function setCeresLevel(level){
+    CERES_LEVEL = level;
+    document.querySelectorAll('.ceres-level-tab').forEach(b =>
+        b.classList.toggle('active', b.dataset.clevel === level));
+    refreshCeres();
+}
+function setCeresFlight(idx, side = 'A'){
+    CERES_STATE[side].flightIdx = idx;
+    buildCeresFlights(side);
+    refreshCeres();
+}
+function refreshCeres(){
+    if(currentMode !== 'ceres') return;
+    if(map) applyCeresToMap(map, 'A');
+    if(compareMode && map2) applyCeresToMap(map2, 'B');
+    updateCeresLegend();
+    updateCeresStats('A');
+    updateCeresStats('B');
+    updateCeresPanelCharts();
+}
+
+// ── Leyenda ──
+function updateCeresLegend(){
+    const param = ceresParam();
+    const nameEl = document.getElementById('ceresLegendName');
+    const unitEl = document.getElementById('ceresLegendUnit');
+    const metaEl = document.getElementById('ceresLegendMeta');
+    const ageEl = document.getElementById('ceresLegendAge');
+    const scaleEl = document.getElementById('ceresScale');
+    const compEl = document.getElementById('ceresCompliance');
+    const noteEl = document.getElementById('ceresLegendNote');
+    if(!nameEl || !scaleEl) return;
+
+    nameEl.textContent = param ? ceresLabel(param) : t('Sin vuelo seleccionado');
+    // Rango del eje. Sin bandas el rango sale de los datos y trae 4 decimales
+    // crudos con punto: se formatea igual que el resto de los números.
+    unitEl.textContent = param ? `${fmtCeres(param.min)}–${fmtCeres(param.max)}` : '';
+
+    const fA = ceresFlight('A'), fB = ceresFlight('B');
+    // La descripción del indicador y el nivel; la fecha va una sola vez, en la
+    // caja de antigüedad de abajo. Antes salía repetida en las dos líneas.
+    const levelWord = CERES_LEVEL === 'equipos' ? t('Equipo') : t('Sector');
+    const desc = ceresDesc(param);
+    metaEl.textContent = desc ? `${desc} · ${levelWord}` : levelWord;
+
+    // Antigüedad del lado A, que es el que manda la lectura. En comparación se
+    // nombran los dos vuelos acá, que es donde el usuario mira la fecha.
+    if(fA){
+        ageEl.style.display = 'block';
+        ageEl.innerHTML = compareMode
+            ? `<div>A · ${ceresFlightLabel(fA)} · ${ceresAgeText(fA.date)}</div>` +
+              `<div>B · ${ceresFlightLabel(fB)}${fB ? ' · ' + ceresAgeText(fB.date) : ''}</div>`
+            : `${fmtDataVersion(fA.date)} · ${ceresAgeText(fA.date)}`;
+    } else {
+        ageEl.style.display = 'none';
+    }
+
+    if(!ceresIsClassified(param)){
+        scaleEl.innerHTML =
+            `<div class="cs-scale-row"><div class="cs-swatch" style="background:${CERES_NO_DATA_COLOR}"></div>` +
+            `<div class="cs-scale-label">${t('Sin umbrales publicados')}</div></div>`;
+        compEl.innerHTML = '';
+        noteEl.textContent = param
+            ? (LANG === 'en' ? (param.unclassified_en || '') : (param.unclassified_es || '')) + ' ' +
+              t('Este indicador no tiene umbrales definidos, así que el mapa lo muestra en gris. El valor, el cambio y la evolución sí están disponibles. Para clasificarlo, agrega sus cortes a ceres_thresholds.json.')
+            : '';
+        return;
+    }
+
+    // Cada banda muestra cuántos sectores caen en ella, leído de `compliance`.
+    // Así la leyenda es la distribución del vuelo y no sólo una lista de rangos:
+    // se ve de un vistazo que hay 1 en Alerta sin abrir nada.
+    const comp = ceresCompliance(fA, param);
+    const bandCount = b => (comp && comp.counts[b.status] != null) ? comp.counts[b.status] : null;
+    scaleEl.innerHTML = param.bands.slice().reverse().map(b => {
+        const n = bandCount(b);
+        // La banda vacía se atenúa: ocupa lugar en la escala pero no es un hallazgo.
+        return `<div class="cs-scale-row${n === 0 ? ' is-empty' : ''}">
+            <div class="cs-swatch" style="background:${ceresBandColor(param, b)}"></div>
+            <div class="cs-scale-label">${ceresBandLabel(b)}</div>
+            <div class="cs-scale-range">${fmtCeres(b.min)}–${fmtCeres(b.max)}</div>
+            <div class="cs-scale-count">${n != null ? n : ''}</div>
+        </div>`;
+    }).join('') +
+    (function(){
+        // "Sin datos" sólo se lista si de verdad hay unidades sin dato.
+        const total = CERES_LEVEL === 'equipos'
+            ? Object.keys((CERES && CERES.equipos) || {}).length
+            : GEOJSON.features.length;
+        const missing = total - (comp ? comp.totalUnits : 0);
+        return missing > 0
+            ? `<div class="cs-scale-row"><div class="cs-swatch" style="background:${CERES_NO_DATA_COLOR}"></div>
+                   <div class="cs-scale-label">${t('Sin datos')}</div>
+                   <div class="cs-scale-range"></div>
+                   <div class="cs-scale-count">${missing}</div></div>`
+            : '';
+    })();
+    if(comp){
+        const pct = (n, d) => d > 0 ? Math.round(n / d * 100) : 0;
+        // Las dos lecturas juntas, como pide el §5.3: no es lo mismo que 3 de 23
+        // sectores estén críticos, a que esos 3 concentren 4.000 árboles.
+        compEl.innerHTML =
+            `<div class="cs-chip-label">${t('En cumplimiento')}</div>` +
+            `<div class="cs-chip"><strong>${comp.okUnits}/${comp.totalUnits}</strong> ` +
+                `${CERES_LEVEL === 'equipos' ? t('equipos') : t('sectores')}</div>` +
+            `<div class="cs-chip"><strong>${pct(comp.okArea, comp.totalArea)}%</strong> ${t('superficie')}</div>` +
+            `<div class="cs-chip"><strong>${pct(comp.okPlants, comp.totalPlants)}%</strong> ${t('plantas')}</div>`;
+    } else {
+        compEl.innerHTML = '';
+    }
+    noteEl.textContent = t('Umbral') + ': ' + ceresBandsOrigin(param);
+}
+function fmtCeres(v){
+    return Number(v).toLocaleString(LOC(), { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+// ── Barra de métricas ──
+function updateCeresStats(side = 'A'){
+    const row = document.getElementById('ceresStats' + side);
+    if(!row) return;
+    const flight = ceresFlight(side);
+    const param = ceresParam();
+    const chip = compareMode
+        ? `<div class="prod-side-chip ${side === 'B' ? 'side-b' : ''}">${side}</div>`
+        : `<div class="riego-chip"><svg viewBox="0 0 18 18"><use href="#ic-satelite"/></svg></div>`;
+
+    if(!flight || !param){
+        row.innerHTML = `<div class="riego-context">${chip}<div><div class="riego-context-title">${t('Sin vuelo seleccionado')}</div></div></div>`;
+        row.style.display = (side === 'B' && !compareMode) ? 'none' : 'flex';
+        return;
+    }
+
+    const bucket = flight[CERES_LEVEL] || {};
+    const vals = Object.keys(bucket)
+        .map(k => bucket[k][param.id])
+        .filter(v => v != null);
+    const n = vals.length;
+    const avg = n ? vals.reduce((a, b) => a + b, 0) / n : null;
+    const worst = n ? (param.higher_is_better ? Math.min.apply(null, vals) : Math.max.apply(null, vals)) : null;
+    let worstKey = '—';
+    if(n){
+        Object.keys(bucket).forEach(k => {
+            if(bucket[k][param.id] === worst) worstKey = k;
+        });
+    }
+    const totalUnits = CERES_LEVEL === 'equipos' ? 5 : GEOJSON.features.length;
+
+    const context = `
+        <div class="riego-context">
+            ${chip}
+            <div>
+                <div class="riego-context-title">${ceresLabel(param)}</div>
+                <div class="riego-context-meta">${fmtDataVersion(flight.date)} · ${ceresAgeText(flight.date)}</div>
+            </div>
+        </div>
+        <div class="stat-div"></div>`;
+
+    // Cumplimiento sólo si el indicador está clasificado; si no, se dice.
+    let compBlock = '';
+    const comp = ceresCompliance(flight, param);
+    if(comp){
+        // El rótulo sale de las bandas reales, no de nombres fijos: si agronomía
+        // define 3 o 5 cortes en ceres_thresholds.json, sigue diciendo la verdad.
+        const okLabel = ceresCompliantBands(param).map(b => ceresBandLabel(b)).join('/');
+        compBlock = `
+            <div class="stat-div"></div>
+            <div class="stat"><div class="num">${comp.okUnits}<span class="sem-muted-xs"> / ${comp.totalUnits}</span></div><div class="unit">${CERES_LEVEL === 'equipos' ? t('equipos') : t('sectores')} ${okLabel}</div></div>
+            <div class="stat-div"></div>
+            <div class="stat"><div class="num">${comp.totalPlants > 0 ? Math.round(comp.okPlants / comp.totalPlants * 100) : 0}%</div><div class="unit">${t('plantas')} ${t('en cumplimiento')}</div></div>`;
+    } else {
+        compBlock = `
+            <div class="stat-div"></div>
+            <div class="stat"><div class="num">—</div><div class="unit">${t('Sin umbrales publicados')}</div></div>`;
+    }
+
+    const stats = `
+        <div class="stat"><div class="num">${avg != null ? fmtCeres(avg) : '—'}</div><div class="unit">${t('promedio')} ${CERES_LEVEL === 'equipos' ? t('equipos') : t('sectores')}</div></div>
+        <div class="stat-div"></div>
+        <div class="stat"><div class="num">${n}<span class="sem-muted-xs"> / ${totalUnits}</span></div><div class="unit">${t('con dato')}</div></div>
+        ${compBlock}
+        <div class="stat-div"></div>
+        <div class="stat"><div class="num">${worst != null ? fmtCeres(worst) : '—'}</div><div class="unit">${t('peor')} · ${worstKey}</div></div>`;
+
+    row.innerHTML = context + stats;
+    row.style.display = (side === 'B' && !compareMode) ? 'none' : 'flex';
+}
+
+// ── Densidad anómala ──
+// Un sector fuera de ±15% de la mediana del predio suele delatar fallas de
+// plantación o replante. Se calcula una vez y se cachea.
+let CERES_DENS_MEDIAN = null;
+function ceresDensMedian(){
+    if(CERES_DENS_MEDIAN !== null) return CERES_DENS_MEDIAN;
+    if(!CERES || !CERES.sectors) return null;
+    const d = Object.keys(CERES.sectors)
+        .map(k => CERES.sectors[k].plants_per_ha)
+        .filter(v => v != null)
+        .sort((a, b) => a - b);
+    if(!d.length) return null;
+    const mid = Math.floor(d.length / 2);
+    CERES_DENS_MEDIAN = d.length % 2 ? d[mid] : (d[mid - 1] + d[mid]) / 2;
+    return CERES_DENS_MEDIAN;
+}
+function ceresDensAnomaly(meta){
+    const med = ceresDensMedian();
+    if(!med || !meta || meta.plants_per_ha == null) return null;
+    const dev = (meta.plants_per_ha - med) / med;
+    return Math.abs(dev) > CERES_DENS_TOL ? dev : null;
+}
+
+// ── Tooltip ──
+function fillCeresTooltip(props, side){
+    const st = CERES_STATE[side];
+    const param = ceresParam();
+    const flight = ceresFlight(side);
+    const key = ceresUnitKey(props);
+    st.lastHoverKey = key;
+    CERES_LAST_HOVER_SIDE = side;
+
+    const content = document.getElementById('ttCeresContent');
+    const noData = document.getElementById('ttCeresNoData');
+    const sideTag = compareMode ? ' · ' + side : '';
+    document.getElementById('ttBadge').textContent =
+        (EQ_NAMES[props.equipo] || props.equipo) + (flight ? ' · ' + fmtDataVersion(flight.date) : '') + sideTag;
+
+    if(!flight || !param){
+        content.style.display = 'none';
+        noData.style.display = 'block';
+        noData.textContent = t('Sin vuelo seleccionado');
+        return;
+    }
+    const v = ceresValue(flight, key, CERES_LEVEL);
+    if(v == null){
+        content.style.display = 'none';
+        noData.style.display = 'block';
+        noData.textContent = t('Sin datos de Ceres para este cuartel');
+        return;
+    }
+    content.style.display = 'block';
+    noData.style.display = 'none';
+
+    document.getElementById('ttCeresVal').textContent = fmtCeres(v);
+    // La banda como píldora del color de su banda: es lo que ata el número al
+    // color que el usuario está viendo en el mapa.
+    const band = ceresBandOf(param, v);
+    const bandEl = document.getElementById('ttCeresBand');
+    bandEl.textContent = band ? ceresBandLabel(band) : t('Sin clasificar');
+    if(band){
+        const pal = STATUS_PALETTES[ceresStatusKey(param, band)] || [CERES_NO_DATA_COLOR, CERES_NO_DATA_COLOR];
+        bandEl.style.background = pal[0];
+        bandEl.style.color = pal[1];
+    } else {
+        bandEl.style.background = SEM('--sem-slate-wash');
+        bandEl.style.color = SEM('--sem-text-2');
+    }
+
+    // Delta: la flecha y la magnitud del cambio contra el vuelo anterior.
+    const dEl = document.getElementById('ttCeresDelta');
+    const d = ceresDelta(flight, key, CERES_LEVEL);
+    dEl.className = 'ct-delta';
+    if(d == null){
+        dEl.textContent = ceresFlights()[0] === flight
+            ? t('Primer vuelo del histórico: no hay con qué comparar.')
+            : t('Sin cambio');
+        dEl.classList.add('flat');
+    } else if(Math.abs(d) < 0.0005){
+        dEl.textContent = t('Sin cambio');
+        dEl.classList.add('flat');
+    } else {
+        const up = d > 0;
+        const good = param.higher_is_better ? up : !up;
+        dEl.classList.add(up ? (good ? 'up-good' : 'up-bad') : (good ? 'down-good' : 'down-bad'));
+        // Si además cruzó de banda, eso es más accionable que la magnitud: no
+        // "subió 0,04" sino "pasó de Adecuado a Alerta".
+        const prev = ceresBandOf(param, v - d);
+        const cruce = (prev && band && prev.status !== band.status)
+            ? ` · ${ceresBandLabel(prev)} → ${ceresBandLabel(band)}`
+            : ` · ${good ? t('mejora') : t('deterioro')}`;
+        dEl.innerHTML = `<span class="ct-arrow">${up ? '▲' : '▼'}</span>` +
+            `${up ? '+' : '−'}${fmtCeres(Math.abs(d))} ${t('respecto al vuelo anterior')}${cruce}`;
+    }
+
+    const meta = ceresMeta(key);
+    document.getElementById('ttCeresHa').textContent = meta && meta.area_m2
+        ? (meta.area_m2 / 10000).toLocaleString(LOC(), { minimumFractionDigits: 1, maximumFractionDigits: 2 }) + ' ha'
+        : '—';
+    document.getElementById('ttCeresPlants').textContent = meta && meta.plants
+        ? meta.plants.toLocaleString(LOC()) : '—';
+    document.getElementById('ttCeresDens').textContent = meta && meta.plants_per_ha != null
+        ? meta.plants_per_ha.toLocaleString(LOC(), { maximumFractionDigits: 1 }) : '—';
+    document.getElementById('ttCeresDate').textContent = fmtDataVersion(flight.date);
+
+    const flag = document.getElementById('ttCeresFlag');
+    const anom = CERES_LEVEL === 'sectors' ? ceresDensAnomaly(meta) : null;
+    if(anom != null){
+        flag.style.display = 'block';
+        flag.textContent = `${t('Densidad anómala respecto a la mediana del predio')} (${anom > 0 ? '+' : '−'}${Math.round(Math.abs(anom) * 100)}%)`;
+    } else {
+        flag.style.display = 'none';
+    }
+    document.getElementById('ttCeresSource').textContent =
+        `Ceres Imaging · ${flight.week_key}`;
+}
+
+// ── Modal: vistas 1 y 2 del §5.4 ──
+let ceresEvoChart = null;
+let ceresEqChart = null;
+
+function openCeresModalFromTooltip(){
+    const side = CERES_LAST_HOVER_SIDE || 'A';
+    const key = CERES_STATE[side].lastHoverKey;
+    if(key) openCeresModal(key, side);
+}
+
+function closeCeresModal(){
+    document.getElementById('ceresModal').classList.remove('visible');
+    // Sin destruir, cada apertura deja una instancia viva y el canvas fuga.
+    if(ceresEvoChart){ ceresEvoChart.destroy(); ceresEvoChart = null; }
+    if(ceresEqChart){ ceresEqChart.destroy(); ceresEqChart = null; }
+}
+
+function openCeresModal(key, side = 'A'){
+    const param = ceresParam();
+    const flight = ceresFlight(side);
+    if(!param || !flight) return;
+    const modal = document.getElementById('ceresModal');
+    const meta = ceresMeta(key);
+    const v = ceresValue(flight, key, CERES_LEVEL);
+    const band = ceresBandOf(param, v);
+    const d = ceresDelta(flight, key, CERES_LEVEL);
+
+    document.getElementById('ceresModalTitle').textContent =
+        CERES_LEVEL === 'equipos' ? (EQ_NAMES[key] || key) : `${key.split('-')[0]} · ${t('Sector')} ${key.split('-')[1].replace(/^S/, '')}`;
+    document.getElementById('ceresModalSubtitle').textContent =
+        `${ceresLabel(param)} · ${fmtDataVersion(flight.date)} · ${ceresAgeText(flight.date)}` +
+        (compareMode ? ` · ${t('Vuelo')} ${side}` : '');
+
+    const dStr = (d == null || Math.abs(d) < 0.0005)
+        ? t('Sin cambio')
+        : `${d > 0 ? '+' : '−'}${fmtCeres(Math.abs(d))}`;
+
+    const body = document.getElementById('ceresModalBody');
+    body.innerHTML = `
+        ${ceresIsClassified(param) ? '' :
+          `<div class="ceres-unclassified-note">${LANG === 'en' ? (param.unclassified_en || '') : (param.unclassified_es || '')} ${t('Este indicador no tiene umbrales definidos, así que el mapa lo muestra en gris. El valor, el cambio y la evolución sí están disponibles. Para clasificarlo, agrega sus cortes a ceres_thresholds.json.')}</div>`}
+        <div class="riego-modal-kpis">
+            <div class="rm-kpi"><div class="k">${ceresLabel(param)}</div><div class="v">${v != null ? fmtCeres(v) : '—'}</div></div>
+            <div class="rm-kpi"><div class="k">${t('Umbral')}</div><div class="v">${band ? ceresBandLabel(band) : t('Sin clasificar')}</div></div>
+            <div class="rm-kpi"><div class="k">${t('Cambio vs vuelo anterior')}</div><div class="v">${dStr}</div></div>
+            <div class="rm-kpi"><div class="k">${t('Densidad')}</div><div class="v">${meta && meta.plants_per_ha != null ? meta.plants_per_ha.toLocaleString(LOC(), { maximumFractionDigits: 1 }) : '—'}<span class="u">${t('plantas/ha')}</span></div></div>
+        </div>
+
+        <div class="rm-section-title">${t('Evolución del indicador')}</div>
+        <div class="rm-chart-wrap"><canvas id="ceresEvoCanvas"></canvas></div>
+
+        ${CERES_LEVEL === 'sectors' ? `
+        <div class="rm-section-title">${t('Sectores del equipo')} ${key.split('-')[0]}</div>
+        <div class="rm-chart-wrap"><canvas id="ceresEqCanvas"></canvas></div>` : ''}
+    `;
+    modal.classList.add('visible');
+    buildCeresEvoChart(key, param);
+    if(CERES_LEVEL === 'sectors') buildCeresEqChart(key.split('-')[0], param);
+}
+
+// Franjas de banda pintadas de fondo: se ve de un vistazo cuándo cruzó a Alerta.
+function ceresBandStripsPlugin(param){
+    return {
+        id: 'ceresBands',
+        beforeDatasetsDraw(chart){
+            if(!ceresIsClassified(param)) return;
+            const { ctx, chartArea, scales } = chart;
+            const y = scales.y;
+            if(!y) return;
+            ctx.save();
+            param.bands.forEach(b => {
+                const yTop = y.getPixelForValue(Math.min(b.max, y.max));
+                const yBot = y.getPixelForValue(Math.max(b.min, y.min));
+                if(yBot <= yTop) return;
+                const key = ceresStatusKey(param, b);
+                const pal = STATUS_PALETTES[key] || [STATUS_COLORS[key], STATUS_COLORS[key]];
+                ctx.fillStyle = pal[0];
+                ctx.globalAlpha = 0.45;
+                ctx.fillRect(chartArea.left, yTop, chartArea.right - chartArea.left, yBot - yTop);
+            });
+            ctx.restore();
+        }
+    };
+}
+
+// Etiquetas de categoría: la fecha corta, y la temporada sólo cuando cambia, así
+// el eje queda agrupado visualmente sin repetirla 14 veces.
+function ceresAxisLabels(flights){
+    let last = null;
+    return flights.map(f => {
+        const d = f.date;
+        const short = Number(d.slice(8, 10)) + ' ' + mesNombre(Number(d.slice(5, 7)) - 1).slice(0, 3).toLowerCase();
+        const show = f.season !== last;
+        last = f.season;
+        return show ? [short, f.season] : [short, ''];
+    });
+}
+
+function ceresChartBase(param){
+    return {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                callbacks: {
+                    label: c => `${c.dataset.label ? c.dataset.label + ': ' : ''}${fmtCeres(c.parsed.y)}`
+                }
+            }
+        },
+        scales: {
+            y: {
+                title: { display: true, text: ceresLabel(param) },
+                min: param.min, max: param.max,
+                ticks: { callback: v => fmtCeres(v) }
+            },
+            x: { ticks: { autoSkip: false, maxRotation: 0, font: { size: 9 } } }
+        }
+    };
+}
+
+function buildCeresEvoChart(key, param){
+    const canvas = document.getElementById('ceresEvoCanvas');
+    if(!canvas || typeof Chart === 'undefined') return;
+    if(ceresEvoChart){ ceresEvoChart.destroy(); ceresEvoChart = null; }
+    const fs = ceresFlights();
+    const data = fs.map(f => {
+        const v = ceresValue(f, key, CERES_LEVEL, param.id);
+        return v == null ? null : v;
+    });
+    const opts = ceresChartBase(param);
+    opts.plugins.tooltip.callbacks.title = items => {
+        const f = fs[items[0].dataIndex];
+        return `${fmtDataVersion(f.date)} · ${t('Temporada')} ${f.season}`;
+    };
+    ceresEvoChart = new Chart(canvas, {
+        type: 'line',
+        data: {
+            labels: ceresAxisLabels(fs),
+            datasets: [{
+                label: ceresLabel(param),
+                data: data,
+                spanGaps: true,
+                borderColor: SEM('--sem-navy'),
+                backgroundColor: SEM('--sem-navy'),
+                borderWidth: 2, pointRadius: 3, tension: 0.25
+            }]
+        },
+        options: opts,
+        plugins: [ceresBandStripsPlugin(param)]
+    });
+}
+
+function buildCeresEqChart(eq, param){
+    const canvas = document.getElementById('ceresEqCanvas');
+    if(!canvas || typeof Chart === 'undefined') return;
+    if(ceresEqChart){ ceresEqChart.destroy(); ceresEqChart = null; }
+    const fs = ceresFlights();
+    const keys = Object.keys((CERES && CERES.sectors) || {})
+        .filter(k => k.split('-')[0] === eq)
+        .sort((a, b) => Number(a.split('-')[1].replace('S', '')) - Number(b.split('-')[1].replace('S', '')));
+    const palette = [SEM('--dat-eq-1'), SEM('--dat-eq-2'), SEM('--dat-eq-3'), SEM('--dat-eq-4'), SEM('--dat-eq-5')];
+    const opts = ceresChartBase(param);
+    opts.plugins.legend = { display: true, position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } };
+    opts.plugins.tooltip.callbacks.title = items => fmtDataVersion(fs[items[0].dataIndex].date);
+    ceresEqChart = new Chart(canvas, {
+        type: 'line',
+        data: {
+            labels: ceresAxisLabels(fs),
+            datasets: keys.map((k, i) => ({
+                label: k,
+                data: fs.map(f => {
+                    const v = ceresValue(f, k, 'sectors', param.id);
+                    return v == null ? null : v;
+                }),
+                spanGaps: true,
+                borderColor: palette[i % palette.length],
+                backgroundColor: palette[i % palette.length],
+                borderWidth: 1.8, pointRadius: 2, tension: 0.25
+            }))
+        },
+        options: opts,
+        plugins: [ceresBandStripsPlugin(param)]
+    });
+}
+
+// ── Panel: vistas 3 y 4 del §5.4 ──
+let ceresRankChart = null;
+let ceresSeasonChart = null;
+
+function updateCeresPanelCharts(){
+    buildCeresRankChart();
+    buildCeresSeasonChart();
+}
+
+// Ranking del vuelo activo: las unidades ordenadas de peor a mejor, coloreadas
+// por banda. Es el dato accionable del día.
+function buildCeresRankChart(){
+    const canvas = document.getElementById('ceresRankChart');
+    const empty = document.getElementById('ceresRankEmpty');
+    const title = document.getElementById('ceresRankTitle');
+    if(!canvas || typeof Chart === 'undefined') return;
+    if(ceresRankChart){ ceresRankChart.destroy(); ceresRankChart = null; }
+    const param = ceresParam();
+    const flight = ceresFlight('A');
+    if(title) title.textContent = `${t('Ranking del vuelo')} · ${flight ? fmtDataVersion(flight.date) : ''}`;
+    if(!param || !flight){
+        canvas.style.display = 'none';
+        empty.style.display = 'block';
+        empty.textContent = t('Sin vuelo seleccionado');
+        return;
+    }
+    const bucket = flight[CERES_LEVEL] || {};
+    const rows = Object.keys(bucket)
+        .map(k => ({ k: k, v: bucket[k][param.id] }))
+        .filter(r => r.v != null)
+        .sort((a, b) => param.higher_is_better ? a.v - b.v : b.v - a.v);
+    if(!rows.length){
+        canvas.style.display = 'none';
+        empty.style.display = 'block';
+        empty.textContent = t('Sin datos en este vuelo');
+        return;
+    }
+    canvas.style.display = 'block';
+    empty.style.display = 'none';
+    // Alto proporcional a la cantidad de barras: con 5 equipos, una caja para 23
+    // sectores deja las barras nadando en blanco.
+    const wrap = canvas.parentElement;
+    if(wrap) wrap.style.height = Math.max(90, rows.length * 12 + 34) + 'px';
+    ceresRankChart = new Chart(canvas, {
+        type: 'bar',
+        data: {
+            labels: rows.map(r => r.k),
+            datasets: [{
+                label: ceresLabel(param),
+                data: rows.map(r => r.v),
+                // Clasificado: color de banda, así el ranking y el mapa coinciden.
+                // Sin clasificar: navy de marca. Pintar 23 barras grises se leería
+                // como "sin datos", cuando el orden por valor sí sirve.
+                backgroundColor: ceresIsClassified(param)
+                    ? rows.map(r => ceresColor(param, r.v))
+                    : SEM('--sem-navy-light'),
+                borderRadius: 3, borderSkipped: false
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: c => {
+                            const b = ceresBandOf(param, c.parsed.x);
+                            return `${fmtCeres(c.parsed.x)}${b ? ' · ' + ceresBandLabel(b) : ''}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: { min: param.min, max: param.max, ticks: { font: { size: 9 }, callback: v => fmtCeres(v) } },
+                y: { ticks: { font: { size: 9 }, autoSkip: false } }
+            }
+        }
+    });
+}
+
+// Temporada contra temporada: eje X = mes, una serie por temporada. Responde
+// "¿venimos peor que el año pasado a la misma altura?".
+const CERES_SEASON_MONTHS = [10, 11, 0, 1, 2];   // nov, dic, ene, feb, mar
+function buildCeresSeasonChart(){
+    const canvas = document.getElementById('ceresSeasonChart');
+    const empty = document.getElementById('ceresSeasonEmpty');
+    if(!canvas || typeof Chart === 'undefined') return;
+    if(ceresSeasonChart){ ceresSeasonChart.destroy(); ceresSeasonChart = null; }
+    const param = ceresParam();
+    if(!param){ return; }
+    const fs = ceresFlights();
+    const seasons = [];
+    fs.forEach(f => { if(!seasons.includes(f.season)) seasons.push(f.season); });
+    if(seasons.length < 2){
+        canvas.style.display = 'none';
+        empty.style.display = 'block';
+        empty.textContent = t('Se necesitan al menos dos temporadas con vuelos.');
+        return;
+    }
+    canvas.style.display = 'block';
+    empty.style.display = 'none';
+    // Promedio del predio por vuelo, ubicado en el mes del vuelo.
+    const palette = [SEM('--dat-eq-1'), SEM('--dat-eq-2'), SEM('--dat-eq-3'), SEM('--dat-eq-4'), SEM('--dat-eq-5')];
+    const datasets = seasons.map((s, i) => {
+        const pts = CERES_SEASON_MONTHS.map(m => {
+            const f = fs.find(x => x.season === s && (Number(x.date.slice(5, 7)) - 1) === m);
+            if(!f) return null;
+            const bucket = f[CERES_LEVEL] || {};
+            const vals = Object.keys(bucket).map(k => bucket[k][param.id]).filter(v => v != null);
+            return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+        });
+        return {
+            label: s, data: pts, spanGaps: true,
+            borderColor: palette[i % palette.length],
+            backgroundColor: palette[i % palette.length],
+            borderWidth: 1.8, pointRadius: 2.5, tension: 0.25
+        };
+    });
+    ceresSeasonChart = new Chart(canvas, {
+        type: 'line',
+        data: { labels: CERES_SEASON_MONTHS.map(m => mesNombre(m).slice(0, 3)), datasets: datasets },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { display: true, position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } },
+                tooltip: { callbacks: { label: c => `${c.dataset.label}: ${fmtCeres(c.parsed.y)}` } }
+            },
+            scales: {
+                y: { min: param.min, max: param.max, ticks: { font: { size: 9 }, callback: v => fmtCeres(v) } },
+                x: { ticks: { font: { size: 9 } } }
+            }
+        }
+    });
+}
 document.addEventListener('keydown',e=>{
     if(e.key==='Escape'){
         closeRiegoModal();
+        closeCeresModal();
         closeAgroModal();
         closeFinModal();
         closePestReport();
