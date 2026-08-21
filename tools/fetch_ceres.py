@@ -20,8 +20,22 @@ aborta con exit(1) sin imprimir nada del valor.
 ────────────────────────────────────────────────────────────────────────────────
 UMBRALES
 
-Los cortes de cada indicador salen del parametro colorMap que Ceres publica en
-las URLs de download_urls, por overlay_type. No hay rangos inventados aca.
+Los cortes salen del parametro colorMap que Ceres publica en download_urls de
+/api/overlays/ (NO de flight_summary, cuyos overlays vienen sin download_urls).
+No hay rangos inventados aca.
+
+Verificado contra los 14 vuelos reales: de los 5 indicadores, solo water_stress
+publica umbrales agronomicos (4 tramos fijos de 0.25). Los otros cuatro no, y
+por eso quedan sin clasificar (ver bands_policy mas abajo):
+
+  absolute_ndvi              rampa de 11 tramos, no umbrales
+  season_average_ndvi        Ceres no publica cortes
+  chlorophyll_class          percentiles de un solo vuelo, no umbrales fijos
+  cumulative_thermal_stress  rampa de 10 tramos, no umbrales
+
+Un indicador sin clasificar conserva su valor, su delta y su evolucion; lo que
+no tiene es banda de color. Para habilitarlo, poner sus cortes en
+ceres_thresholds.json: un override SIEMPRE gana sobre la politica.
 
 Para ajustar los cortes al nogal en Chile sin tocar codigo ni mapa, crea
 ceres_thresholds.json en la raiz del repo:
@@ -99,26 +113,56 @@ FIELD_TO_EQUIPO = {
 
 # Los 5 indicadores utiles. colorized_ndvi queda fuera a proposito: duplica
 # absolute_ndvi y ocuparia un lugar en el selector sin aportar nada.
+#
+# bands_policy decide si el colorMap publicado se acepta como umbral:
+#
+#   "ceres"         -> los cortes publicados son umbrales agronomicos de verdad.
+#   "unclassified"  -> lo que publica Ceres NO son umbrales. El indicador queda
+#                      sin clasificar: el mapa lo muestra en gris y la leyenda
+#                      explica por que. Se habilita poniendo cortes en
+#                      ceres_thresholds.json.
+#
+# Esto es una decision humana verificada contra el dato real de San Gerardo (14
+# vuelos, 322 observaciones por indicador), no una heuristica: por eso vive aca
+# escrita y con su motivo, y no se infiere en runtime. Los motivos se emiten al
+# JSON en es/en para que la leyenda del mapa pueda decirlos.
 PARAMS = OrderedDict([
     ("water_stress", {
         "es": "Estrés hídrico", "en": "Water stress",
         "higher_is_better": False,
+        "bands_policy": "ceres",
     }),
     ("absolute_ndvi", {
         "es": "NDVI", "en": "NDVI",
         "higher_is_better": True,
+        "bands_policy": "unclassified",
+        "why_es": "Ceres publica una rampa de 11 tramos, no umbrales agronómicos.",
+        "why_en": "Ceres publishes an 11-step ramp, not agronomic thresholds.",
     }),
     ("season_average_ndvi", {
         "es": "NDVI promedio temporada", "en": "Season avg NDVI",
         "higher_is_better": True,
+        "bands_policy": "unclassified",
+        "why_es": "Ceres no publica cortes para este indicador.",
+        "why_en": "Ceres publishes no cuts for this indicator.",
     }),
     ("chlorophyll_class", {
         "es": "Clorofila", "en": "Chlorophyll",
         "higher_is_better": True,
+        "bands_policy": "unclassified",
+        # Los cortes publicados (0.193 / 0.545 / 0.615 / 0.685 / 0.827) son
+        # percentiles de la distribucion de un solo vuelo, y hay valores
+        # historicos por debajo del minimo. Aplicarlos a cuatro anos haria que
+        # el mismo valor cambie de categoria segun que vuelo definio la escala.
+        "why_es": "Los cortes de Ceres son percentiles de un vuelo, no umbrales fijos.",
+        "why_en": "Ceres cuts are one flight's percentiles, not fixed thresholds.",
     }),
     ("cumulative_thermal_stress", {
         "es": "Estrés térmico acumulado", "en": "Cumulative thermal stress",
         "higher_is_better": False,
+        "bands_policy": "unclassified",
+        "why_es": "Ceres publica una rampa de 10 tramos, no umbrales agronómicos.",
+        "why_en": "Ceres publishes a 10-step ramp, not agronomic thresholds.",
     }),
 ])
 IGNORED_OVERLAYS = {"colorized_ndvi"}
@@ -275,6 +319,189 @@ def flight_summary(session, week_key, grid_type_id):
     return rows.get("results") or []
 
 
+# ═══════════════════════════════════════════════════════════════════════════
+# Endpoint 3 - umbrales publicados
+# ═══════════════════════════════════════════════════════════════════════════
+
+# flight_summary devuelve overlays "flacos": overlay_type, value, color, area,
+# plants, capture_date. El colorMap con los cortes oficiales NO viene ahi: vive
+# en download_urls de /api/overlays/. Por eso los umbrales se piden aparte.
+OVERLAYS_PAGE_CAP = 12
+
+
+def fetch_colormaps(session, warn):
+    """
+    Recorre /api/overlays/ hasta juntar el colorMap de los 5 indicadores.
+    Devuelve {overlay_type: [{"min":.., "max":..}]}. Corta en cuanto los tiene
+    todos: la cuenta tiene cientos de overlays y no hace falta paginarlos.
+    """
+    found = {}
+    params = {"admin_group": ADMIN_GROUP, "ordering": "-capture_date"}
+    page = 1
+    while page <= OVERLAYS_PAGE_CAP:
+        # La primera pagina va sin `page`: si el endpoint no estuviera paginado,
+        # mandar el parametro podria hacerlo fallar sin necesidad.
+        query = dict(params) if page == 1 else dict(params, page=page)
+        try:
+            payload = api_get(session, "/overlays/", params=query)
+        except CeresError as exc:
+            warn("no se pudo leer /overlays/ pagina %d (%s); los umbrales que "
+                 "falten quedan sin banda." % (page, exc))
+            break
+
+        if isinstance(payload, list):
+            rows, has_next = payload, False
+        else:
+            rows = payload.get("results") or []
+            has_next = bool(payload.get("next"))
+
+        for overlay in rows:
+            otype = overlay.get("overlay_type")
+            if not otype or otype in found or otype not in PARAMS:
+                continue
+            bands = extract_colormap(overlay)
+            if bands:
+                found[otype] = bands
+
+        missing = [p for p in PARAMS if p not in found]
+        if not missing:
+            break
+        if not rows or not has_next:
+            break
+        page += 1
+
+    print("  umbrales: %d/%d indicadores con colorMap%s"
+          % (len(found), len(PARAMS), "" if len(found) == len(PARAMS)
+             else " (faltan: %s)" % ", ".join(p for p in PARAMS if p not in found)))
+    return found
+
+
+def inspect_overlays(session):
+    """
+    Diagnostico: imprime la forma de los overlays de /api/overlays/ para poder
+    ajustar el parseo si Ceres cambia el esquema. Nunca imprime una URL
+    completa (pueden venir firmadas): solo host, path y NOMBRES de parametros.
+    El unico valor que muestra es colorMap, que son umbrales, no una credencial.
+    """
+    payload = api_get(session, "/overlays/", params={
+        "admin_group": ADMIN_GROUP, "ordering": "-capture_date",
+    })
+    rows = payload if isinstance(payload, list) else (payload.get("results") or [])
+    if not isinstance(payload, list):
+        print("paginado: count=%r next=%s" % (payload.get("count"),
+                                             bool(payload.get("next"))))
+    print("overlays en la primera pagina: %d" % len(rows))
+
+    tipos = {}
+    for overlay in rows:
+        tipos.setdefault(overlay.get("overlay_type"), 0)
+        tipos[overlay.get("overlay_type")] += 1
+    print("overlay_type presentes: %s" % json.dumps(tipos, ensure_ascii=False, indent=2))
+
+    shown = set()
+    for overlay in rows:
+        otype = overlay.get("overlay_type")
+        if otype not in PARAMS or otype in shown:
+            continue
+        shown.add(otype)
+        print("")
+        print("── %s ─────────────────────────────────" % otype)
+        print("  claves del overlay: %s" % sorted(overlay.keys()))
+        urls = overlay.get("download_urls")
+        print("  download_urls es %s" % type(urls).__name__)
+        cands = []
+        if isinstance(urls, dict):
+            print("  sus claves: %s" % sorted(urls.keys()))
+            cands = [(k, v) for k, v in urls.items() if isinstance(v, str)]
+        elif isinstance(urls, list):
+            cands = [(i, v) for i, v in enumerate(urls) if isinstance(v, str)]
+        elif isinstance(urls, str):
+            cands = [("(str)", urls)]
+        for name, url in cands:
+            parsed = urllib.parse.urlparse(url)
+            qs = urllib.parse.parse_qs(parsed.query)
+            print("    [%s] %s%s  params=%s" % (name, parsed.netloc, parsed.path,
+                                                sorted(qs.keys())))
+            if "colorMap" in qs:
+                print("       colorMap = %s" % qs["colorMap"][0])
+        bands = extract_colormap(overlay)
+        print("  -> extract_colormap: %s" % (bands if bands else "NADA"))
+        if len(shown) >= len(PARAMS):
+            break
+
+    audit_colormaps(session)
+
+
+def audit_colormaps(session):
+    """
+    Recorre TODOS los overlays y junta los colorMap distintos por overlay_type.
+    Contesta la pregunta que decide la politica de bandas: los cortes de un
+    indicador son fijos, o cambian de vuelo en vuelo?
+
+      1 colorMap distinto  -> escala fija; los cortes son candidatos a umbral.
+      N colorMaps distintos -> se recalculan por vuelo; NO son umbrales, porque
+                               el mismo valor caeria en categorias distintas
+                               segun que vuelo definio la escala.
+    """
+    print("")
+    print("=" * 70)
+    print("AUDITORIA: cuantos colorMap distintos publica cada indicador")
+    print("=" * 70)
+
+    vistos = {}          # overlay_type -> {firma: [fechas]}
+    page, total = 1, 0
+    while page <= OVERLAYS_PAGE_CAP:
+        query = {"admin_group": ADMIN_GROUP, "ordering": "-capture_date"}
+        if page > 1:
+            query["page"] = page
+        try:
+            payload = api_get(session, "/overlays/", params=query)
+        except CeresError as exc:
+            print("  (corte en la pagina %d: %s)" % (page, exc))
+            break
+        if isinstance(payload, list):
+            rows, has_next = payload, False
+        else:
+            rows = payload.get("results") or []
+            has_next = bool(payload.get("next"))
+        total += len(rows)
+        for overlay in rows:
+            otype = overlay.get("overlay_type")
+            if otype not in PARAMS:
+                continue
+            bands = extract_colormap(overlay)
+            if not bands:
+                continue
+            firma = json.dumps([[b["min"], b["max"]] for b in bands])
+            vistos.setdefault(otype, {}).setdefault(firma, []).append(
+                overlay.get("capture_date") or "?")
+        if not rows or not has_next:
+            break
+        page += 1
+
+    print("overlays revisados: %d" % total)
+    for otype in PARAMS:
+        firmas = vistos.get(otype) or {}
+        if not firmas:
+            print("")
+            print("  %-27s ningun colorMap publicado" % otype)
+            continue
+        print("")
+        print("  %-27s %d colorMap distinto(s) en %d overlays"
+              % (otype, len(firmas), sum(len(v) for v in firmas.values())))
+        for firma, fechas in sorted(firmas.items(), key=lambda kv: -len(kv[1])):
+            cortes = [round(x[0], 4) for x in json.loads(firma)]
+            cortes.append(round(json.loads(firma)[-1][1], 4))
+            print("      %d overlays  cortes=%s" % (len(fechas), cortes))
+            print("                  fechas=%s%s"
+                  % (", ".join(sorted(set(fechas))[:4]),
+                     " ..." if len(set(fechas)) > 4 else ""))
+        veredicto = ("ESCALA FIJA -> los cortes son candidatos a umbral"
+                     if len(firmas) == 1
+                     else "SE RECALCULA POR VUELO -> no son umbrales")
+        print("      => %s" % veredicto)
+
+
 def unit_key(row, level):
     """
     Clave de la unidad. A nivel sector es block_name, que ya viene exactamente
@@ -399,30 +626,61 @@ def load_overrides():
     return out
 
 
-def build_params(colormaps, overrides, warn):
+def build_params(colormaps, overrides, warn, value_ranges=None):
+    """
+    Arma params[]. Un override de ceres_thresholds.json siempre gana: es la via
+    para que agronomia habilite un indicador que Ceres deja sin umbrales.
+    """
+    value_ranges = value_ranges or {}
     params = []
     for pid, meta in PARAMS.items():
+        policy = meta.get("bands_policy", "unclassified")
+        reason_es = reason_en = None
+
         if pid in overrides:
             raw, source = overrides[pid], "custom"
-        elif pid in colormaps:
+        elif policy == "ceres" and pid in colormaps:
             raw, source = colormaps[pid], "ceres"
+        elif policy == "ceres":
+            raw, source = [], "unclassified"
+            reason_es = "No se pudo leer el colorMap de Ceres."
+            reason_en = "Could not read the Ceres colorMap."
+            warn("`%s` tiene politica `ceres` pero no se pudo extraer su "
+                 "colorMap: queda sin clasificar." % pid)
         else:
-            warn("no se pudo extraer el colorMap de `%s`: queda sin bandas y el "
-                 "mapa lo va a mostrar sin clasificar." % pid)
-            raw, source = [], "none"
+            raw, source = [], "unclassified"
+            reason_es = meta.get("why_es")
+            reason_en = meta.get("why_en")
+
         bands = label_bands(raw, meta["higher_is_better"]) if raw else []
-        lo = min((b["min"] for b in bands), default=0.0)
-        hi = max((b["max"] for b in bands), default=1.0)
-        params.append(OrderedDict([
+
+        # Rango del eje: con bandas manda la banda; sin bandas, el rango real de
+        # los datos, para que los graficos tengan un eje utilizable igual.
+        if bands:
+            lo = min(b["min"] for b in bands)
+            hi = max(b["max"] for b in bands)
+        elif pid in value_ranges:
+            lo, hi = value_ranges[pid]
+        else:
+            lo, hi = 0.0, 1.0
+
+        entry = OrderedDict([
             ("id", pid),
             ("es", meta["es"]),
             ("en", meta["en"]),
-            ("min", lo),
-            ("max", hi),
+            ("min", round(lo, 6)),
+            ("max", round(hi, 6)),
             ("higher_is_better", meta["higher_is_better"]),
             ("bands", bands),
             ("bands_source", source),
-        ]))
+        ])
+        if source == "unclassified":
+            entry["unclassified_es"] = reason_es or "Sin umbrales definidos."
+            entry["unclassified_en"] = reason_en or "No thresholds defined."
+            # Cuantas bandas publico Ceres y se descartaron. Queda anotado para
+            # que se note si algun dia Ceres empieza a publicar umbrales reales.
+            entry["ceres_bands_found"] = len(colormaps.get(pid) or [])
+        params.append(entry)
     return params
 
 
@@ -703,10 +961,20 @@ def summarize(flights, params, sectors_meta, equipos_meta, failed, warnings):
           % (len(flights), flights[0]["date"], flights[-1]["date"]))
     print("Unidades:    %d sectores / %d equipos" % (len(sectors_meta), len(equipos_meta)))
     banded = [p for p in params if p.get("bands")]
-    print("Indicadores: %d con bandas" % len(banded))
+    print("Indicadores: %d de %d clasificados" % (len(banded), len(params)))
     for p in params:
         n = len(p.get("bands") or [])
-        print("               %-27s %d bandas  [%s]" % (p["id"], n, p.get("bands_source")))
+        line = "               %-27s %d bandas  [%s]" % (p["id"], n, p.get("bands_source"))
+        if p.get("bands_source") == "unclassified":
+            line += "  <- %s" % p.get("unclassified_es", "")
+            if p.get("ceres_bands_found"):
+                line += " (Ceres publica %d tramos)" % p["ceres_bands_found"]
+        print(line)
+    if len(banded) < len(params):
+        print("")
+        print("  Los indicadores sin clasificar se muestran en gris en el mapa, con")
+        print("  su valor y su evolucion, pero sin banda de color. Para habilitarlos,")
+        print("  agrega sus cortes a ceres_thresholds.json (ver el encabezado).")
     print("Vuelos por fecha:")
     for flight in flights:
         print("  %-11s %s  %-8s  %2d sectores / %d equipos"
@@ -733,6 +1001,9 @@ def main():
                     help="refetch completo: ignora los vuelos ya guardados")
     ap.add_argument("--out", default=OUT_DEFAULT,
                     help="ruta de salida (default: ceres_data.json en la raiz)")
+    ap.add_argument("--inspect-overlays", action="store_true",
+                    help="diagnostico: imprime la forma de /api/overlays/ para "
+                         "ajustar el parseo del colorMap. No escribe nada.")
     args = ap.parse_args()
 
     warnings = []
@@ -748,6 +1019,14 @@ def main():
         "Accept": "application/json",
         "User-Agent": "san-gerardo-map/fetch_ceres",
     })
+
+    if args.inspect_overlays:
+        try:
+            inspect_overlays(session)
+        except CeresError as exc:
+            sys.stderr.write("ERROR: no se pudo leer /overlays/ (%s).\n" % exc)
+            return 1
+        return 0
 
     existing = None if args.full else read_existing(args.out)
     known = {}
@@ -771,7 +1050,10 @@ def main():
     pending = [f for f in catalog if f["week_key"] not in known]
     print("  %d por descargar." % len(pending))
 
-    colormaps = {}
+    # Los umbrales se piden antes que los vuelos, y de /overlays/: los overlays
+    # de flight_summary vienen sin download_urls, asi que ahi no hay colorMap.
+    print("Leyendo umbrales publicados...")
+    colormaps = fetch_colormaps(session, warn)
     meta_sink = {"sectors": {}, "equipos": {}}
     fetched, failed = {}, []
 
@@ -789,14 +1071,6 @@ def main():
     seed_meta_from_existing(existing, meta_sink)
 
     overrides = load_overrides()
-    if not colormaps and existing and existing.get("params"):
-        # Incremental sin vuelos nuevos: las bandas ya estan calculadas. Aun asi
-        # se reaplican los overrides, para que editar ceres_thresholds.json y
-        # correr sin --full alcance para reclasificar.
-        params = (build_params(bands_from_params(existing["params"]), overrides, warn)
-                  if overrides else existing["params"])
-    else:
-        params = build_params(colormaps, overrides, warn)
     if overrides:
         print("  ceres_thresholds.json: bandas propias para %s."
               % ", ".join(sorted(overrides)))
@@ -824,6 +1098,10 @@ def main():
         return 1
 
     sectors_meta, equipos_meta = build_unit_meta(meta_sink)
+
+    # Los params se arman recien aca: un indicador sin bandas toma como rango de
+    # eje el minimo y maximo reales de sus datos, y eso exige tener los vuelos.
+    params = build_params(colormaps, overrides, warn, value_ranges(flights))
 
     compute_deltas(flights)
     compute_compliance(flights, params, sectors_meta, warn)
@@ -872,14 +1150,20 @@ def main():
     return 0
 
 
-def bands_from_params(params):
-    """params[] -> {overlay_type: [{min,max}]}, para reaplicar overrides sin refetch."""
-    out = {}
-    for p in params:
-        bands = p.get("bands") or []
-        if bands:
-            out[p["id"]] = [{"min": b["min"], "max": b["max"]} for b in bands]
-    return out
+def value_ranges(flights):
+    """
+    {overlay_type: (min, max)} sobre todos los vuelos y los dos niveles. Es el
+    rango del eje para los indicadores que quedan sin clasificar: sin bandas que
+    lo definan, el grafico igual necesita un eje que encuadre el dato.
+    """
+    acc = {}
+    for flight in flights:
+        for level in ("sectors", "equipos"):
+            for values in flight[level].values():
+                for pid, val in values.items():
+                    lo, hi = acc.get(pid, (val, val))
+                    acc[pid] = (min(lo, val), max(hi, val))
+    return acc
 
 
 if __name__ == "__main__":
