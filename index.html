@@ -909,7 +909,9 @@ body:not(.compare-mode) #riegoLabelASlot { display:none !important; }
     background:var(--sem-navy-wash); border-radius:var(--sem-radius);
     padding:5px 8px; margin-top:7px; line-height:1.35;
 }
-.cs-scale { margin-top:9px; }
+/* NDVI llega a 9 clases: con la escala suelta, la leyenda se empujaba fuera de
+   pantalla en un teléfono. El techo la deja scrollear sola. */
+.cs-scale { margin-top:9px; max-height:190px; overflow-y:auto; }
 .cs-scale-row { display:flex; align-items:center; gap:7px; font-size:11px; margin-bottom:4px; }
 /* Banda sin ninguna unidad: sigue en la escala como referencia, pero atenuada
    para que no compita con las bandas que sí son un hallazgo. */
@@ -2931,9 +2933,10 @@ const I18N = { en: {
 'Sin cambio':'No change',
 'mejora':'improving', 'deterioro':'worsening',
 'Se necesitan al menos dos temporadas con vuelos.':'At least two seasons with flights are needed.',
-'con dato':'with data',
+'con dato':'with data', 'definido por agronomía':'defined by agronomy',
+'clases':'classes',
 'en cumplimiento':'compliant', 'peor':'worst', 'promedio':'average',
-'En cumplimiento':'Compliant', 'respecto al vuelo anterior':'vs previous flight',
+'En cumplimiento':'Compliant', 'Clase más baja del vuelo':'Lowest class in the flight', 'respecto al vuelo anterior':'vs previous flight',
 // ── Navegación y subvistas ──
 'General':'Overview', 'Cosecha':'Harvest', 'Nutrición':'Nutrition', 'Riego':'Irrigation',
 'Aplicaciones':'Applications', 'Control de Plagas y Enfermedades':'Pest & Disease Control',
@@ -8420,19 +8423,33 @@ function closeRiegoModal(){
 // Mapbox, leyenda, barra de métricas, tooltip y modal.
 // ════════════════════════════════════════════════════════════════════════════
 
-// El JSON trae, por banda, un `status` (opt/bajo/alto/exc) y una `severity`
-// (0 = mejor). El color se elige por SEVERIDAD y no por status, porque la escala
-// foliar de la que salen los tokens es de dos lados —def, bajo, óptimo, alto,
-// exc— y tomarla en ese orden daría naranjo antes que amarillo: la leyenda se
-// leería como si la segunda banda fuera peor que la tercera. Esta escalera
-// reordena los MISMOS tokens para que suba monótona de verde a café.
-const CERES_SEVERITY_LADDER = {
-    2: ['óptimo', 'excesivo'],
-    3: ['óptimo', 'alto', 'excesivo'],
-    4: ['óptimo', 'alto', 'bajo', 'excesivo'],
-    5: ['óptimo', 'alto', 'bajo', 'deficiente', 'excesivo']
-};
+// Cada banda trae un `status` y una `severity` (0 = mejor). El color se elige
+// por SEVERIDAD, nunca por status: la escala foliar de la que salen los tokens
+// es de dos lados —def, bajo, óptimo, alto, exc— y tomarla en ese orden daría
+// naranjo antes que amarillo, o sea una leyenda donde la segunda banda parece
+// peor que la tercera.
+//
+// Los indicadores tienen entre 4 y 9 clases, así que un mapa de paletas fijas no
+// alcanza. Se usan los MISMOS tokens --dat-st-* como anclas de una rampa y se
+// interpola para el N que haga falta: no se declara ningún color nuevo. Con 4
+// clases cae exactamente sobre las cuatro anclas.
+const CERES_RAMP = [
+    SEM('--dat-st-opt'),   // mejor
+    SEM('--dat-st-alto'),
+    SEM('--dat-st-bajo'),
+    SEM('--dat-st-def')    // peor
+];
 const CERES_NO_DATA_COLOR = SEM('--sem-grey');
+
+function ceresRampColor(severity, n){
+    if(n <= 1) return CERES_RAMP[0];
+    const pos = (severity / (n - 1)) * (CERES_RAMP.length - 1);
+    const i = Math.min(Math.floor(pos), CERES_RAMP.length - 2);
+    return mixHex(CERES_RAMP[i], CERES_RAMP[i + 1], pos - i);
+}
+// Tinte claro y tono oscuro de la misma banda, para píldoras y franjas de fondo.
+function ceresTint(color){ return mixHex(color, SEM('--sem-surface'), 0.80); }
+function ceresShade(color){ return mixHex(color, SEM('--sem-ink'), 0.35); }
 // Desvío de densidad que se marca como anómalo respecto a la mediana del predio.
 const CERES_DENS_TOL = 0.15;
 
@@ -8494,6 +8511,7 @@ function ceresGroup(param){ return param ? (LANG === 'en' ? (param.group_en || '
 // mide la misma magnitud (Estrés Acumulado es el promedio de Estrés Hídrico).
 function ceresBandsOrigin(param){
     const src = (param && param.bands_source) || '';
+    if(src === 'agronomia') return t('definido por agronomía');
     if(src.indexOf(':') === -1){
         return src === 'custom' ? 'ceres_thresholds.json' : 'Ceres Imaging';
     }
@@ -8503,19 +8521,44 @@ function ceresBandsOrigin(param){
     return `${base} · ${ceresLabel(donor) || parts[1]}`;
 }
 function ceresBandLabel(band){ return band ? (LANG === 'en' ? band.en : band.es) : ''; }
-function ceresIsClassified(param){ return !!(param && param.bands && param.bands.length); }
+// Bandas vigentes. Los indicadores relativos (Clorofila) no tienen cortes
+// propios: la plataforma los recalcula en cada vuelo, así que el script los
+// guarda dentro del vuelo y por nivel. Todo lo demás las tiene en el indicador.
+function ceresBands(param, side){
+    if(!param) return [];
+    if(param.bands_source === 'relative'){
+        const f = ceresFlight(side || 'A');
+        const rel = (f && f.relative_bands) ? f.relative_bands[param.id] : null;
+        return (rel && rel[CERES_LEVEL]) || [];
+    }
+    return param.bands || [];
+}
+function ceresIsClassified(param, side){ return ceresBands(param, side).length > 0; }
+function ceresIsRelative(param){ return !!(param && param.bands_source === 'relative'); }
 // Bandas que cuentan como "en cumplimiento": la mitad mejor de la escala de
 // severidad. Con 4 bandas son Óptimo y Adecuado; con 3, sólo Óptimo. Se calcula
 // una sola vez acá para que la leyenda y la barra de métricas no puedan discrepar.
-function ceresCompliantBands(param){
-    if(!ceresIsClassified(param)) return [];
-    return param.bands.filter(b => b.severity < param.bands.length / 2);
+function ceresCompliantBands(param, side){
+    const bands = ceresBands(param, side);
+    if(!bands.length) return [];
+    return bands.filter(b => b.severity < bands.length / 2);
+}
+// Rótulo de "en cumplimiento". Una sola clase se nombra; varias se expresan como
+// el corte que las separa: unir "1 - No estresadas/2 - Estrés bajo" en la unidad
+// de una métrica no se lee, y con 9 clases sería peor.
+function ceresCompliantLabel(param, side){
+    const ok = ceresCompliantBands(param, side);
+    if(!ok.length) return '';
+    if(ok.length === 1) return ceresBandLabel(ok[0]);
+    return param.higher_is_better
+        ? '≥ ' + fmtCeres(Math.min.apply(null, ok.map(b => b.min)))
+        : '≤ ' + fmtCeres(Math.max.apply(null, ok.map(b => b.max)));
 }
 // Cumplimiento del nivel que se está pintando, normalizado. El script lo
 // precalcula para los dos niveles; sin esto, con el toggle en Equipo la leyenda
 // informaría "22 de 23" sobre un mapa de 5 polígonos.
 function ceresCompliance(flight, param){
-    if(!flight || !ceresIsClassified(param)) return null;
+    if(!flight || !ceresBands(param, 'A').length) return null;
     const eq = CERES_LEVEL === 'equipos';
     const src = eq ? flight.compliance_equipos : flight.compliance;
     const row = src ? src[param.id] : null;
@@ -8526,45 +8569,59 @@ function ceresCompliance(flight, param){
     const ok = ceresCompliantBands(param).map(b => b.status);
     const pick = o => ok.reduce((a, s) => a + (o[s] || 0), 0);
     return {
-        counts: counts,
+        counts: counts, row: row,
         totalUnits: sum(counts), okUnits: pick(counts),
         totalArea: sum(row.by_area_m2), okArea: pick(row.by_area_m2),
         totalPlants: sum(row.by_plants), okPlants: pick(row.by_plants)
     };
 }
+// La clase de peor severidad, que es la que hay que ir a mirar.
+function ceresWorstBand(param, side){
+    const bands = ceresBands(param, side);
+    if(!bands.length) return null;
+    return bands.reduce((a, b) => b.severity > a.severity ? b : a);
+}
+// Chips del vuelo activo. En un indicador relativo NO se habla de cumplimiento:
+// por construcción la mitad de las unidades cae en la mitad mejor, así que un
+// porcentaje se leería como veredicto agronómico cuando sólo dice "sobre la
+// mediana del vuelo". Ahí se informa la clase más baja, que sí es accionable.
+function ceresChipsHtml(param, comp, side){
+    if(!comp) return '';
+    const pct = (n, d) => d > 0 ? Math.round(n / d * 100) : 0;
+    const unitWord = CERES_LEVEL === 'equipos' ? t('equipos') : t('sectores');
+    if(ceresIsRelative(param)){
+        const worst = ceresWorstBand(param, side);
+        if(!worst) return '';
+        const n = comp.counts[worst.status] || 0;
+        return `<div class="cs-chip-label">${t('Clase más baja del vuelo')}</div>` +
+            `<div class="cs-chip"><strong>${n}/${comp.totalUnits}</strong> ${unitWord}</div>` +
+            `<div class="cs-chip"><strong>${pct(comp.row.by_plants[worst.status] || 0, comp.totalPlants)}%</strong> ${t('plantas')}</div>`;
+    }
+    return `<div class="cs-chip-label">${t('En cumplimiento')}</div>` +
+        `<div class="cs-chip"><strong>${comp.okUnits}/${comp.totalUnits}</strong> ${unitWord}</div>` +
+        `<div class="cs-chip"><strong>${pct(comp.okArea, comp.totalArea)}%</strong> ${t('superficie')}</div>` +
+        `<div class="cs-chip"><strong>${pct(comp.okPlants, comp.totalPlants)}%</strong> ${t('plantas')}</div>`;
+}
 
 // ── Banda y color ──
-function ceresBandOf(param, v){
-    if(v == null || !ceresIsClassified(param)) return null;
-    const bands = param.bands;
+function ceresBandOf(param, v, side){
+    const bands = ceresBands(param, side);
+    if(v == null || !bands.length) return null;
     for(let i = 0; i < bands.length; i++){
         const b = bands[i], last = (i === bands.length - 1);
         if((v >= b.min && v < b.max) || (last && v <= b.max)) return b;
     }
-    // Fuera de rango: se pega al extremo, no se pierde el sector en gris.
+    // Fuera de rango: se pega al extremo, no se pierde la unidad en gris.
     return v > bands[bands.length - 1].max ? bands[bands.length - 1] : bands[0];
 }
-function ceresStatusKey(param, band){
-    const ladder = CERES_SEVERITY_LADDER[param.bands.length];
-    return (ladder && ladder[band.severity]) || 'sin dato';
-}
-function ceresColor(param, v){
-    const band = ceresBandOf(param, v);
+// Color plano por banda, igual que la plataforma. Con 9 clases un degradé dentro
+// de cada banda sería ruido, y plano es lo que se lee como clase y no como rampa.
+function ceresBandColor(param, band, side){
     if(!band) return CERES_NO_DATA_COLOR;
-    const key = ceresStatusKey(param, band);
-    const pal = STATUS_PALETTES[key] || [STATUS_COLORS[key], STATUS_COLORS[key]];
-    // Se interpola DENTRO de la banda, como getFoliarColor(): el degradé vive
-    // dentro del umbral y no lo reemplaza. El extremo que se acerca a la
-    // siguiente banda peor es el tono fuerte, así que si alto = mejor se invierte.
-    const span = band.max - band.min;
-    let ratio = span > 0 ? clamp01((v - band.min) / span) : 0.5;
-    if(param.higher_is_better) ratio = 1 - ratio;
-    return mixHex(pal[0], pal[1], ratio);
+    return ceresRampColor(band.severity, ceresBands(param, side).length);
 }
-function ceresBandColor(param, band){
-    const key = ceresStatusKey(param, band);
-    const pal = STATUS_PALETTES[key] || [STATUS_COLORS[key], STATUS_COLORS[key]];
-    return mixHex(pal[0], pal[1], 0.62);
+function ceresColor(param, v, side){
+    return ceresBandColor(param, ceresBandOf(param, v, side), side);
 }
 
 // ── Pintado ──
@@ -8575,7 +8632,7 @@ function getCeresColorExpr(side = 'A'){
     GEOJSON.features.forEach(f => {
         const p = f.properties;
         const v = ceresValue(flight, ceresUnitKey(p), CERES_LEVEL);
-        expr.push(p.name, param ? ceresColor(param, v) : CERES_NO_DATA_COLOR);
+        expr.push(p.name, param ? ceresColor(param, v, side) : CERES_NO_DATA_COLOR);
     });
     expr.push(CERES_NO_DATA_COLOR);
     return expr;
@@ -8632,7 +8689,10 @@ function initCeresControls(){
         sel.innerHTML = groups.map(g => {
             const opts = g.items.map(p =>
                 `<option value="${p.id}"${p.id === CERES_PARAM ? ' selected' : ''}>` +
-                `${ceresLabel(p)}${ceresIsClassified(p) ? '' : ' · ' + t('Sin clasificar')}</option>`
+                // La marca sale de la política del indicador y no de las bandas
+                // vigentes: al construir el selector puede no haber vuelo activo,
+                // y un relativo se quedaría marcado como sin clasificar.
+                `${ceresLabel(p)}${p.bands_source === 'unclassified' ? ' · ' + t('Sin clasificar') : ''}</option>`
             ).join('');
             return g.name ? `<optgroup label="${g.name}">${opts}</optgroup>` : opts;
         }).join('');
@@ -8716,9 +8776,12 @@ function updateCeresLegend(){
     if(!nameEl || !scaleEl) return;
 
     nameEl.textContent = param ? ceresLabel(param) : t('Sin vuelo seleccionado');
-    // Rango del eje. Sin bandas el rango sale de los datos y trae 4 decimales
-    // crudos con punto: se formatea igual que el resto de los números.
-    unitEl.textContent = param ? `${fmtCeres(param.min)}–${fmtCeres(param.max)}` : '';
+    // En un indicador relativo el rango numérico no dice nada, porque cambia en
+    // cada vuelo: lo que define la escala es la cantidad de clases.
+    unitEl.textContent = !param ? ''
+        : ceresIsRelative(param)
+            ? `${ceresBands(param, 'A').length || param.n_classes || 4} ${t('clases')}`
+            : `${fmtCeres(param.min)}–${fmtCeres(param.max)}`;
 
     const fA = ceresFlight('A'), fB = ceresFlight('B');
     // La descripción del indicador y el nivel; la fecha va una sola vez, en la
@@ -8739,7 +8802,8 @@ function updateCeresLegend(){
         ageEl.style.display = 'none';
     }
 
-    if(!ceresIsClassified(param)){
+    const legendBands = ceresBands(param, 'A');
+    if(!legendBands.length){
         scaleEl.innerHTML =
             `<div class="cs-scale-row"><div class="cs-swatch" style="background:${CERES_NO_DATA_COLOR}"></div>` +
             `<div class="cs-scale-label">${t('Sin umbrales publicados')}</div></div>`;
@@ -8756,11 +8820,11 @@ function updateCeresLegend(){
     // se ve de un vistazo que hay 1 en Alerta sin abrir nada.
     const comp = ceresCompliance(fA, param);
     const bandCount = b => (comp && comp.counts[b.status] != null) ? comp.counts[b.status] : null;
-    scaleEl.innerHTML = param.bands.slice().reverse().map(b => {
+    scaleEl.innerHTML = legendBands.slice().reverse().map(b => {
         const n = bandCount(b);
         // La banda vacía se atenúa: ocupa lugar en la escala pero no es un hallazgo.
         return `<div class="cs-scale-row${n === 0 ? ' is-empty' : ''}">
-            <div class="cs-swatch" style="background:${ceresBandColor(param, b)}"></div>
+            <div class="cs-swatch" style="background:${ceresBandColor(param, b, 'A')}"></div>
             <div class="cs-scale-label">${ceresBandLabel(b)}</div>
             <div class="cs-scale-range">${fmtCeres(b.min)}–${fmtCeres(b.max)}</div>
             <div class="cs-scale-count">${n != null ? n : ''}</div>
@@ -8779,20 +8843,14 @@ function updateCeresLegend(){
                    <div class="cs-scale-count">${missing}</div></div>`
             : '';
     })();
-    if(comp){
-        const pct = (n, d) => d > 0 ? Math.round(n / d * 100) : 0;
-        // Las dos lecturas juntas, como pide el §5.3: no es lo mismo que 3 de 23
-        // sectores estén críticos, a que esos 3 concentren 4.000 árboles.
-        compEl.innerHTML =
-            `<div class="cs-chip-label">${t('En cumplimiento')}</div>` +
-            `<div class="cs-chip"><strong>${comp.okUnits}/${comp.totalUnits}</strong> ` +
-                `${CERES_LEVEL === 'equipos' ? t('equipos') : t('sectores')}</div>` +
-            `<div class="cs-chip"><strong>${pct(comp.okArea, comp.totalArea)}%</strong> ${t('superficie')}</div>` +
-            `<div class="cs-chip"><strong>${pct(comp.okPlants, comp.totalPlants)}%</strong> ${t('plantas')}</div>`;
-    } else {
-        compEl.innerHTML = '';
-    }
-    noteEl.textContent = t('Umbral') + ': ' + ceresBandsOrigin(param);
+    // Las dos lecturas juntas, como pide el §5.3: no es lo mismo que 3 de 23
+    // sectores estén críticos, a que esos 3 concentren 4.000 árboles.
+    compEl.innerHTML = ceresChipsHtml(param, comp, 'A');
+    // Un indicador relativo tiene que advertirlo: sus cortes se recalculan en
+    // cada vuelo, así que dos fechas no son comparables entre sí.
+    noteEl.textContent = ceresIsRelative(param)
+        ? (LANG === 'en' ? (param.relative_en || '') : (param.relative_es || ''))
+        : t('Umbral') + ': ' + ceresBandsOrigin(param);
 }
 function fmtCeres(v){
     return Number(v).toLocaleString(LOC(), { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -8842,13 +8900,21 @@ function updateCeresStats(side = 'A'){
     // Cumplimiento sólo si el indicador está clasificado; si no, se dice.
     let compBlock = '';
     const comp = ceresCompliance(flight, param);
-    if(comp){
-        // El rótulo sale de las bandas reales, no de nombres fijos: si agronomía
-        // define 3 o 5 cortes en ceres_thresholds.json, sigue diciendo la verdad.
-        const okLabel = ceresCompliantBands(param).map(b => ceresBandLabel(b)).join('/');
+    const unitWord = CERES_LEVEL === 'equipos' ? t('equipos') : t('sectores');
+    if(comp && ceresIsRelative(param)){
+        // Relativo: no hay cumplimiento que reportar, pero sí una clase más baja.
+        const worst = ceresWorstBand(param, side);
+        const nW = worst ? (comp.counts[worst.status] || 0) : 0;
         compBlock = `
             <div class="stat-div"></div>
-            <div class="stat"><div class="num">${comp.okUnits}<span class="sem-muted-xs"> / ${comp.totalUnits}</span></div><div class="unit">${CERES_LEVEL === 'equipos' ? t('equipos') : t('sectores')} ${okLabel}</div></div>
+            <div class="stat"><div class="num">${nW}<span class="sem-muted-xs"> / ${comp.totalUnits}</span></div><div class="unit">${unitWord} · ${worst ? ceresBandLabel(worst) : ''}</div></div>`;
+    } else if(comp){
+        // El rótulo sale de las bandas reales, no de nombres fijos: si agronomía
+        // define otros cortes en ceres_thresholds.json, sigue diciendo la verdad.
+        const okLabel = ceresCompliantLabel(param, side);
+        compBlock = `
+            <div class="stat-div"></div>
+            <div class="stat"><div class="num">${comp.okUnits}<span class="sem-muted-xs"> / ${comp.totalUnits}</span></div><div class="unit">${unitWord} ${okLabel}</div></div>
             <div class="stat-div"></div>
             <div class="stat"><div class="num">${comp.totalPlants > 0 ? Math.round(comp.okPlants / comp.totalPlants * 100) : 0}%</div><div class="unit">${t('plantas')} ${t('en cumplimiento')}</div></div>`;
     } else {
@@ -8926,13 +8992,13 @@ function fillCeresTooltip(props, side){
     document.getElementById('ttCeresVal').textContent = fmtCeres(v);
     // La banda como píldora del color de su banda: es lo que ata el número al
     // color que el usuario está viendo en el mapa.
-    const band = ceresBandOf(param, v);
+    const band = ceresBandOf(param, v, side);
     const bandEl = document.getElementById('ttCeresBand');
     bandEl.textContent = band ? ceresBandLabel(band) : t('Sin clasificar');
     if(band){
-        const pal = STATUS_PALETTES[ceresStatusKey(param, band)] || [CERES_NO_DATA_COLOR, CERES_NO_DATA_COLOR];
-        bandEl.style.background = pal[0];
-        bandEl.style.color = pal[1];
+        const c = ceresBandColor(param, band, side);
+        bandEl.style.background = ceresTint(c);
+        bandEl.style.color = ceresShade(c);
     } else {
         bandEl.style.background = SEM('--sem-slate-wash');
         bandEl.style.color = SEM('--sem-text-2');
@@ -8956,7 +9022,7 @@ function fillCeresTooltip(props, side){
         dEl.classList.add(up ? (good ? 'up-good' : 'up-bad') : (good ? 'down-good' : 'down-bad'));
         // Si además cruzó de banda, eso es más accionable que la magnitud: no
         // "subió 0,04" sino "pasó de Adecuado a Alerta".
-        const prev = ceresBandOf(param, v - d);
+        const prev = ceresBandOf(param, v - d, side);
         const cruce = (prev && band && prev.status !== band.status)
             ? ` · ${ceresBandLabel(prev)} → ${ceresBandLabel(band)}`
             : ` · ${good ? t('mejora') : t('deterioro')}`;
@@ -9010,7 +9076,7 @@ function openCeresModal(key, side = 'A'){
     const modal = document.getElementById('ceresModal');
     const meta = ceresMeta(key);
     const v = ceresValue(flight, key, CERES_LEVEL);
-    const band = ceresBandOf(param, v);
+    const band = ceresBandOf(param, v, side);
     const d = ceresDelta(flight, key, CERES_LEVEL);
 
     document.getElementById('ceresModalTitle').textContent =
@@ -9025,7 +9091,7 @@ function openCeresModal(key, side = 'A'){
 
     const body = document.getElementById('ceresModalBody');
     body.innerHTML = `
-        ${ceresIsClassified(param) ? '' :
+        ${ceresIsClassified(param, side) ? '' :
           `<div class="ceres-unclassified-note">${LANG === 'en' ? (param.unclassified_en || '') : (param.unclassified_es || '')} ${t('Este indicador no tiene umbrales definidos, así que el mapa lo muestra en gris. El valor, el cambio y la evolución sí están disponibles. Para clasificarlo, agrega sus cortes a ceres_thresholds.json.')}</div>`}
         <div class="riego-modal-kpis">
             <div class="rm-kpi"><div class="k">${ceresLabel(param)}</div><div class="v">${v != null ? fmtCeres(v) : '—'}</div></div>
@@ -9047,23 +9113,26 @@ function openCeresModal(key, side = 'A'){
 }
 
 // Franjas de banda pintadas de fondo: se ve de un vistazo cuándo cruzó a Alerta.
-function ceresBandStripsPlugin(param){
+// Franjas de banda pintadas de fondo: se ve de un vistazo cuándo cruzó de clase.
+// Se congelan las bandas del vuelo activo al construir el gráfico; para un
+// indicador relativo cambian entre vuelos, y dibujar las de uno sobre la serie de
+// los catorce sería mentir, así que en ese caso no se pintan.
+function ceresBandStripsPlugin(param, side){
+    const strips = ceresIsRelative(param) ? [] : ceresBands(param, side);
+    const n = strips.length;
     return {
         id: 'ceresBands',
         beforeDatasetsDraw(chart){
-            if(!ceresIsClassified(param)) return;
+            if(!n) return;
             const { ctx, chartArea, scales } = chart;
             const y = scales.y;
             if(!y) return;
             ctx.save();
-            param.bands.forEach(b => {
+            strips.forEach(b => {
                 const yTop = y.getPixelForValue(Math.min(b.max, y.max));
                 const yBot = y.getPixelForValue(Math.max(b.min, y.min));
                 if(yBot <= yTop) return;
-                const key = ceresStatusKey(param, b);
-                const pal = STATUS_PALETTES[key] || [STATUS_COLORS[key], STATUS_COLORS[key]];
-                ctx.fillStyle = pal[0];
-                ctx.globalAlpha = 0.45;
+                ctx.fillStyle = ceresTint(ceresRampColor(b.severity, n));
                 ctx.fillRect(chartArea.left, yTop, chartArea.right - chartArea.left, yBot - yTop);
             });
             ctx.restore();
@@ -9135,7 +9204,7 @@ function buildCeresEvoChart(key, param){
             }]
         },
         options: opts,
-        plugins: [ceresBandStripsPlugin(param)]
+        plugins: [ceresBandStripsPlugin(param, 'A')]
     });
 }
 
@@ -9168,7 +9237,7 @@ function buildCeresEqChart(eq, param){
             }))
         },
         options: opts,
-        plugins: [ceresBandStripsPlugin(param)]
+        plugins: [ceresBandStripsPlugin(param, 'A')]
     });
 }
 
@@ -9225,8 +9294,8 @@ function buildCeresRankChart(){
                 // Clasificado: color de banda, así el ranking y el mapa coinciden.
                 // Sin clasificar: navy de marca. Pintar 23 barras grises se leería
                 // como "sin datos", cuando el orden por valor sí sirve.
-                backgroundColor: ceresIsClassified(param)
-                    ? rows.map(r => ceresColor(param, r.v))
+                backgroundColor: ceresIsClassified(param, 'A')
+                    ? rows.map(r => ceresColor(param, r.v, 'A'))
                     : SEM('--sem-navy-light'),
                 borderRadius: 3, borderSkipped: false
             }]
@@ -9239,7 +9308,7 @@ function buildCeresRankChart(){
                 tooltip: {
                     callbacks: {
                         label: c => {
-                            const b = ceresBandOf(param, c.parsed.x);
+                            const b = ceresBandOf(param, c.parsed.x, 'A');
                             return `${fmtCeres(c.parsed.x)}${b ? ' · ' + ceresBandLabel(b) : ''}`;
                         }
                     }

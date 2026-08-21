@@ -20,25 +20,40 @@ aborta con exit(1) sin imprimir nada del valor.
 ────────────────────────────────────────────────────────────────────────────────
 UMBRALES
 
-Los cortes salen del parametro colorMap que Ceres publica en download_urls de
+Cada indicador declara en PARAMS como se clasifica (bands_policy). Nada se
+adivina en runtime: la decision es humana y esta escrita con su motivo.
+
+  water_stress               "ceres"      4 clases, cortes publicados por Ceres
+                                          (0/0,25/0,50/0,75/1), rotuladas 1..4
+                                          como en la plataforma
+  cumulative_thermal_stress  "share:"     hereda los cortes de water_stress: es
+                                          su promedio de temporada (verificado,
+                                          error 0,0000 en 322 observaciones)
+  absolute_ndvi              "fixed"      9 clases con cortes de agronomia. El
+  season_average_ndvi                     colorMap de Ceres es una rampa
+                                          uniforme de 0,05: escala fija, pero
+                                          despliegue y no clasificacion
+  chlorophyll_class          "relative"   4 clases relativas AL VUELO. Es un
+                                          indice relativo: la auditoria de los
+                                          845 overlays encuentra 67 colorMap
+                                          distintos en 69, recalculados por
+                                          campo y por vuelo. La plataforma
+                                          tampoco muestra numeros ahi, muestra
+                                          1-Mas bajo .. 4-Mas alto
+
+Los cortes publicados salen del parametro colorMap de download_urls en
 /api/overlays/ (NO de flight_summary, cuyos overlays vienen sin download_urls).
-No hay rangos inventados aca.
 
-Verificado contra los 14 vuelos reales: de los 5 indicadores, solo water_stress
-publica umbrales agronomicos (4 tramos fijos de 0.25). Los otros cuatro no, y
-por eso quedan sin clasificar (ver bands_policy mas abajo):
+Un indicador relativo guarda sus cortes DENTRO de cada vuelo y por nivel, en
+flights[].relative_bands, porque no son los mismos entre fechas. El mapa lo
+advierte: dos vuelos no son comparables entre si.
 
-  absolute_ndvi              rampa de 11 tramos, no umbrales
-  season_average_ndvi        Ceres no publica cortes
-  chlorophyll_class          percentiles de un solo vuelo, no umbrales fijos
-  cumulative_thermal_stress  rampa de 10 tramos, no umbrales
+Queda una cuarta modalidad, "unclassified", para el indicador que no tenga con
+que clasificarse. Hoy ninguno cae ahi, pero es la red si Ceres cambia algo.
 
-Un indicador sin clasificar conserva su valor, su delta y su evolucion; lo que
-no tiene es banda de color. Para habilitarlo, poner sus cortes en
-ceres_thresholds.json: un override SIEMPRE gana sobre la politica.
-
-Para ajustar los cortes al nogal en Chile sin tocar codigo ni mapa, crea
-ceres_thresholds.json en la raiz del repo:
+Para ajustar cualquier corte sin tocar codigo ni mapa, crea
+ceres_thresholds.json en la raiz del repo. Un override SIEMPRE gana sobre la
+politica, incluso convierte un relativo en cortes fijos:
 
     {
       "water_stress": {
@@ -51,10 +66,9 @@ ceres_thresholds.json en la raiz del repo:
       }
     }
 
-Sus bandas pisan a las de Ceres para ese indicador y bands_source pasa a
-"custom". Las etiquetas (Optimo/Adecuado/Alerta/Critico) y los codigos de estado
-se derivan de la cantidad de bandas y de la direccion del indicador; no hace
-falta escribirlas.
+Sus bandas pisan las del indicador y bands_source pasa a "custom". Las etiquetas
+y los codigos de estado se derivan de la cantidad de bandas y de la direccion del
+indicador; no hace falta escribirlas.
 
 ────────────────────────────────────────────────────────────────────────────────
 USO
@@ -111,21 +125,23 @@ FIELD_TO_EQUIPO = {
     85038: "E5",
 }
 
-# Los 5 indicadores utiles. colorized_ndvi queda fuera a proposito: duplica
-# absolute_ndvi y ocuparia un lugar en el selector sin aportar nada.
+# bands_policy, por indicador (ver el detalle en el encabezado del archivo):
 #
-# bands_policy decide si el colorMap publicado se acepta como umbral:
+#   "ceres"          los cortes publicados son clases agronomicas de verdad
+#   "share:<otro>"   toma prestados los cortes de otro indicador que mide lo mismo
+#   "fixed"          cortes definidos por agronomia, en `cuts`
+#   "relative"       clases recalculadas en cada vuelo, `n_classes`
+#   "unclassified"   sin nada con que clasificar; el mapa lo muestra en gris
 #
-#   "ceres"         -> los cortes publicados son umbrales agronomicos de verdad.
-#   "unclassified"  -> lo que publica Ceres NO son umbrales. El indicador queda
-#                      sin clasificar: el mapa lo muestra en gris y la leyenda
-#                      explica por que. Se habilita poniendo cortes en
-#                      ceres_thresholds.json.
-#
-# Esto es una decision humana verificada contra el dato real de San Gerardo (14
-# vuelos, 322 observaciones por indicador), no una heuristica: por eso vive aca
-# escrita y con su motivo, y no se infiere en runtime. Los motivos se emiten al
-# JSON en es/en para que la leyenda del mapa pueda decirlos.
+# Es una decision humana verificada contra el dato real de San Gerardo (14 vuelos,
+# 322 observaciones por indicador): vive aca escrita y con su motivo, y no se
+# infiere en runtime.
+
+# Cortes de NDVI definidos por agronomia. No los publica Ceres como umbral: su
+# colorMap es una rampa uniforme de 0,05. Nueve clases, con la primera y la
+# ultima abiertas (<0,50 y >0,85).
+NDVI_CUTS = [0.0, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 1.0]
+
 # Los nombres en espanol son los de la plataforma de Ceres, tal como los ve
 # agronomia: si el mapa los llamara de otra forma, habria que traducir de cabeza
 # entre las dos herramientas. Los de ingles son equivalentes razonables (solo se
@@ -141,6 +157,9 @@ PARAMS = OrderedDict([
         "group_es": "Irrigación", "group_en": "Irrigation",
         "higher_is_better": False,
         "bands_policy": "ceres",
+        # Los cuatro tramos publicados son las cuatro clases que la plataforma
+        # rotula 1..4; se usan sus nombres y no unos genericos.
+        "labels": "stress_4",
     }),
     ("cumulative_thermal_stress", {
         "es": "Estrés Acumulado", "en": "Cumulative stress",
@@ -157,6 +176,7 @@ PARAMS = OrderedDict([
         # publica para este overlay es una eleccion de despliegue del mapa de
         # calor, no una clasificacion.
         "bands_policy": "share:water_stress",
+        "labels": "stress_4",
     }),
     ("absolute_ndvi", {
         "es": "Índice de Vegetación Absoluto", "en": "Absolute vegetation index",
@@ -164,15 +184,12 @@ PARAMS = OrderedDict([
         "desc_en": "Canopy growth",
         "group_es": "Desarrollo de cultivos", "group_en": "Crop development",
         "higher_is_better": True,
-        "bands_policy": "unclassified",
-        # La auditoria de los 845 overlays muestra que la escala SI es fija (las
-        # dos firmas observadas difieren solo en el piso del primer tramo, -1.0
-        # vs 0.0, con los cortes interiores identicos). El problema no es que
-        # varie: son 9 tramos iguales de 0.05 entre 0.40 y 0.85, o sea una rampa
-        # de despliegue. Como clasificacion daria una leyenda de 11 filas
-        # rotuladas por rango numerico, que no permite decidir nada.
-        "why_es": "Ceres publica una rampa de tramos iguales de 0,05, no umbrales agronómicos.",
-        "why_en": "Ceres publishes a uniform 0.05-step ramp, not agronomic thresholds.",
+        # El colorMap de Ceres es una rampa uniforme de 0,05 (escala fija, pero
+        # despliegue y no clasificacion). Los cortes de abajo los define
+        # agronomia: nueve clases, con el primero y el ultimo abiertos.
+        "bands_policy": "fixed",
+        "cuts": NDVI_CUTS,
+        "labels": "ranges",
     }),
     ("season_average_ndvi", {
         "es": "Índice de Vegetación promedio temporada",
@@ -181,13 +198,12 @@ PARAMS = OrderedDict([
         "desc_en": "Average canopy growth this season",
         "group_es": "Desarrollo de cultivos", "group_en": "Crop development",
         "higher_is_better": True,
-        "bands_policy": "unclassified",
-        # Mismo patron que Estres Acumulado: es el promedio corrido del NDVI
-        # dentro de la temporada (verificado, error 0.0000 en 299 obs). Pero el
-        # NDVI tampoco tiene umbrales publicados, asi que no hay nada que
-        # compartir y queda sin clasificar.
-        "why_es": "Es el promedio de temporada del NDVI, que tampoco tiene umbrales publicados.",
-        "why_en": "It is the season average of NDVI, which has no published thresholds either.",
+        # Es el promedio corrido del NDVI dentro de la temporada (verificado,
+        # error 0.0000 en 299 obs), asi que vive en la misma escala y le
+        # corresponden los mismos cortes.
+        "bands_policy": "fixed",
+        "cuts": NDVI_CUTS,
+        "labels": "ranges",
     }),
     ("chlorophyll_class", {
         "es": "Clorofila", "en": "Chlorophyll",
@@ -195,15 +211,21 @@ PARAMS = OrderedDict([
         "desc_en": "Relative canopy growth",
         "group_es": "Desarrollo de cultivos", "group_en": "Crop development",
         "higher_is_better": True,
-        "bands_policy": "unclassified",
         # La plataforma lo describe como "crecimiento RELATIVO del dosel", y la
-        # auditoria de los 845 overlays lo confirma de la forma mas cruda posible:
-        # 67 colorMap DISTINTOS en 69 overlays. No varia por vuelo, varia por
-        # campo Y por vuelo. En el vuelo del 2026-03-23 hay cinco escalas, una por
-        # equipo. El mismo valor de clorofila caeria en categorias distintas segun
-        # en que equipo este, dentro del mismo vuelo. No son umbrales.
-        "why_es": "Es un índice relativo: Ceres recalcula sus cortes para cada campo y cada vuelo.",
-        "why_en": "It is a relative index: Ceres recomputes its cuts for every field and flight.",
+        # auditoria de los 845 overlays lo confirma: 67 colorMap DISTINTOS en 69
+        # overlays, recalculados por campo Y por vuelo. Por eso NO se le pueden
+        # poner cortes fijos: el mismo valor caeria en clases distintas segun el
+        # vuelo. Y por eso la plataforma no muestra numeros, muestra cuatro
+        # clases relativas (1 - Mas bajo .. 4 - Mas alto).
+        #
+        # Se clasifica igual que ahi: cuartiles de la distribucion DE CADA VUELO,
+        # calculados en el script y por nivel. Los cortes viven en el vuelo y no
+        # en el indicador, porque cambian vuelo a vuelo.
+        "bands_policy": "relative",
+        "n_classes": 4,
+        "labels": "relative",
+        "relative_es": "Clases relativas al vuelo: los cortes se recalculan en cada vuelo, así que no son comparables entre fechas.",
+        "relative_en": "Classes relative to the flight: cuts are recomputed per flight, so they are not comparable across dates.",
     }),
 ])
 
@@ -236,6 +258,65 @@ BAND_LABELS = {
     5: [("Óptimo", "Optimal"), ("Adecuado", "Adequate"), ("Moderado", "Moderate"),
         ("Alerta", "Warning"), ("Crítico", "Critical")],
 }
+
+# Etiquetas de la plataforma de Ceres, indexadas por SEVERIDAD (0 = mejor). Se
+# usan en vez de las genericas de arriba cuando el indicador las declara, para
+# que el mapa nombre las clases igual que la herramienta que usa agronomia.
+PLATFORM_LABELS = {
+    "stress_4": [
+        ("1 - No estresadas", "1 - Not stressed"),
+        ("2 - Estrés bajo", "2 - Low stress"),
+        ("3 - Estrés moderado", "3 - Moderate stress"),
+        ("4 - Estrés alto", "4 - High stress"),
+    ],
+}
+
+
+def relative_labels(n):
+    """
+    Clases relativas 1..n por posicion de VALOR ascendente: 1 es el mas bajo del
+    vuelo. Se generan para el n que resulte y no se leen de una tabla fija,
+    porque los cuartiles pueden colapsar: con 5 equipos y dos valores empatados
+    quedan 3 clases, y ahi una tabla de 4 entradas dejaria ese vuelo con nombres
+    distintos a los demas.
+    """
+    out = []
+    for i in range(n):
+        cls = i + 1
+        if n == 1:
+            out.append(("Única clase", "Single class"))
+        elif cls == 1:
+            out.append(("1 - Más bajo", "1 - Lowest"))
+        elif cls == n:
+            out.append(("%d - Más alto" % cls, "%d - Highest" % cls))
+        else:
+            out.append((str(cls), str(cls)))
+    return out
+
+
+def range_labels(cuts, decimals=2):
+    """
+    Etiquetas de rango a partir de los cortes, en orden de valor ascendente:
+    "<0,50", "0,50–0,55", ..., ">0,85". El primero y el ultimo se abren, porque
+    sus extremos son el limite del indice y no un corte real.
+    """
+    def es(v):
+        return ("%." + str(decimals) + "f") % v
+    def num_es(v):
+        return es(v).replace(".", ",")
+    out = []
+    n = len(cuts) - 1
+    for i in range(n):
+        lo, hi = cuts[i], cuts[i + 1]
+        if i == 0:
+            out.append(("<" + num_es(hi), "<" + es(hi)))
+        elif i == n - 1:
+            out.append((">" + num_es(lo), ">" + es(lo)))
+        else:
+            out.append((num_es(lo) + "–" + num_es(hi), es(lo) + "–" + es(hi)))
+    return out
+
+
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT_DEFAULT = os.path.join(REPO_ROOT, "ceres_data.json")
@@ -650,28 +731,51 @@ def extract_colormap(overlay):
 # Bandas -> params
 # ═══════════════════════════════════════════════════════════════════════════
 
-def label_bands(raw_bands, higher_is_better):
+def label_bands(raw_bands, higher_is_better, labels_spec=None):
     """
     Ordena las bandas por valor ascendente y les cuelga severidad, codigo de
     estado y etiqueta es/en. severity 0 = mejor: si el indicador es "alto =
     peor", la severidad crece con el valor; si es "alto = mejor", decrece. El
     mapa pinta por severidad, no por el orden del arreglo.
+
+    labels_spec:
+      None            -> etiquetas genericas por cantidad de bandas
+      "ranges"        -> el rango numerico como etiqueta ("<0,50", "0,50–0,55")
+      <clave>         -> etiquetas de la plataforma, indexadas por severidad
     """
     bands = sorted(raw_bands, key=lambda b: b["min"])
     n = len(bands)
     ladder = STATUS_LADDER.get(n)
-    labels = BAND_LABELS.get(n)
+
+    # Etiquetas por severidad. Las de rango se resuelven por posicion de valor,
+    # no por severidad, asi que se calculan aparte.
+    by_severity = None
+    by_value = None
+    if labels_spec == "ranges":
+        cuts = [b["min"] for b in bands] + [bands[-1]["max"]]
+        by_value = range_labels(cuts)
+    elif labels_spec == "relative":
+        # Por posicion de valor, no por severidad: "1 - Mas bajo" es el valor mas
+        # bajo del vuelo, cualquiera sea la direccion del indicador.
+        by_value = relative_labels(n)
+    elif labels_spec and labels_spec in PLATFORM_LABELS:
+        cand = PLATFORM_LABELS[labels_spec]
+        if len(cand) == n:
+            by_severity = cand
+    if by_severity is None and by_value is None:
+        by_severity = BAND_LABELS.get(n)
 
     out = []
     for idx, band in enumerate(bands):
         severity = (n - 1 - idx) if higher_is_better else idx
-        if ladder and labels:
-            status = ladder[severity]
-            es, en = labels[severity]
+        # El status solo existe para clasificar en compliance; con mas bandas que
+        # la escalera de estados se cae a un codigo numerico, que igual es unico.
+        status = ladder[severity] if ladder else ("b%d" % severity)
+        if by_value is not None:
+            es, en = by_value[idx]
+        elif by_severity is not None:
+            es, en = by_severity[severity]
         else:
-            # Mas de 5 bandas: no hay escalera de estados que alcance. Se cae a
-            # codigos numericos y el mapa colorea por severidad igual.
-            status = "b%d" % severity
             es = en = "%s - %s" % (band["min"], band["max"])
         out.append(OrderedDict([
             ("min", round(band["min"], 6)),
@@ -682,6 +786,70 @@ def label_bands(raw_bands, higher_is_better):
             ("severity", severity),
         ]))
     return out
+
+
+def bands_from_cuts(cuts):
+    return [{"min": cuts[i], "max": cuts[i + 1]} for i in range(len(cuts) - 1)]
+
+
+def quantile_cuts(values, n_classes):
+    """
+    Cortes por cuantiles sobre los valores de UN vuelo. Devuelve n_classes+1
+    limites. Si hay empates y un corte se repite, se colapsa: es mejor entregar
+    menos clases que dos bandas de ancho cero.
+    """
+    vals = sorted(v for v in values if v is not None)
+    if len(vals) < 2:
+        return None
+    lo, hi = vals[0], vals[-1]
+    if hi <= lo:
+        return None
+    cuts = [lo]
+    for i in range(1, n_classes):
+        pos = (len(vals) - 1) * i / float(n_classes)
+        lower = int(pos)
+        frac = pos - lower
+        upper = min(lower + 1, len(vals) - 1)
+        cuts.append(vals[lower] + (vals[upper] - vals[lower]) * frac)
+    cuts.append(hi)
+    out = [cuts[0]]
+    for c in cuts[1:]:
+        if c > out[-1] + 1e-9:
+            out.append(c)
+    return out if len(out) >= 3 else None
+
+
+def compute_relative_bands(flights, params, warn):
+    """
+    Para los indicadores relativos, los cortes se recalculan en CADA vuelo y por
+    nivel, igual que hace la plataforma. Van dentro del vuelo y no del indicador,
+    porque no son los mismos entre fechas.
+    """
+    rel = [p for p in params if p.get("bands_source") == "relative"]
+    if not rel:
+        return
+    meta = {pid: PARAMS[pid] for pid in PARAMS}
+    for flight in flights:
+        out = OrderedDict()
+        for param in rel:
+            pid = param["id"]
+            per_level = OrderedDict()
+            for level in ("sectors", "equipos"):
+                vals = [v.get(pid) for v in (flight.get(level) or {}).values()]
+                vals = [v for v in vals if v is not None]
+                cuts = quantile_cuts(vals, meta[pid].get("n_classes", 4))
+                if not cuts:
+                    continue
+                per_level[level] = label_bands(
+                    bands_from_cuts(cuts), meta[pid]["higher_is_better"],
+                    meta[pid].get("labels"))
+            if per_level:
+                out[pid] = per_level
+            else:
+                warn("vuelo %s / %s: no se pudieron calcular clases relativas "
+                     "(valores insuficientes o todos iguales)."
+                     % (flight["week_key"], pid))
+        flight["relative_bands"] = out
 
 
 def load_overrides():
@@ -724,6 +892,14 @@ def build_params(colormaps, overrides, warn, value_ranges=None):
 
         if pid in overrides:
             raw, source = overrides[pid], "custom"
+        elif policy == "fixed":
+            # Cortes definidos por agronomia, fijos y comparables entre vuelos.
+            raw, source = bands_from_cuts(meta["cuts"]), "agronomia"
+        elif policy == "relative":
+            # Los cortes no viven aca: se recalculan por vuelo en
+            # compute_relative_bands(). El indicador queda marcado y sin bandas
+            # propias, y el mapa las toma del vuelo activo.
+            raw, source = [], "relative"
         elif policy == "ceres" and pid in colormaps:
             raw, source = colormaps[pid], "ceres"
         elif policy == "ceres":
@@ -752,7 +928,7 @@ def build_params(colormaps, overrides, warn, value_ranges=None):
             reason_es = meta.get("why_es")
             reason_en = meta.get("why_en")
 
-        bands = label_bands(raw, meta["higher_is_better"]) if raw else []
+        bands = label_bands(raw, meta["higher_is_better"], meta.get("labels")) if raw else []
 
         # Rango del eje: con bandas manda la banda; sin bandas, el rango real de
         # los datos, para que los graficos tengan un eje utilizable igual.
@@ -784,6 +960,11 @@ def build_params(colormaps, overrides, warn, value_ranges=None):
             # Cuantas bandas publico Ceres y se descartaron. Queda anotado para
             # que se note si algun dia Ceres empieza a publicar umbrales reales.
             entry["ceres_bands_found"] = len(colormaps.get(pid) or [])
+        if source == "relative":
+            # El mapa tiene que decirlo: dos vuelos no son comparables entre si.
+            entry["relative_es"] = meta.get("relative_es", "")
+            entry["relative_en"] = meta.get("relative_en", "")
+            entry["n_classes"] = meta.get("n_classes", 4)
         params.append(entry)
     return params
 
@@ -839,18 +1020,31 @@ def compute_compliance(flights, params, sectors_meta, equipos_meta, warn):
             flight, "equipos", params, equipos_meta, N_EQUIPOS, warn)
 
 
+def flight_bands(flight, param, level):
+    """
+    Bandas vigentes para un indicador en un vuelo y nivel. Los indicadores
+    relativos las tienen dentro del vuelo, porque cambian vuelo a vuelo; el
+    resto las tiene en el propio indicador.
+    """
+    if param.get("bands_source") == "relative":
+        rel = (flight.get("relative_bands") or {}).get(param["id"]) or {}
+        return rel.get(level) or []
+    return param.get("bands") or []
+
+
 def _compliance_for(flight, level, params, meta_by_unit, expected, warn):
     out = OrderedDict()
     for param in params:
-        if not param.get("bands"):
+        bands = flight_bands(flight, param, level)
+        if not bands:
             continue
-        statuses = [b["status"] for b in param["bands"]]
+        statuses = [b["status"] for b in bands]
         by_unit = OrderedDict((s, 0) for s in statuses)
         by_area = OrderedDict((s, 0) for s in statuses)
         by_plants = OrderedDict((s, 0) for s in statuses)
         classified = 0
         for unit, values in (flight.get(level) or {}).items():
-            band = band_of(param, values.get(param["id"]))
+            band = band_of({"bands": bands}, values.get(param["id"]))
             if band is None:
                 continue
             meta = meta_by_unit.get(unit) or {}
@@ -1077,10 +1271,16 @@ def summarize(flights, params, sectors_meta, equipos_meta, failed, warnings):
     print("Vuelos:      %d  (%s -> %s)"
           % (len(flights), flights[0]["date"], flights[-1]["date"]))
     print("Unidades:    %d sectores / %d equipos" % (len(sectors_meta), len(equipos_meta)))
-    banded = [p for p in params if p.get("bands")]
+    banded = [p for p in params
+              if p.get("bands") or p.get("bands_source") == "relative"]
     print("Indicadores: %d de %d clasificados" % (len(banded), len(params)))
     for p in params:
         n = len(p.get("bands") or [])
+        if p.get("bands_source") == "relative":
+            rb = ((flights[-1].get("relative_bands") or {}).get(p["id"]) or {}).get("sectors") or []
+            print("               %-27s %d clases relativas por vuelo  [relative]"
+                  % (p["id"], len(rb)))
+            continue
         line = "               %-27s %d bandas  [%s]" % (p["id"], n, p.get("bands_source"))
         if p.get("bands_source") == "unclassified":
             line += "  <- %s" % p.get("unclassified_es", "")
@@ -1221,6 +1421,8 @@ def main():
     params = build_params(colormaps, overrides, warn, value_ranges(flights))
 
     compute_deltas(flights)
+    # Las clases relativas se calculan antes del cumplimiento: este las necesita.
+    compute_relative_bands(flights, params, warn)
     compute_compliance(flights, params, sectors_meta, equipos_meta, warn)
 
     payload = OrderedDict([

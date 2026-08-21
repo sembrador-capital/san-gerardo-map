@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-21T20:39:48Z",
+  "generated_at": "2026-08-21T22:23:13Z",
   "source": "Ceres Imaging",
   "farm": {
     "name": "San Gerardo",
@@ -22,32 +22,32 @@
         {
           "min": 0.0,
           "max": 0.25,
-          "es": "Óptimo",
-          "en": "Optimal",
+          "es": "1 - No estresadas",
+          "en": "1 - Not stressed",
           "status": "opt",
           "severity": 0
         },
         {
           "min": 0.25,
           "max": 0.5,
-          "es": "Adecuado",
-          "en": "Adequate",
+          "es": "2 - Estrés bajo",
+          "en": "2 - Low stress",
           "status": "bajo",
           "severity": 1
         },
         {
           "min": 0.5,
           "max": 0.75,
-          "es": "Alerta",
-          "en": "Warning",
+          "es": "3 - Estrés moderado",
+          "en": "3 - Moderate stress",
           "status": "alto",
           "severity": 2
         },
         {
           "min": 0.75,
           "max": 1.0,
-          "es": "Crítico",
-          "en": "Critical",
+          "es": "4 - Estrés alto",
+          "en": "4 - High stress",
           "status": "exc",
           "severity": 3
         }
@@ -69,32 +69,32 @@
         {
           "min": 0.0,
           "max": 0.25,
-          "es": "Óptimo",
-          "en": "Optimal",
+          "es": "1 - No estresadas",
+          "en": "1 - Not stressed",
           "status": "opt",
           "severity": 0
         },
         {
           "min": 0.25,
           "max": 0.5,
-          "es": "Adecuado",
-          "en": "Adequate",
+          "es": "2 - Estrés bajo",
+          "en": "2 - Low stress",
           "status": "bajo",
           "severity": 1
         },
         {
           "min": 0.5,
           "max": 0.75,
-          "es": "Alerta",
-          "en": "Warning",
+          "es": "3 - Estrés moderado",
+          "en": "3 - Moderate stress",
           "status": "alto",
           "severity": 2
         },
         {
           "min": 0.75,
           "max": 1.0,
-          "es": "Crítico",
-          "en": "Critical",
+          "es": "4 - Estrés alto",
+          "en": "4 - High stress",
           "status": "exc",
           "severity": 3
         }
@@ -109,14 +109,84 @@
       "desc_en": "Canopy growth",
       "group_es": "Desarrollo de cultivos",
       "group_en": "Crop development",
-      "min": 0.5279,
-      "max": 0.8848,
+      "min": 0.0,
+      "max": 1.0,
       "higher_is_better": true,
-      "bands": [],
-      "bands_source": "unclassified",
-      "unclassified_es": "Ceres publica una rampa de tramos iguales de 0,05, no umbrales agronómicos.",
-      "unclassified_en": "Ceres publishes a uniform 0.05-step ramp, not agronomic thresholds.",
-      "ceres_bands_found": 11
+      "bands": [
+        {
+          "min": 0.0,
+          "max": 0.5,
+          "es": "<0,50",
+          "en": "<0.50",
+          "status": "b8",
+          "severity": 8
+        },
+        {
+          "min": 0.5,
+          "max": 0.55,
+          "es": "0,50–0,55",
+          "en": "0.50–0.55",
+          "status": "b7",
+          "severity": 7
+        },
+        {
+          "min": 0.55,
+          "max": 0.6,
+          "es": "0,55–0,60",
+          "en": "0.55–0.60",
+          "status": "b6",
+          "severity": 6
+        },
+        {
+          "min": 0.6,
+          "max": 0.65,
+          "es": "0,60–0,65",
+          "en": "0.60–0.65",
+          "status": "b5",
+          "severity": 5
+        },
+        {
+          "min": 0.65,
+          "max": 0.7,
+          "es": "0,65–0,70",
+          "en": "0.65–0.70",
+          "status": "b4",
+          "severity": 4
+        },
+        {
+          "min": 0.7,
+          "max": 0.75,
+          "es": "0,70–0,75",
+          "en": "0.70–0.75",
+          "status": "b3",
+          "severity": 3
+        },
+        {
+          "min": 0.75,
+          "max": 0.8,
+          "es": "0,75–0,80",
+          "en": "0.75–0.80",
+          "status": "b2",
+          "severity": 2
+        },
+        {
+          "min": 0.8,
+          "max": 0.85,
+          "es": "0,80–0,85",
+          "en": "0.80–0.85",
+          "status": "b1",
+          "severity": 1
+        },
+        {
+          "min": 0.85,
+          "max": 1.0,
+          "es": ">0,85",
+          "en": ">0.85",
+          "status": "b0",
+          "severity": 0
+        }
+      ],
+      "bands_source": "agronomia"
     },
     {
       "id": "season_average_ndvi",
@@ -126,14 +196,84 @@
       "desc_en": "Average canopy growth this season",
       "group_es": "Desarrollo de cultivos",
       "group_en": "Crop development",
-      "min": 0.5279,
-      "max": 0.8764,
+      "min": 0.0,
+      "max": 1.0,
       "higher_is_better": true,
-      "bands": [],
-      "bands_source": "unclassified",
-      "unclassified_es": "Es el promedio de temporada del NDVI, que tampoco tiene umbrales publicados.",
-      "unclassified_en": "It is the season average of NDVI, which has no published thresholds either.",
-      "ceres_bands_found": 0
+      "bands": [
+        {
+          "min": 0.0,
+          "max": 0.5,
+          "es": "<0,50",
+          "en": "<0.50",
+          "status": "b8",
+          "severity": 8
+        },
+        {
+          "min": 0.5,
+          "max": 0.55,
+          "es": "0,50–0,55",
+          "en": "0.50–0.55",
+          "status": "b7",
+          "severity": 7
+        },
+        {
+          "min": 0.55,
+          "max": 0.6,
+          "es": "0,55–0,60",
+          "en": "0.55–0.60",
+          "status": "b6",
+          "severity": 6
+        },
+        {
+          "min": 0.6,
+          "max": 0.65,
+          "es": "0,60–0,65",
+          "en": "0.60–0.65",
+          "status": "b5",
+          "severity": 5
+        },
+        {
+          "min": 0.65,
+          "max": 0.7,
+          "es": "0,65–0,70",
+          "en": "0.65–0.70",
+          "status": "b4",
+          "severity": 4
+        },
+        {
+          "min": 0.7,
+          "max": 0.75,
+          "es": "0,70–0,75",
+          "en": "0.70–0.75",
+          "status": "b3",
+          "severity": 3
+        },
+        {
+          "min": 0.75,
+          "max": 0.8,
+          "es": "0,75–0,80",
+          "en": "0.75–0.80",
+          "status": "b2",
+          "severity": 2
+        },
+        {
+          "min": 0.8,
+          "max": 0.85,
+          "es": "0,80–0,85",
+          "en": "0.80–0.85",
+          "status": "b1",
+          "severity": 1
+        },
+        {
+          "min": 0.85,
+          "max": 1.0,
+          "es": ">0,85",
+          "en": ">0.85",
+          "status": "b0",
+          "severity": 0
+        }
+      ],
+      "bands_source": "agronomia"
     },
     {
       "id": "chlorophyll_class",
@@ -147,10 +287,10 @@
       "max": 0.7395,
       "higher_is_better": true,
       "bands": [],
-      "bands_source": "unclassified",
-      "unclassified_es": "Es un índice relativo: Ceres recalcula sus cortes para cada campo y cada vuelo.",
-      "unclassified_en": "It is a relative index: Ceres recomputes its cuts for every field and flight.",
-      "ceres_bands_found": 4
+      "bands_source": "relative",
+      "relative_es": "Clases relativas al vuelo: los cortes se recalculan en cada vuelo, así que no son comparables entre fechas.",
+      "relative_en": "Classes relative to the flight: cuts are recomputed per flight, so they are not comparable across dates.",
+      "n_classes": 4
     }
   ],
   "sectors": {
@@ -534,6 +674,78 @@
         "sectors": {},
         "equipos": {}
       },
+      "relative_bands": {
+        "chlorophyll_class": {
+          "sectors": [
+            {
+              "min": 0.1462,
+              "max": 0.2352,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.2352,
+              "max": 0.2501,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.2501,
+              "max": 0.28005,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.28005,
+              "max": 0.3161,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ],
+          "equipos": [
+            {
+              "min": 0.2059,
+              "max": 0.2442,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.2442,
+              "max": 0.2473,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.2473,
+              "max": 0.2757,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.2757,
+              "max": 0.3095,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ]
+        }
+      },
       "compliance": {
         "water_stress": {
           "by_sector": {
@@ -573,6 +785,96 @@
             "bajo": 23897,
             "alto": 1297,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 0,
+            "b0": 0
+          }
+        },
+        "season_average_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 0,
+            "b0": 0
+          }
+        },
+        "chlorophyll_class": {
+          "by_sector": {
+            "exc": 6,
+            "alto": 5,
+            "bajo": 6,
+            "opt": 6
+          },
+          "by_area_m2": {
+            "exc": 363194,
+            "alto": 261346,
+            "bajo": 347970,
+            "opt": 348436
+          },
+          "by_plants": {
+            "exc": 8243,
+            "alto": 6115,
+            "bajo": 8058,
+            "opt": 8038
           }
         }
       },
@@ -615,6 +917,96 @@
             "bajo": 30454,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 0,
+            "b0": 0
+          }
+        },
+        "season_average_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 0,
+            "b0": 0
+          }
+        },
+        "chlorophyll_class": {
+          "by_equipo": {
+            "exc": 1,
+            "alto": 1,
+            "bajo": 1,
+            "opt": 2
+          },
+          "by_area_m2": {
+            "exc": 286615,
+            "alto": 269273,
+            "bajo": 306684,
+            "opt": 464084
+          },
+          "by_plants": {
+            "exc": 6496,
+            "alto": 6214,
+            "bajo": 7047,
+            "opt": 10697
           }
         }
       }
@@ -969,6 +1361,78 @@
           }
         }
       },
+      "relative_bands": {
+        "chlorophyll_class": {
+          "sectors": [
+            {
+              "min": 0.2902,
+              "max": 0.4503,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.4503,
+              "max": 0.4728,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.4728,
+              "max": 0.4967,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.4967,
+              "max": 0.5226,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ],
+          "equipos": [
+            {
+              "min": 0.4253,
+              "max": 0.4661,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.4661,
+              "max": 0.4733,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.4733,
+              "max": 0.4829,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.4829,
+              "max": 0.5161,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ]
+        }
+      },
       "compliance": {
         "water_stress": {
           "by_sector": {
@@ -1008,6 +1472,96 @@
             "bajo": 22957,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 1,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 12,
+            "b2": 9,
+            "b1": 1,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 56348,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 699493,
+            "b2": 509884,
+            "b1": 55221,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 1265,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 16113,
+            "b2": 11820,
+            "b1": 1256,
+            "b0": 0
+          }
+        },
+        "season_average_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 1,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 12,
+            "b2": 9,
+            "b1": 1,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 56348,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 699493,
+            "b2": 509884,
+            "b1": 55221,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 1265,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 16113,
+            "b2": 11820,
+            "b1": 1256,
+            "b0": 0
+          }
+        },
+        "chlorophyll_class": {
+          "by_sector": {
+            "exc": 6,
+            "alto": 5,
+            "bajo": 6,
+            "opt": 6
+          },
+          "by_area_m2": {
+            "exc": 359523,
+            "alto": 290858,
+            "bajo": 324906,
+            "opt": 345659
+          },
+          "by_plants": {
+            "exc": 8141,
+            "alto": 6763,
+            "bajo": 7557,
+            "opt": 7993
           }
         }
       },
@@ -1050,6 +1604,96 @@
             "bajo": 30454,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 1,
+            "b3": 1,
+            "b2": 3,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 286615,
+            "b3": 269273,
+            "b2": 770768,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 6496,
+            "b3": 6214,
+            "b2": 17744,
+            "b1": 0,
+            "b0": 0
+          }
+        },
+        "season_average_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 1,
+            "b3": 1,
+            "b2": 3,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 286615,
+            "b3": 269273,
+            "b2": 770768,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 6496,
+            "b3": 6214,
+            "b2": 17744,
+            "b1": 0,
+            "b0": 0
+          }
+        },
+        "chlorophyll_class": {
+          "by_equipo": {
+            "exc": 1,
+            "alto": 1,
+            "bajo": 1,
+            "opt": 2
+          },
+          "by_area_m2": {
+            "exc": 286615,
+            "alto": 269273,
+            "bajo": 295550,
+            "opt": 475218
+          },
+          "by_plants": {
+            "exc": 6496,
+            "alto": 6214,
+            "bajo": 6818,
+            "opt": 10926
           }
         }
       }
@@ -1460,6 +2104,78 @@
           }
         }
       },
+      "relative_bands": {
+        "chlorophyll_class": {
+          "sectors": [
+            {
+              "min": 0.3187,
+              "max": 0.4345,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.4345,
+              "max": 0.4535,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.4535,
+              "max": 0.476,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.476,
+              "max": 0.5134,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ],
+          "equipos": [
+            {
+              "min": 0.3936,
+              "max": 0.4477,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.4477,
+              "max": 0.4509,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.4509,
+              "max": 0.474,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.474,
+              "max": 0.5054,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ]
+        }
+      },
       "compliance": {
         "water_stress": {
           "by_sector": {
@@ -1499,6 +2215,96 @@
             "bajo": 20403,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 1,
+            "b5": 0,
+            "b4": 3,
+            "b3": 16,
+            "b2": 3,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 56348,
+            "b5": 0,
+            "b4": 179510,
+            "b3": 917307,
+            "b2": 167781,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 1265,
+            "b5": 0,
+            "b4": 4075,
+            "b3": 21235,
+            "b2": 3879,
+            "b1": 0,
+            "b0": 0
+          }
+        },
+        "season_average_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 1,
+            "b6": 0,
+            "b5": 0,
+            "b4": 2,
+            "b3": 13,
+            "b2": 7,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 56348,
+            "b6": 0,
+            "b5": 0,
+            "b4": 119836,
+            "b3": 744490,
+            "b2": 400272,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 1265,
+            "b6": 0,
+            "b5": 0,
+            "b4": 2691,
+            "b3": 17262,
+            "b2": 9236,
+            "b1": 0,
+            "b0": 0
+          }
+        },
+        "chlorophyll_class": {
+          "by_sector": {
+            "exc": 6,
+            "alto": 5,
+            "bajo": 6,
+            "opt": 6
+          },
+          "by_area_m2": {
+            "exc": 354640,
+            "alto": 276284,
+            "bajo": 341586,
+            "opt": 348436
+          },
+          "by_plants": {
+            "exc": 8118,
+            "alto": 6396,
+            "bajo": 7902,
+            "opt": 8038
           }
         }
       },
@@ -1541,6 +2347,96 @@
             "bajo": 30454,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 1,
+            "b3": 3,
+            "b2": 1,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 286615,
+            "b3": 871507,
+            "b2": 168534,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 6496,
+            "b3": 20079,
+            "b2": 3879,
+            "b1": 0,
+            "b0": 0
+          }
+        },
+        "season_average_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 1,
+            "b3": 3,
+            "b2": 1,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 286615,
+            "b3": 871507,
+            "b2": 168534,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 6496,
+            "b3": 20079,
+            "b2": 3879,
+            "b1": 0,
+            "b0": 0
+          }
+        },
+        "chlorophyll_class": {
+          "by_equipo": {
+            "exc": 1,
+            "alto": 1,
+            "bajo": 1,
+            "opt": 2
+          },
+          "by_area_m2": {
+            "exc": 286615,
+            "alto": 306684,
+            "bajo": 269273,
+            "opt": 464084
+          },
+          "by_plants": {
+            "exc": 6496,
+            "alto": 7047,
+            "bajo": 6214,
+            "opt": 10697
           }
         }
       }
@@ -1951,6 +2847,78 @@
           }
         }
       },
+      "relative_bands": {
+        "chlorophyll_class": {
+          "sectors": [
+            {
+              "min": 0.3115,
+              "max": 0.4303,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.4303,
+              "max": 0.4468,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.4468,
+              "max": 0.4616,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.4616,
+              "max": 0.4877,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ],
+          "equipos": [
+            {
+              "min": 0.3938,
+              "max": 0.4345,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.4345,
+              "max": 0.4445,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.4445,
+              "max": 0.46,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.46,
+              "max": 0.4669,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ]
+        }
+      },
       "compliance": {
         "water_stress": {
           "by_sector": {
@@ -1990,6 +2958,96 @@
             "bajo": 24173,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 1,
+            "b5": 0,
+            "b4": 2,
+            "b3": 15,
+            "b2": 5,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 56348,
+            "b5": 0,
+            "b4": 119836,
+            "b3": 851368,
+            "b2": 293394,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 1265,
+            "b5": 0,
+            "b4": 2691,
+            "b3": 19724,
+            "b2": 6774,
+            "b1": 0,
+            "b0": 0
+          }
+        },
+        "season_average_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 1,
+            "b5": 0,
+            "b4": 2,
+            "b3": 15,
+            "b2": 5,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 56348,
+            "b5": 0,
+            "b4": 119836,
+            "b3": 851368,
+            "b2": 293394,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 1265,
+            "b5": 0,
+            "b4": 2691,
+            "b3": 19724,
+            "b2": 6774,
+            "b1": 0,
+            "b0": 0
+          }
+        },
+        "chlorophyll_class": {
+          "by_sector": {
+            "exc": 6,
+            "alto": 5,
+            "bajo": 6,
+            "opt": 6
+          },
+          "by_area_m2": {
+            "exc": 356102,
+            "alto": 274822,
+            "bajo": 329656,
+            "opt": 360366
+          },
+          "by_plants": {
+            "exc": 8094,
+            "alto": 6420,
+            "bajo": 7591,
+            "opt": 8349
           }
         }
       },
@@ -2032,6 +3090,96 @@
             "bajo": 30454,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 1,
+            "b3": 2,
+            "b2": 2,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 286615,
+            "b3": 575957,
+            "b2": 464084,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 6496,
+            "b3": 13261,
+            "b2": 10697,
+            "b1": 0,
+            "b0": 0
+          }
+        },
+        "season_average_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 1,
+            "b3": 2,
+            "b2": 2,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 286615,
+            "b3": 575957,
+            "b2": 464084,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 6496,
+            "b3": 13261,
+            "b2": 10697,
+            "b1": 0,
+            "b0": 0
+          }
+        },
+        "chlorophyll_class": {
+          "by_equipo": {
+            "exc": 1,
+            "alto": 1,
+            "bajo": 1,
+            "opt": 2
+          },
+          "by_area_m2": {
+            "exc": 286615,
+            "alto": 269273,
+            "bajo": 306684,
+            "opt": 464084
+          },
+          "by_plants": {
+            "exc": 6496,
+            "alto": 6214,
+            "bajo": 7047,
+            "opt": 10697
           }
         }
       }
@@ -2442,6 +3590,78 @@
           }
         }
       },
+      "relative_bands": {
+        "chlorophyll_class": {
+          "sectors": [
+            {
+              "min": 0.4084,
+              "max": 0.5253,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.5253,
+              "max": 0.5424,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.5424,
+              "max": 0.5565,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.5565,
+              "max": 0.5828,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ],
+          "equipos": [
+            {
+              "min": 0.4889,
+              "max": 0.5326,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.5326,
+              "max": 0.5407,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.5407,
+              "max": 0.5563,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.5563,
+              "max": 0.5768,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ]
+        }
+      },
       "compliance": {
         "water_stress": {
           "by_sector": {
@@ -2481,6 +3701,96 @@
             "bajo": 26805,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 1,
+            "b3": 0,
+            "b2": 2,
+            "b1": 20,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 56348,
+            "b3": 0,
+            "b2": 119836,
+            "b1": 1144762,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 1265,
+            "b3": 0,
+            "b2": 2691,
+            "b1": 26498,
+            "b0": 0
+          }
+        },
+        "season_average_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 1,
+            "b4": 0,
+            "b3": 2,
+            "b2": 20,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 56348,
+            "b4": 0,
+            "b3": 119836,
+            "b2": 1144762,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 1265,
+            "b4": 0,
+            "b3": 2691,
+            "b2": 26498,
+            "b1": 0,
+            "b0": 0
+          }
+        },
+        "chlorophyll_class": {
+          "by_sector": {
+            "exc": 6,
+            "alto": 5,
+            "bajo": 6,
+            "opt": 6
+          },
+          "by_area_m2": {
+            "exc": 353478,
+            "alto": 286202,
+            "bajo": 341821,
+            "opt": 339445
+          },
+          "by_plants": {
+            "exc": 8065,
+            "alto": 6652,
+            "bajo": 7901,
+            "opt": 7836
           }
         }
       },
@@ -2523,6 +3833,96 @@
             "bajo": 30454,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 1,
+            "b1": 4,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 286615,
+            "b1": 1040041,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 6496,
+            "b1": 23958,
+            "b0": 0
+          }
+        },
+        "season_average_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 1,
+            "b2": 4,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 286615,
+            "b2": 1040041,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 6496,
+            "b2": 23958,
+            "b1": 0,
+            "b0": 0
+          }
+        },
+        "chlorophyll_class": {
+          "by_equipo": {
+            "exc": 1,
+            "alto": 1,
+            "bajo": 1,
+            "opt": 2
+          },
+          "by_area_m2": {
+            "exc": 286615,
+            "alto": 306684,
+            "bajo": 269273,
+            "opt": 464084
+          },
+          "by_plants": {
+            "exc": 6496,
+            "alto": 7047,
+            "bajo": 6214,
+            "opt": 10697
           }
         }
       }
@@ -2933,6 +4333,78 @@
           }
         }
       },
+      "relative_bands": {
+        "chlorophyll_class": {
+          "sectors": [
+            {
+              "min": 0.4887,
+              "max": 0.57045,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.57045,
+              "max": 0.5761,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.5761,
+              "max": 0.6058,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.6058,
+              "max": 0.6473,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ],
+          "equipos": [
+            {
+              "min": 0.5332,
+              "max": 0.5799,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.5799,
+              "max": 0.581,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.581,
+              "max": 0.6046,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.6046,
+              "max": 0.6341,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ]
+        }
+      },
       "compliance": {
         "water_stress": {
           "by_sector": {
@@ -2972,6 +4444,96 @@
             "bajo": 22557,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 3,
+            "b1": 20,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 176184,
+            "b1": 1144762,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 3956,
+            "b1": 26498,
+            "b0": 0
+          }
+        },
+        "season_average_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 1,
+            "b3": 0,
+            "b2": 16,
+            "b1": 6,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 56348,
+            "b3": 0,
+            "b2": 921744,
+            "b1": 342854,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 1265,
+            "b3": 0,
+            "b2": 21255,
+            "b1": 7934,
+            "b0": 0
+          }
+        },
+        "chlorophyll_class": {
+          "by_sector": {
+            "exc": 6,
+            "alto": 5,
+            "bajo": 6,
+            "opt": 6
+          },
+          "by_area_m2": {
+            "exc": 343783,
+            "alto": 282991,
+            "bajo": 356454,
+            "opt": 337718
+          },
+          "by_plants": {
+            "exc": 7870,
+            "alto": 6559,
+            "bajo": 8223,
+            "opt": 7802
           }
         }
       },
@@ -3014,6 +4576,96 @@
             "bajo": 30454,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 1,
+            "b1": 4,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 286615,
+            "b1": 1040041,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 6496,
+            "b1": 23958,
+            "b0": 0
+          }
+        },
+        "season_average_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 3,
+            "b1": 2,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 862572,
+            "b1": 464084,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 19757,
+            "b1": 10697,
+            "b0": 0
+          }
+        },
+        "chlorophyll_class": {
+          "by_equipo": {
+            "exc": 1,
+            "alto": 1,
+            "bajo": 1,
+            "opt": 2
+          },
+          "by_area_m2": {
+            "exc": 286615,
+            "alto": 269273,
+            "bajo": 306684,
+            "opt": 464084
+          },
+          "by_plants": {
+            "exc": 6496,
+            "alto": 6214,
+            "bajo": 7047,
+            "opt": 10697
           }
         }
       }
@@ -3424,6 +5076,78 @@
           }
         }
       },
+      "relative_bands": {
+        "chlorophyll_class": {
+          "sectors": [
+            {
+              "min": 0.5871,
+              "max": 0.63395,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.63395,
+              "max": 0.6481,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.6481,
+              "max": 0.6558,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.6558,
+              "max": 0.6658,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ],
+          "equipos": [
+            {
+              "min": 0.6078,
+              "max": 0.6425,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.6425,
+              "max": 0.6504,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.6504,
+              "max": 0.6519,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.6519,
+              "max": 0.6567,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ]
+        }
+      },
       "compliance": {
         "water_stress": {
           "by_sector": {
@@ -3463,6 +5187,96 @@
             "bajo": 25281,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 23,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 1320946,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 30454,
+            "b0": 0
+          }
+        },
+        "season_average_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 1,
+            "b2": 9,
+            "b1": 13,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 56348,
+            "b2": 521803,
+            "b1": 742795,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 1265,
+            "b2": 12018,
+            "b1": 17171,
+            "b0": 0
+          }
+        },
+        "chlorophyll_class": {
+          "by_sector": {
+            "exc": 6,
+            "alto": 5,
+            "bajo": 6,
+            "opt": 6
+          },
+          "by_area_m2": {
+            "exc": 354640,
+            "alto": 292975,
+            "bajo": 323397,
+            "opt": 349934
+          },
+          "by_plants": {
+            "exc": 8118,
+            "alto": 6779,
+            "bajo": 7499,
+            "opt": 8058
           }
         }
       },
@@ -3505,6 +5319,96 @@
             "bajo": 30454,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 5,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 1326656,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 30454,
+            "b0": 0
+          }
+        },
+        "season_average_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 2,
+            "b1": 3,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 555888,
+            "b1": 770768,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 12710,
+            "b1": 17744,
+            "b0": 0
+          }
+        },
+        "chlorophyll_class": {
+          "by_equipo": {
+            "exc": 1,
+            "alto": 1,
+            "bajo": 1,
+            "opt": 2
+          },
+          "by_area_m2": {
+            "exc": 286615,
+            "alto": 306684,
+            "bajo": 269273,
+            "opt": 464084
+          },
+          "by_plants": {
+            "exc": 6496,
+            "alto": 7047,
+            "bajo": 6214,
+            "opt": 10697
           }
         }
       }
@@ -3915,6 +5819,78 @@
           }
         }
       },
+      "relative_bands": {
+        "chlorophyll_class": {
+          "sectors": [
+            {
+              "min": 0.6654,
+              "max": 0.7041,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.7041,
+              "max": 0.7185,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.7185,
+              "max": 0.72195,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.72195,
+              "max": 0.7395,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ],
+          "equipos": [
+            {
+              "min": 0.6916,
+              "max": 0.7123,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.7123,
+              "max": 0.7158,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.7158,
+              "max": 0.7212,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.7212,
+              "max": 0.7366,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ]
+        }
+      },
       "compliance": {
         "water_stress": {
           "by_sector": {
@@ -3954,6 +5930,96 @@
             "bajo": 26073,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 1,
+            "b0": 22
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 56348,
+            "b0": 1264598
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 1265,
+            "b0": 29189
+          }
+        },
+        "season_average_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 1,
+            "b0": 22
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 56348,
+            "b0": 1264598
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 1265,
+            "b0": 29189
+          }
+        },
+        "chlorophyll_class": {
+          "by_sector": {
+            "exc": 6,
+            "alto": 5,
+            "bajo": 6,
+            "opt": 6
+          },
+          "by_area_m2": {
+            "exc": 362271,
+            "alto": 290497,
+            "bajo": 327767,
+            "opt": 340411
+          },
+          "by_plants": {
+            "exc": 8263,
+            "alto": 6717,
+            "bajo": 7580,
+            "opt": 7894
           }
         }
       },
@@ -3996,6 +6062,96 @@
             "bajo": 30454,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 0,
+            "b0": 5
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 0,
+            "b0": 1326656
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 0,
+            "b0": 30454
+          }
+        },
+        "season_average_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 0,
+            "b0": 5
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 0,
+            "b0": 1326656
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 0,
+            "b0": 30454
+          }
+        },
+        "chlorophyll_class": {
+          "by_equipo": {
+            "exc": 1,
+            "alto": 1,
+            "bajo": 1,
+            "opt": 2
+          },
+          "by_area_m2": {
+            "exc": 286615,
+            "alto": 306684,
+            "bajo": 295550,
+            "opt": 437807
+          },
+          "by_plants": {
+            "exc": 6496,
+            "alto": 7047,
+            "bajo": 6818,
+            "opt": 10093
           }
         }
       }
@@ -4406,6 +6562,78 @@
           }
         }
       },
+      "relative_bands": {
+        "chlorophyll_class": {
+          "sectors": [
+            {
+              "min": 0.6215,
+              "max": 0.67005,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.67005,
+              "max": 0.6802,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.6802,
+              "max": 0.6857,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.6857,
+              "max": 0.7011,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ],
+          "equipos": [
+            {
+              "min": 0.6573,
+              "max": 0.6659,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.6659,
+              "max": 0.683,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.683,
+              "max": 0.6856,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.6856,
+              "max": 0.691,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ]
+        }
+      },
       "compliance": {
         "water_stress": {
           "by_sector": {
@@ -4445,6 +6673,96 @@
             "bajo": 26276,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 1,
+            "b1": 22,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 56348,
+            "b1": 1264598,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 1265,
+            "b1": 29189,
+            "b0": 0
+          }
+        },
+        "season_average_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 20,
+            "b0": 3
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 1157245,
+            "b0": 163701
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 26688,
+            "b0": 3766
+          }
+        },
+        "chlorophyll_class": {
+          "by_sector": {
+            "exc": 6,
+            "alto": 5,
+            "bajo": 6,
+            "opt": 6
+          },
+          "by_area_m2": {
+            "exc": 346167,
+            "alto": 276346,
+            "bajo": 355542,
+            "opt": 342891
+          },
+          "by_plants": {
+            "exc": 7873,
+            "alto": 6453,
+            "bajo": 8233,
+            "opt": 7895
           }
         }
       },
@@ -4487,6 +6805,96 @@
             "bajo": 30454,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 5,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 1326656,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 30454,
+            "b0": 0
+          }
+        },
+        "season_average_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 5,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 1326656,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 30454,
+            "b0": 0
+          }
+        },
+        "chlorophyll_class": {
+          "by_equipo": {
+            "exc": 1,
+            "alto": 1,
+            "bajo": 1,
+            "opt": 2
+          },
+          "by_area_m2": {
+            "exc": 286615,
+            "alto": 269273,
+            "bajo": 295550,
+            "opt": 475218
+          },
+          "by_plants": {
+            "exc": 6496,
+            "alto": 6214,
+            "bajo": 6818,
+            "opt": 10926
           }
         }
       }
@@ -4897,6 +7305,78 @@
           }
         }
       },
+      "relative_bands": {
+        "chlorophyll_class": {
+          "sectors": [
+            {
+              "min": 0.486,
+              "max": 0.5006,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.5006,
+              "max": 0.5164,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.5164,
+              "max": 0.5263,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.5263,
+              "max": 0.5436,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ],
+          "equipos": [
+            {
+              "min": 0.5029,
+              "max": 0.504,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.504,
+              "max": 0.5115,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.5115,
+              "max": 0.5277,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.5277,
+              "max": 0.5295,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ]
+        }
+      },
       "compliance": {
         "water_stress": {
           "by_sector": {
@@ -4936,6 +7416,96 @@
             "bajo": 27554,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 8,
+            "b2": 15,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 471780,
+            "b2": 849166,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 10768,
+            "b2": 19686,
+            "b1": 0,
+            "b0": 0
+          }
+        },
+        "season_average_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 1,
+            "b1": 22,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 56348,
+            "b1": 1264598,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 1265,
+            "b1": 29189,
+            "b0": 0
+          }
+        },
+        "chlorophyll_class": {
+          "by_sector": {
+            "exc": 6,
+            "alto": 5,
+            "bajo": 6,
+            "opt": 6
+          },
+          "by_area_m2": {
+            "exc": 340459,
+            "alto": 291284,
+            "bajo": 337378,
+            "opt": 351825
+          },
+          "by_plants": {
+            "exc": 7847,
+            "alto": 6739,
+            "bajo": 7760,
+            "opt": 8108
           }
         }
       },
@@ -4978,6 +7548,96 @@
             "bajo": 30454,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 2,
+            "b2": 3,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 555888,
+            "b2": 770768,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 12710,
+            "b2": 17744,
+            "b1": 0,
+            "b0": 0
+          }
+        },
+        "season_average_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 5,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 1326656,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 30454,
+            "b0": 0
+          }
+        },
+        "chlorophyll_class": {
+          "by_equipo": {
+            "exc": 1,
+            "alto": 1,
+            "bajo": 1,
+            "opt": 2
+          },
+          "by_area_m2": {
+            "exc": 286615,
+            "alto": 295550,
+            "bajo": 269273,
+            "opt": 475218
+          },
+          "by_plants": {
+            "exc": 6496,
+            "alto": 6818,
+            "bajo": 6214,
+            "opt": 10926
           }
         }
       }
@@ -5388,6 +8048,78 @@
           }
         }
       },
+      "relative_bands": {
+        "chlorophyll_class": {
+          "sectors": [
+            {
+              "min": 0.4872,
+              "max": 0.5048,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.5048,
+              "max": 0.5192,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.5192,
+              "max": 0.52995,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.52995,
+              "max": 0.5453,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ],
+          "equipos": [
+            {
+              "min": 0.509,
+              "max": 0.5128,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.5128,
+              "max": 0.5164,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.5164,
+              "max": 0.5172,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.5172,
+              "max": 0.5383,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ]
+        }
+      },
       "compliance": {
         "water_stress": {
           "by_sector": {
@@ -5427,6 +8159,96 @@
             "bajo": 27554,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 1,
+            "b2": 22,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 56348,
+            "b2": 1264598,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 1265,
+            "b2": 29189,
+            "b1": 0,
+            "b0": 0
+          }
+        },
+        "season_average_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 7,
+            "b1": 16,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 410641,
+            "b1": 910305,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 9354,
+            "b1": 21100,
+            "b0": 0
+          }
+        },
+        "chlorophyll_class": {
+          "by_sector": {
+            "exc": 6,
+            "alto": 5,
+            "bajo": 6,
+            "opt": 6
+          },
+          "by_area_m2": {
+            "exc": 345088,
+            "alto": 288218,
+            "bajo": 337336,
+            "opt": 350304
+          },
+          "by_plants": {
+            "exc": 7923,
+            "alto": 6699,
+            "bajo": 7726,
+            "opt": 8106
           }
         }
       },
@@ -5469,6 +8291,96 @@
             "bajo": 30454,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 5,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 1326656,
+            "b1": 0,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 30454,
+            "b1": 0,
+            "b0": 0
+          }
+        },
+        "season_average_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 2,
+            "b1": 3,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 555888,
+            "b1": 770768,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 12710,
+            "b1": 17744,
+            "b0": 0
+          }
+        },
+        "chlorophyll_class": {
+          "by_equipo": {
+            "exc": 1,
+            "alto": 1,
+            "bajo": 1,
+            "opt": 2
+          },
+          "by_area_m2": {
+            "exc": 269273,
+            "alto": 295550,
+            "bajo": 286615,
+            "opt": 475218
+          },
+          "by_plants": {
+            "exc": 6214,
+            "alto": 6818,
+            "bajo": 6496,
+            "opt": 10926
           }
         }
       }
@@ -5879,6 +8791,78 @@
           }
         }
       },
+      "relative_bands": {
+        "chlorophyll_class": {
+          "sectors": [
+            {
+              "min": 0.6487,
+              "max": 0.6756,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.6756,
+              "max": 0.6829,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.6829,
+              "max": 0.6879,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.6879,
+              "max": 0.694,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ],
+          "equipos": [
+            {
+              "min": 0.6655,
+              "max": 0.6782,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.6782,
+              "max": 0.6855,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.6855,
+              "max": 0.6876,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.6876,
+              "max": 0.6896,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ]
+        }
+      },
       "compliance": {
         "water_stress": {
           "by_sector": {
@@ -5918,6 +8902,96 @@
             "bajo": 27798,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 18,
+            "b0": 5
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 1051696,
+            "b0": 269250
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 24261,
+            "b0": 6193
+          }
+        },
+        "season_average_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 18,
+            "b0": 5
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 1051696,
+            "b0": 269250
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 24261,
+            "b0": 6193
+          }
+        },
+        "chlorophyll_class": {
+          "by_sector": {
+            "exc": 6,
+            "alto": 5,
+            "bajo": 6,
+            "opt": 6
+          },
+          "by_area_m2": {
+            "exc": 349807,
+            "alto": 295195,
+            "bajo": 337265,
+            "opt": 338679
+          },
+          "by_plants": {
+            "exc": 7963,
+            "alto": 6862,
+            "bajo": 7824,
+            "opt": 7805
           }
         }
       },
@@ -5960,6 +9034,96 @@
             "bajo": 30454,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 5,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 1326656,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 30454,
+            "b0": 0
+          }
+        },
+        "season_average_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 5,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 1326656,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 30454,
+            "b0": 0
+          }
+        },
+        "chlorophyll_class": {
+          "by_equipo": {
+            "exc": 1,
+            "alto": 1,
+            "bajo": 1,
+            "opt": 2
+          },
+          "by_area_m2": {
+            "exc": 286615,
+            "alto": 306684,
+            "bajo": 295550,
+            "opt": 437807
+          },
+          "by_plants": {
+            "exc": 6496,
+            "alto": 7047,
+            "bajo": 6818,
+            "opt": 10093
           }
         }
       }
@@ -6370,6 +9534,70 @@
           }
         }
       },
+      "relative_bands": {
+        "chlorophyll_class": {
+          "sectors": [
+            {
+              "min": 0.5692,
+              "max": 0.5812,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.5812,
+              "max": 0.5866,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.5866,
+              "max": 0.59755,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.59755,
+              "max": 0.6154,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ],
+          "equipos": [
+            {
+              "min": 0.576,
+              "max": 0.5865,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 2
+            },
+            {
+              "min": 0.5865,
+              "max": 0.5992,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 1
+            },
+            {
+              "min": 0.5992,
+              "max": 0.6069,
+              "es": "3 - Más alto",
+              "en": "3 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ]
+        }
+      },
       "compliance": {
         "water_stress": {
           "by_sector": {
@@ -6409,6 +9637,96 @@
             "bajo": 28048,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 2,
+            "b1": 21,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 113360,
+            "b1": 1207586,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 2562,
+            "b1": 27892,
+            "b0": 0
+          }
+        },
+        "season_average_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 23,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 1320946,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 30454,
+            "b0": 0
+          }
+        },
+        "chlorophyll_class": {
+          "by_sector": {
+            "exc": 6,
+            "alto": 5,
+            "bajo": 6,
+            "opt": 6
+          },
+          "by_area_m2": {
+            "exc": 338070,
+            "alto": 310653,
+            "bajo": 341908,
+            "opt": 330315
+          },
+          "by_plants": {
+            "exc": 7798,
+            "alto": 7139,
+            "bajo": 7860,
+            "opt": 7657
           }
         }
       },
@@ -6451,6 +9769,93 @@
             "bajo": 30454,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 5,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 1326656,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 30454,
+            "b0": 0
+          }
+        },
+        "season_average_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 5,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 1326656,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 30454,
+            "b0": 0
+          }
+        },
+        "chlorophyll_class": {
+          "by_equipo": {
+            "exc": 1,
+            "alto": 2,
+            "opt": 2
+          },
+          "by_area_m2": {
+            "exc": 286615,
+            "alto": 602234,
+            "opt": 437807
+          },
+          "by_plants": {
+            "exc": 6496,
+            "alto": 13865,
+            "opt": 10093
           }
         }
       }
@@ -6861,6 +10266,78 @@
           }
         }
       },
+      "relative_bands": {
+        "chlorophyll_class": {
+          "sectors": [
+            {
+              "min": 0.6688,
+              "max": 0.6815,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.6815,
+              "max": 0.6888,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.6888,
+              "max": 0.6969,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.6969,
+              "max": 0.7273,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ],
+          "equipos": [
+            {
+              "min": 0.6824,
+              "max": 0.6827,
+              "es": "1 - Más bajo",
+              "en": "1 - Lowest",
+              "status": "exc",
+              "severity": 3
+            },
+            {
+              "min": 0.6827,
+              "max": 0.6877,
+              "es": "2",
+              "en": "2",
+              "status": "alto",
+              "severity": 2
+            },
+            {
+              "min": 0.6877,
+              "max": 0.6916,
+              "es": "3",
+              "en": "3",
+              "status": "bajo",
+              "severity": 1
+            },
+            {
+              "min": 0.6916,
+              "max": 0.7119,
+              "es": "4 - Más alto",
+              "en": "4 - Highest",
+              "status": "opt",
+              "severity": 0
+            }
+          ]
+        }
+      },
       "compliance": {
         "water_stress": {
           "by_sector": {
@@ -6900,6 +10377,96 @@
             "bajo": 29392,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 0,
+            "b0": 23
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 0,
+            "b0": 1320946
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 0,
+            "b0": 30454
+          }
+        },
+        "season_average_ndvi": {
+          "by_sector": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 19,
+            "b0": 4
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 1108379,
+            "b0": 212567
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 25516,
+            "b0": 4938
+          }
+        },
+        "chlorophyll_class": {
+          "by_sector": {
+            "exc": 6,
+            "alto": 5,
+            "bajo": 6,
+            "opt": 6
+          },
+          "by_area_m2": {
+            "exc": 343307,
+            "alto": 284497,
+            "bajo": 341200,
+            "opt": 351942
+          },
+          "by_plants": {
+            "exc": 7939,
+            "alto": 6544,
+            "bajo": 7836,
+            "opt": 8135
           }
         }
       },
@@ -6942,6 +10509,96 @@
             "bajo": 30454,
             "alto": 0,
             "exc": 0
+          }
+        },
+        "absolute_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 0,
+            "b0": 5
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 0,
+            "b0": 1326656
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 0,
+            "b0": 30454
+          }
+        },
+        "season_average_ndvi": {
+          "by_equipo": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 5,
+            "b0": 0
+          },
+          "by_area_m2": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 1326656,
+            "b0": 0
+          },
+          "by_plants": {
+            "b8": 0,
+            "b7": 0,
+            "b6": 0,
+            "b5": 0,
+            "b4": 0,
+            "b3": 0,
+            "b2": 0,
+            "b1": 30454,
+            "b0": 0
+          }
+        },
+        "chlorophyll_class": {
+          "by_equipo": {
+            "exc": 1,
+            "alto": 1,
+            "bajo": 1,
+            "opt": 2
+          },
+          "by_area_m2": {
+            "exc": 286615,
+            "alto": 306684,
+            "bajo": 295550,
+            "opt": 437807
+          },
+          "by_plants": {
+            "exc": 6496,
+            "alto": 7047,
+            "bajo": 6818,
+            "opt": 10093
           }
         }
       }
